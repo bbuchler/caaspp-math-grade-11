@@ -1,0 +1,75 @@
+{
+  "course": "caaspp-math-grade-11",
+  "pilot": "week-1",
+  "items": [
+    {
+      "id": "qb-w1-01",
+      "lessonId": "01",
+      "objective": "Solve two-step linear equations",
+      "type": "numeric",
+      "prompt": "Solve: 6x - 4 = 38",
+      "answer": 7,
+      "explanation": "Add 4 to both sides, then divide by 6.",
+      "difficulty": "medium",
+      "grading": "deterministic"
+    },
+    {
+      "id": "qb-w1-02",
+      "lessonId": "02",
+      "objective": "Graph one-variable inequalities",
+      "type": "multiple_choice",
+      "prompt": "Which graph matches x < 4?",
+      "options": [
+        {"value": "A", "text": "Open point at 4, shaded left"},
+        {"value": "B", "text": "Closed point at 4, shaded left"},
+        {"value": "C", "text": "Open point at 4, shaded right"},
+        {"value": "D", "text": "Closed point at 4, shaded right"}
+      ],
+      "answer": "A",
+      "explanation": "< does not include 4 and means values less than 4.",
+      "difficulty": "easy",
+      "grading": "deterministic"
+    },
+    {
+      "id": "qb-w1-03",
+      "lessonId": "03",
+      "objective": "Write a linear model from context",
+      "type": "multiple_choice",
+      "prompt": "A streaming service charges $9 per month plus a one-time $15 setup fee. Which model gives total cost C after m months?",
+      "options": [
+        {"value": "A", "text": "C = 15m + 9"},
+        {"value": "B", "text": "C = 9m + 15"},
+        {"value": "C", "text": "C = 24m"},
+        {"value": "D", "text": "C = 9m - 15"}
+      ],
+      "answer": "B",
+      "explanation": "The monthly amount is multiplied by m; the setup fee happens once.",
+      "difficulty": "medium",
+      "grading": "deterministic"
+    },
+    {
+      "id": "qb-w1-04",
+      "lessonId": "04",
+      "objective": "Interpret slope in context",
+      "type": "constructed_response",
+      "prompt": "In C = 9m + 15, explain what the slope means.",
+      "rubricId": "math-explanation-3",
+      "expectedElements": ["9 dollars per month", "cost increases", "for each month"],
+      "explanation": "The slope 9 means the total cost increases by $9 for each month.",
+      "difficulty": "medium",
+      "grading": "ai_rubric"
+    },
+    {
+      "id": "qb-w1-05",
+      "lessonId": "05",
+      "objective": "Evaluate function notation",
+      "type": "numeric",
+      "prompt": "If h(x) = 5x - 2, find h(6).",
+      "answer": 28,
+      "explanation": "5(6) - 2 = 28.",
+      "difficulty": "easy",
+      "grading": "deterministic"
+    }
+  ]
+}
+

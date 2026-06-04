@@ -1,0 +1,155 @@
+{
+  "lessonId": "01",
+  "title": "Undo the Equation",
+  "module": "Week 1 - Linear Equations, Inequalities, and Functions",
+  "estimatedMinutes": 40,
+  "sourceRefs": ["S1", "S2", "S3", "V1"],
+  "learningTarget": "I can solve one-step and two-step equations and explain the inverse operation I used.",
+  "whyItMatters": "CAASPP questions often hide simple equation solving inside a word problem, table, or graph. If you can undo an equation cleanly, you can keep the rest of the problem from turning into noise.",
+  "sections": [
+    {
+      "id": "launch",
+      "type": "launch",
+      "title": "Quick Start",
+      "studentText": "A school club sells stickers. The club has $18 after buying supplies and then earns $4 for each sticker pack sold. If the club has $46, what equation could represent the situation?",
+      "questions": [
+        {
+          "id": "l1-launch-1",
+          "type": "multiple_choice",
+          "prompt": "Which equation matches the sticker situation?",
+          "options": [
+            {"value": "A", "text": "18x + 4 = 46"},
+            {"value": "B", "text": "4x + 18 = 46"},
+            {"value": "C", "text": "46x + 4 = 18"},
+            {"value": "D", "text": "4x - 18 = 46"}
+          ],
+          "answer": "B",
+          "grading": "deterministic",
+          "feedback": "The starting amount is 18, and each pack adds 4 more dollars, so 4x + 18 = 46."
+        }
+      ]
+    },
+    {
+      "id": "video",
+      "type": "video",
+      "title": "Watch: Linear equations 1",
+      "video": {
+        "provider": "khanacademy",
+        "url": "https://www.khanacademy.org/video/algebra-linear-equations-1",
+        "sourceRef": "V1",
+        "transcriptRequired": true
+      },
+      "watchFor": "Watch for the moment the teacher uses the opposite operation to isolate the variable.",
+      "contextQuestions": [
+        {
+          "id": "l1-vq1",
+          "type": "short_answer",
+          "prompt": "When a number is multiplying the variable, what opposite operation helps isolate the variable?",
+          "answer": "division",
+          "grading": "deterministic",
+          "feedback": "Use division to undo multiplication."
+        },
+        {
+          "id": "l1-vq2",
+          "type": "short_answer",
+          "prompt": "Why does the teacher do the same operation to both sides of the equation?",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "feedback": "A strong answer says that keeping both sides balanced preserves the equality."
+        }
+      ]
+    },
+    {
+      "id": "learn",
+      "type": "teaching",
+      "title": "The Equation Undo Button",
+      "studentText": "Solving an equation means finding the value that makes the sentence true. The main move is to undo operations in reverse order while keeping both sides balanced.",
+      "workedExample": {
+        "prompt": "Solve 3x + 7 = 31.",
+        "steps": [
+          "Subtract 7 from both sides: 3x = 24.",
+          "Divide both sides by 3: x = 8.",
+          "Check: 3(8) + 7 = 31, so the answer works."
+        ],
+        "commonMistake": "A common mistake is subtracting 7 from only one side. That changes the equation instead of solving it."
+      }
+    },
+    {
+      "id": "practice",
+      "type": "practice",
+      "title": "Practice",
+      "questions": [
+        {
+          "id": "l1-p1",
+          "type": "numeric",
+          "prompt": "Solve: x + 14 = 25",
+          "answer": 11,
+          "grading": "deterministic",
+          "feedback": "Subtract 14 from both sides: x = 11."
+        },
+        {
+          "id": "l1-p2",
+          "type": "numeric",
+          "prompt": "Solve: 5x - 6 = 29",
+          "answer": 7,
+          "grading": "deterministic",
+          "feedback": "Add 6 to both sides, then divide by 5."
+        },
+        {
+          "id": "l1-p3",
+          "type": "error_analysis",
+          "prompt": "A student solves 2x + 9 = 21 by writing 2x = 30, so x = 15. What went wrong?",
+          "grading": "ai_rubric",
+          "rubricId": "error-analysis-3",
+          "feedback": "The student added 9 instead of subtracting 9. The correct first step is 2x = 12."
+        }
+      ]
+    },
+    {
+      "id": "check",
+      "type": "check",
+      "title": "Exit Check",
+      "masteryThreshold": 0.8,
+      "questions": [
+        {
+          "id": "w1-l1-q1",
+          "type": "numeric",
+          "prompt": "Solve: 4x + 3 = 23",
+          "answer": 5,
+          "grading": "deterministic",
+          "feedback": "Subtract 3, then divide by 4."
+        },
+        {
+          "id": "w1-l1-q2",
+          "type": "multiple_choice",
+          "prompt": "Which first step correctly solves 7x - 10 = 39?",
+          "options": [
+            {"value": "A", "text": "Subtract 10 from both sides."},
+            {"value": "B", "text": "Add 10 to both sides."},
+            {"value": "C", "text": "Divide both sides by 10."},
+            {"value": "D", "text": "Multiply both sides by 7."}
+          ],
+          "answer": "B",
+          "grading": "deterministic",
+          "feedback": "The equation has -10, so add 10 to undo it."
+        },
+        {
+          "id": "w1-l1-q3",
+          "type": "short_answer",
+          "prompt": "Explain why checking your solution is worth the extra ten seconds.",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "feedback": "A strong answer says checking proves the value makes the original equation true."
+        }
+      ]
+    }
+  ],
+  "gate": {
+    "completion": "Student attempts the video questions, practice, and exit check.",
+    "mastery": "At least 80% on objective items and rubric score 2/3 or better on explanation.",
+    "remediation": "Review inverse operations and retry two equations with new numbers.",
+    "enrichment": "Write a believable wrong solution and explain the exact mistake."
+  },
+  "teacherReviewTriggers": ["low_ai_confidence", "off_topic_explanation", "rubric_score_1_or_lower"]
+}
+

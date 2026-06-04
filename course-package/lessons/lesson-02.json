@@ -1,0 +1,163 @@
+{
+  "lessonId": "02",
+  "title": "Inequalities Are Ranges",
+  "module": "Week 1 - Linear Equations, Inequalities, and Functions",
+  "estimatedMinutes": 40,
+  "sourceRefs": ["S1", "S3", "V2"],
+  "learningTarget": "I can solve and graph inequalities and explain what the solution range means.",
+  "whyItMatters": "An equation usually gives one answer. An inequality gives a range of answers, which is exactly how many real limits work: minimum age, maximum cost, at least this many credits, fewer than this many absences.",
+  "sections": [
+    {
+      "id": "launch",
+      "type": "launch",
+      "title": "Quick Start",
+      "studentText": "A student has $30 for lunch this week. Each lunch costs $6. The inequality 6d <= 30 represents how many days the student can buy lunch.",
+      "questions": [
+        {
+          "id": "l2-launch-1",
+          "type": "multiple_choice",
+          "prompt": "What does d <= 5 mean in this situation?",
+          "options": [
+            {"value": "A", "text": "The student must buy lunch exactly 5 days."},
+            {"value": "B", "text": "The student can buy lunch 5 days or fewer."},
+            {"value": "C", "text": "The student can buy lunch more than 5 days."},
+            {"value": "D", "text": "The student has $5 total."}
+          ],
+          "answer": "B",
+          "grading": "deterministic",
+          "feedback": "<= means the boundary value counts, and anything below it also works."
+        }
+      ]
+    },
+    {
+      "id": "video",
+      "type": "video",
+      "title": "Watch: Solving and graphing linear inequalities",
+      "video": {
+        "provider": "khanacademy",
+        "url": "https://www.khanacademy.org/video/solving-and-graphing-linear-inequalities-in-two-variables-1",
+        "sourceRef": "V2",
+        "transcriptRequired": true
+      },
+      "watchFor": "Watch how the graph shows whether the boundary number is included.",
+      "contextQuestions": [
+        {
+          "id": "l2-vq1",
+          "type": "multiple_choice",
+          "prompt": "For y > 5, should the point at 5 be open or closed?",
+          "options": [
+            {"value": "A", "text": "Open, because 5 is not included."},
+            {"value": "B", "text": "Closed, because 5 is included."}
+          ],
+          "answer": "A",
+          "grading": "deterministic",
+          "feedback": "The symbol > does not include the boundary value, so use an open point."
+        },
+        {
+          "id": "l2-vq2",
+          "type": "short_answer",
+          "prompt": "In your own words, what does shading to the right on a number line usually mean?",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "feedback": "A strong answer says the values are greater than the boundary."
+        }
+      ]
+    },
+    {
+      "id": "learn",
+      "type": "teaching",
+      "title": "Boundary and Direction",
+      "studentText": "Graphing an inequality takes two decisions: whether the boundary number counts, and which direction the solutions go. Use a closed point for <= or >=. Use an open point for < or >.",
+      "workedExample": {
+        "prompt": "Solve and graph: x - 4 > 9.",
+        "steps": [
+          "Add 4 to both sides: x > 13.",
+          "Put an open point at 13 because 13 is not included.",
+          "Shade to the right because the solutions are greater than 13."
+        ],
+        "commonMistake": "Students often solve correctly but shade the wrong direction. Test a number if you are unsure."
+      }
+    },
+    {
+      "id": "practice",
+      "type": "practice",
+      "title": "Practice",
+      "questions": [
+        {
+          "id": "l2-p1",
+          "type": "multiple_choice",
+          "prompt": "Solve: x + 8 <= 20",
+          "options": [
+            {"value": "A", "text": "x <= 12"},
+            {"value": "B", "text": "x >= 12"},
+            {"value": "C", "text": "x <= 28"},
+            {"value": "D", "text": "x >= 28"}
+          ],
+          "answer": "A",
+          "grading": "deterministic",
+          "feedback": "Subtract 8 from both sides."
+        },
+        {
+          "id": "l2-p2",
+          "type": "short_answer",
+          "prompt": "A school event can spend no more than $250 on snacks. Write an inequality for buying x boxes at $12 each.",
+          "grading": "ai_rubric",
+          "rubricId": "math-model-3",
+          "feedback": "A strong model is 12x <= 250."
+        }
+      ]
+    },
+    {
+      "id": "check",
+      "type": "check",
+      "title": "Exit Check",
+      "masteryThreshold": 0.8,
+      "questions": [
+        {
+          "id": "w1-l2-q1",
+          "type": "multiple_choice",
+          "prompt": "Which graph matches x >= -2?",
+          "options": [
+            {"value": "A", "text": "Open point at -2, shaded left"},
+            {"value": "B", "text": "Closed point at -2, shaded left"},
+            {"value": "C", "text": "Open point at -2, shaded right"},
+            {"value": "D", "text": "Closed point at -2, shaded right"}
+          ],
+          "answer": "D",
+          "grading": "deterministic",
+          "feedback": ">= includes -2 and all numbers greater than -2."
+        },
+        {
+          "id": "w1-l2-q2",
+          "type": "multiple_choice",
+          "prompt": "Solve: 3x < 18",
+          "options": [
+            {"value": "A", "text": "x < 6"},
+            {"value": "B", "text": "x > 6"},
+            {"value": "C", "text": "x < 15"},
+            {"value": "D", "text": "x > 15"}
+          ],
+          "answer": "A",
+          "grading": "deterministic",
+          "feedback": "Divide both sides by 3."
+        },
+        {
+          "id": "w1-l2-q3",
+          "type": "short_answer",
+          "prompt": "Explain the difference between x < 6 and x <= 6.",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "feedback": "A strong answer says x < 6 does not include 6, while x <= 6 includes 6."
+        }
+      ]
+    }
+  ],
+  "gate": {
+    "completion": "Student attempts the video questions, practice, and exit check.",
+    "mastery": "At least 80% on objective items and correct boundary/direction reasoning.",
+    "remediation": "Match five inequality symbols to open/closed point and shading direction.",
+    "enrichment": "Write and graph an inequality for a school policy or budget limit."
+  },
+  "teacherReviewTriggers": ["low_ai_confidence", "graph_explanation_unclear", "rubric_score_1_or_lower"]
+}
+

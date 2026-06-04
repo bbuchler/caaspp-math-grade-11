@@ -1,0 +1,161 @@
+{
+  "lessonId": "03",
+  "title": "Lines Tell Stories",
+  "module": "Week 1 - Linear Equations, Inequalities, and Functions",
+  "estimatedMinutes": 45,
+  "sourceRefs": ["S1", "S3", "V3"],
+  "learningTarget": "I can connect a linear situation to a table, equation, and graph.",
+  "whyItMatters": "CAASPP often gives the same relationship in different forms. The skill is not just calculating; it is recognizing the same story when it is told as words, a table, an equation, or a graph.",
+  "sections": [
+    {
+      "id": "launch",
+      "type": "launch",
+      "title": "Quick Start",
+      "studentText": "A rideshare charges $5 to start and $2 per mile.",
+      "questions": [
+        {
+          "id": "l3-launch-1",
+          "type": "multiple_choice",
+          "prompt": "Which equation models the total cost C for m miles?",
+          "options": [
+            {"value": "A", "text": "C = 5m + 2"},
+            {"value": "B", "text": "C = 2m + 5"},
+            {"value": "C", "text": "C = 7m"},
+            {"value": "D", "text": "C = 5m - 2"}
+          ],
+          "answer": "B",
+          "grading": "deterministic",
+          "feedback": "$5 is the starting cost, and $2 is added for each mile."
+        }
+      ]
+    },
+    {
+      "id": "video",
+      "type": "video",
+      "title": "Watch: Graphing a linear equation",
+      "video": {
+        "provider": "khanacademy",
+        "url": "https://www.khanacademy.org/video/graphs-of-linear-equations",
+        "sourceRef": "V3",
+        "transcriptRequired": true
+      },
+      "watchFor": "Watch how a table becomes points on a graph.",
+      "contextQuestions": [
+        {
+          "id": "l3-vq1",
+          "type": "short_answer",
+          "prompt": "Why does the teacher make a table before graphing?",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "feedback": "A strong answer says the table creates ordered pairs that can be plotted."
+        },
+        {
+          "id": "l3-vq2",
+          "type": "multiple_choice",
+          "prompt": "In y = 2x + 7, what does the 7 represent on the graph?",
+          "options": [
+            {"value": "A", "text": "The x-intercept"},
+            {"value": "B", "text": "The y-intercept"},
+            {"value": "C", "text": "The slope"},
+            {"value": "D", "text": "The highest point"}
+          ],
+          "answer": "B",
+          "grading": "deterministic",
+          "feedback": "When x = 0, y = 7, so the graph crosses the y-axis at 7."
+        }
+      ]
+    },
+    {
+      "id": "learn",
+      "type": "teaching",
+      "title": "Same Relationship, Four Forms",
+      "studentText": "A linear relationship has a steady change. If each extra mile adds the same $2, the table grows by 2 each time, the graph is a line, and the equation has a constant rate.",
+      "workedExample": {
+        "prompt": "For C = 2m + 5, find the cost for 0, 1, 2, and 3 miles.",
+        "steps": [
+          "m = 0 gives C = 5.",
+          "m = 1 gives C = 7.",
+          "m = 2 gives C = 9.",
+          "m = 3 gives C = 11.",
+          "The points are (0,5), (1,7), (2,9), and (3,11)."
+        ],
+        "commonMistake": "Do not multiply the starting fee by the miles. The starting fee happens once."
+      }
+    },
+    {
+      "id": "practice",
+      "type": "practice",
+      "title": "Practice",
+      "questions": [
+        {
+          "id": "l3-p1",
+          "type": "table_fill",
+          "prompt": "Complete the table for y = 3x + 4 when x = 0, 1, 2.",
+          "answer": [4, 7, 10],
+          "grading": "deterministic",
+          "feedback": "Substitute each x-value into 3x + 4."
+        },
+        {
+          "id": "l3-p2",
+          "type": "multiple_choice",
+          "prompt": "A table has y-values 8, 11, 14, 17 as x increases by 1. What is the rate of change?",
+          "options": [
+            {"value": "A", "text": "1"},
+            {"value": "B", "text": "3"},
+            {"value": "C", "text": "8"},
+            {"value": "D", "text": "17"}
+          ],
+          "answer": "B",
+          "grading": "deterministic",
+          "feedback": "The y-values increase by 3 each time."
+        }
+      ]
+    },
+    {
+      "id": "check",
+      "type": "check",
+      "title": "Exit Check",
+      "masteryThreshold": 0.8,
+      "questions": [
+        {
+          "id": "w1-l3-q1",
+          "type": "multiple_choice",
+          "prompt": "A gym charges $20 to join and $10 per month. Which equation represents total cost T after m months?",
+          "options": [
+            {"value": "A", "text": "T = 20m + 10"},
+            {"value": "B", "text": "T = 10m + 20"},
+            {"value": "C", "text": "T = 30m"},
+            {"value": "D", "text": "T = 10m - 20"}
+          ],
+          "answer": "B",
+          "grading": "deterministic",
+          "feedback": "$20 happens once; $10 repeats each month."
+        },
+        {
+          "id": "w1-l3-q2",
+          "type": "numeric",
+          "prompt": "Using T = 10m + 20, what is the total cost after 6 months?",
+          "answer": 80,
+          "grading": "deterministic",
+          "feedback": "10(6) + 20 = 80."
+        },
+        {
+          "id": "w1-l3-q3",
+          "type": "short_answer",
+          "prompt": "Explain how you can tell from a table whether a relationship is linear.",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "feedback": "A strong answer says the y-values change by a constant amount when x changes evenly."
+        }
+      ]
+    }
+  ],
+  "gate": {
+    "completion": "Student attempts the video questions, practice, and exit check.",
+    "mastery": "At least 80% objective accuracy and a clear explanation of constant rate.",
+    "remediation": "Build a table from a simple equation and identify the constant change.",
+    "enrichment": "Create a cost model for a real subscription and show it as a table and equation."
+  },
+  "teacherReviewTriggers": ["low_ai_confidence", "misread_context", "rubric_score_1_or_lower"]
+}
+

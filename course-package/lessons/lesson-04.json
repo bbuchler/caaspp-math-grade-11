@@ -1,0 +1,159 @@
+{
+  "lessonId": "04",
+  "title": "Slope, Intercepts, and Meaning",
+  "module": "Week 1 - Linear Equations, Inequalities, and Functions",
+  "estimatedMinutes": 45,
+  "sourceRefs": ["S1", "S3", "V4"],
+  "learningTarget": "I can explain what slope and intercepts mean in a real situation.",
+  "whyItMatters": "A graph is not just a picture. On CAASPP, the slope and intercept usually tell the story: starting amount, rate per unit, break-even point, or when something runs out.",
+  "sections": [
+    {
+      "id": "launch",
+      "type": "launch",
+      "title": "Quick Start",
+      "studentText": "A fundraiser starts with $40 donated by a sponsor. Students then earn $6 for each ticket sold. The model is M = 6t + 40.",
+      "questions": [
+        {
+          "id": "l4-launch-1",
+          "type": "multiple_choice",
+          "prompt": "What does 40 mean in this model?",
+          "options": [
+            {"value": "A", "text": "Money earned per ticket"},
+            {"value": "B", "text": "The starting amount before tickets are sold"},
+            {"value": "C", "text": "The number of tickets sold"},
+            {"value": "D", "text": "The final amount after all tickets are sold"}
+          ],
+          "answer": "B",
+          "grading": "deterministic",
+          "feedback": "The +40 is the starting value, also called the y-intercept."
+        }
+      ]
+    },
+    {
+      "id": "video",
+      "type": "video",
+      "title": "Watch: Finding slope and intercepts from tables",
+      "video": {
+        "provider": "khanacademy",
+        "url": "https://www.khanacademy.org/math/algebra-1-fl-best/x91c6a5a4a9698230%3Aanalyzing-linear-functions/x91c6a5a4a9698230%3Afinding-key-features-of-linear-functions/v/find-slope-intercepts-table",
+        "sourceRef": "V4",
+        "transcriptRequired": true
+      },
+      "watchFor": "Watch how the table reveals the rate of change even when the intercept is not listed.",
+      "contextQuestions": [
+        {
+          "id": "l4-vq1",
+          "type": "short_answer",
+          "prompt": "What two quantities do you compare to find slope from a table?",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "feedback": "A strong answer says compare the change in y to the change in x."
+        },
+        {
+          "id": "l4-vq2",
+          "type": "multiple_choice",
+          "prompt": "The y-intercept happens when which value is 0?",
+          "options": [
+            {"value": "A", "text": "x"},
+            {"value": "B", "text": "y"},
+            {"value": "C", "text": "slope"},
+            {"value": "D", "text": "rate"}
+          ],
+          "answer": "A",
+          "grading": "deterministic",
+          "feedback": "The y-intercept is the y-value when x = 0."
+        }
+      ]
+    },
+    {
+      "id": "learn",
+      "type": "teaching",
+      "title": "Translate the Numbers",
+      "studentText": "Slope means 'for each 1.' In M = 6t + 40, the slope 6 means the fundraiser gains $6 for each ticket. The intercept 40 means the fundraiser starts with $40 before selling any tickets.",
+      "workedExample": {
+        "prompt": "A phone plan costs P = 15g + 25, where g is gigabytes of data.",
+        "steps": [
+          "The slope is 15, so each extra gigabyte costs $15.",
+          "The y-intercept is 25, so the base plan costs $25 before extra data.",
+          "For 4 gigabytes, P = 15(4) + 25 = 85."
+        ],
+        "commonMistake": "Do not describe slope as just '15.' Say what 15 means in the situation."
+      }
+    },
+    {
+      "id": "practice",
+      "type": "practice",
+      "title": "Practice",
+      "questions": [
+        {
+          "id": "l4-p1",
+          "type": "multiple_choice",
+          "prompt": "In P = 15g + 25, what is the slope?",
+          "options": [
+            {"value": "A", "text": "15"},
+            {"value": "B", "text": "25"},
+            {"value": "C", "text": "40"},
+            {"value": "D", "text": "g"}
+          ],
+          "answer": "A",
+          "grading": "deterministic",
+          "feedback": "The coefficient of g is 15."
+        },
+        {
+          "id": "l4-p2",
+          "type": "short_answer",
+          "prompt": "In P = 15g + 25, explain what the slope means in context.",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "feedback": "A strong answer says the cost increases by $15 for each additional gigabyte."
+        }
+      ]
+    },
+    {
+      "id": "check",
+      "type": "check",
+      "title": "Exit Check",
+      "masteryThreshold": 0.8,
+      "questions": [
+        {
+          "id": "w1-l4-q1",
+          "type": "multiple_choice",
+          "prompt": "A school sells spirit shirts. The model R = 12s + 50 gives revenue R after selling s shirts. What does 12 mean?",
+          "options": [
+            {"value": "A", "text": "The starting revenue"},
+            {"value": "B", "text": "The revenue per shirt"},
+            {"value": "C", "text": "The number of shirts"},
+            {"value": "D", "text": "The maximum revenue"}
+          ],
+          "answer": "B",
+          "grading": "deterministic",
+          "feedback": "The slope is the change in revenue for each shirt."
+        },
+        {
+          "id": "w1-l4-q2",
+          "type": "numeric",
+          "prompt": "Using R = 12s + 50, what is R when s = 10?",
+          "answer": 170,
+          "grading": "deterministic",
+          "feedback": "12(10) + 50 = 170."
+        },
+        {
+          "id": "w1-l4-q3",
+          "type": "short_answer",
+          "prompt": "Explain what the y-intercept means in the spirit shirt model.",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "feedback": "A strong answer says the fundraiser starts with $50 before selling shirts."
+        }
+      ]
+    }
+  ],
+  "gate": {
+    "completion": "Student attempts the video questions, practice, and exit check.",
+    "mastery": "At least 80% objective accuracy and 2/3 or better on contextual explanation.",
+    "remediation": "Use a slope/intercept sentence frame: 'For each __, the __ changes by __.'",
+    "enrichment": "Graph the spirit shirt model in Desmos and identify the intercept visually."
+  },
+  "teacherReviewTriggers": ["low_ai_confidence", "units_missing_from_explanation", "rubric_score_1_or_lower"]
+}
+

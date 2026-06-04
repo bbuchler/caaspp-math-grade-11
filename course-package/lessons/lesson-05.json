@@ -1,0 +1,150 @@
+{
+  "lessonId": "05",
+  "title": "Function Notation and Mini Performance Task",
+  "module": "Week 1 - Linear Equations, Inequalities, and Functions",
+  "estimatedMinutes": 55,
+  "sourceRefs": ["S1", "S3", "S4", "S5", "V5"],
+  "learningTarget": "I can evaluate function notation and use a linear model to answer a real question.",
+  "whyItMatters": "Function notation looks fancy, but it is mostly input and output. CAASPP uses it because it is a compact way to ask what happens when a real situation changes.",
+  "sections": [
+    {
+      "id": "launch",
+      "type": "launch",
+      "title": "Quick Start",
+      "studentText": "For f(x) = 4x + 9, the input is x and the output is f(x).",
+      "questions": [
+        {
+          "id": "l5-launch-1",
+          "type": "numeric",
+          "prompt": "Find f(3).",
+          "answer": 21,
+          "grading": "deterministic",
+          "feedback": "Substitute 3 for x: 4(3) + 9 = 21."
+        }
+      ]
+    },
+    {
+      "id": "video",
+      "type": "video",
+      "title": "Watch: Evaluating discrete functions",
+      "video": {
+        "provider": "khanacademy",
+        "url": "https://www.khanacademy.org/math/algebra-1-tx/x36b5a29ce1c3a684%3Aintroduction-to-functions/x36b5a29ce1c3a684%3Aevaluating-functions/v/evaluate-discrete-function",
+        "sourceRef": "V5",
+        "transcriptRequired": true
+      },
+      "watchFor": "Watch how the input points to exactly one output.",
+      "contextQuestions": [
+        {
+          "id": "l5-vq1",
+          "type": "short_answer",
+          "prompt": "When you see f(4), what number is the input?",
+          "answer": "4",
+          "grading": "deterministic",
+          "feedback": "The input is the number inside the parentheses."
+        },
+        {
+          "id": "l5-vq2",
+          "type": "short_answer",
+          "prompt": "Why is function notation useful when a problem has many possible inputs?",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "feedback": "A strong answer says function notation clearly shows which input is being used."
+        }
+      ]
+    },
+    {
+      "id": "learn",
+      "type": "teaching",
+      "title": "Input, Rule, Output",
+      "studentText": "Function notation is a machine label. If f(x) = 4x + 9, then f(3) means use 3 as the input. The output is 21.",
+      "workedExample": {
+        "prompt": "A school dance has a setup cost of $180 and earns $8 per ticket. Let P(t) = 8t - 180 be the profit after selling t tickets.",
+        "steps": [
+          "P(50) = 8(50) - 180.",
+          "P(50) = 400 - 180 = 220.",
+          "After 50 tickets, the event has a $220 profit."
+        ],
+        "commonMistake": "Do not stop at 220 without units or meaning. In context, 220 means dollars of profit."
+      }
+    },
+    {
+      "id": "practice",
+      "type": "practice",
+      "title": "Mini Performance Task: School Dance Budget",
+      "scenario": "Student Council is planning a dance. Renting the room and equipment costs $180. Tickets sell for $8 each. The profit model is P(t) = 8t - 180.",
+      "questions": [
+        {
+          "id": "l5-p1",
+          "type": "numeric",
+          "prompt": "Find P(30).",
+          "answer": 60,
+          "grading": "deterministic",
+          "feedback": "8(30) - 180 = 60."
+        },
+        {
+          "id": "l5-p2",
+          "type": "numeric",
+          "prompt": "How many tickets must be sold to break even?",
+          "answer": 23,
+          "grading": "deterministic",
+          "feedback": "Solve 8t - 180 >= 0. The exact break-even is 22.5 tickets, so the council must sell at least 23 whole tickets."
+        },
+        {
+          "id": "l5-p3",
+          "type": "constructed_response",
+          "prompt": "Explain why 22.5 tickets is not a practical final answer in this situation.",
+          "grading": "ai_rubric",
+          "rubricId": "modeling-explanation-5",
+          "feedback": "A strong answer says tickets are whole items, so the council must round up to 23 tickets to avoid losing money."
+        }
+      ]
+    },
+    {
+      "id": "check",
+      "type": "check",
+      "title": "Week 1 Check",
+      "masteryThreshold": 0.8,
+      "questions": [
+        {
+          "id": "w1-l5-q1",
+          "type": "numeric",
+          "prompt": "If f(x) = 2x + 11, find f(7).",
+          "answer": 25,
+          "grading": "deterministic",
+          "feedback": "2(7) + 11 = 25."
+        },
+        {
+          "id": "w1-l5-q2",
+          "type": "multiple_choice",
+          "prompt": "For P(t) = 8t - 180, what does -180 represent?",
+          "options": [
+            {"value": "A", "text": "The cost before selling tickets"},
+            {"value": "B", "text": "The number of tickets sold"},
+            {"value": "C", "text": "The profit for each ticket"},
+            {"value": "D", "text": "The maximum profit"}
+          ],
+          "answer": "A",
+          "grading": "deterministic",
+          "feedback": "The model starts at -180 because the event has a $180 cost before ticket sales."
+        },
+        {
+          "id": "w1-l5-q3",
+          "type": "constructed_response",
+          "prompt": "Student Council wants at least $500 profit. Write an inequality and explain how many tickets they need to sell.",
+          "grading": "ai_rubric",
+          "rubricId": "modeling-explanation-5",
+          "expectedElements": ["8t - 180 >= 500", "8t >= 680", "t >= 85", "at least 85 tickets"],
+          "feedback": "A strong answer writes 8t - 180 >= 500 and solves to t >= 85."
+        }
+      ]
+    }
+  ],
+  "gate": {
+    "completion": "Student attempts the video questions, mini performance task, and Week 1 check.",
+    "mastery": "At least 80% objective accuracy and 8/10 or better on the modeling rubric.",
+    "remediation": "Review input/output notation and solve one break-even problem with a smaller number set.",
+    "enrichment": "Change the ticket price and explain how the break-even point changes."
+  },
+  "teacherReviewTriggers": ["low_ai_confidence", "model_missing_units", "rounding_reasoning_missing", "rubric_score_below_8"]
+}

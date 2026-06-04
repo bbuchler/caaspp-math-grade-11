@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CAASPP Math Success Academy - Week 1 Preview</title>
+  <style>
+    :root {
+      --ink: #17202a;
+      --muted: #5d6b7a;
+      --line: #d9e1e8;
+      --soft: #f5f8fb;
+      --panel: #ffffff;
+      --blue: #2457a6;
+      --teal: #0f766e;
+      --gold: #b7791f;
+      --red: #b42318;
+      --green: #0f7a3f;
+      --shadow: 0 10px 28px rgba(23, 32, 42, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--ink);
+      background: #eef3f7;
+      line-height: 1.5;
+    }
+
+    header {
+      background: #0f263f;
+      color: #fff;
+      padding: 22px clamp(16px, 4vw, 44px);
+      border-bottom: 5px solid #f2b84b;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: clamp(1.35rem, 3vw, 2.1rem);
+      letter-spacing: 0;
+    }
+
+    header p {
+      margin: 6px 0 0;
+      max-width: 920px;
+      color: #d7e3ef;
+      font-size: 0.98rem;
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 310px minmax(0, 1fr);
+      gap: 22px;
+      padding: 22px clamp(14px, 3vw, 36px) 36px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    aside {
+      position: sticky;
+      top: 16px;
+      align-self: start;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .side-head {
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+      background: var(--soft);
+    }
+
+    .side-head h2 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .side-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .lesson-list {
+      display: grid;
+      gap: 0;
+    }
+
+    .lesson-button {
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+      text-align: left;
+      padding: 13px 16px;
+      cursor: pointer;
+      font: inherit;
+      color: var(--ink);
+    }
+
+    .lesson-button:hover,
+    .lesson-button.active {
+      background: #edf6ff;
+    }
+
+    .lesson-button.active {
+      border-left: 5px solid var(--blue);
+      padding-left: 11px;
+    }
+
+    .lesson-button strong {
+      display: block;
+      font-size: 0.95rem;
+    }
+
+    .lesson-button span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.78rem;
+      margin-top: 2px;
+    }
+
+    main {
+      min-width: 0;
+    }
+
+    .notice {
+      background: #fff8e6;
+      border: 1px solid #f3d48a;
+      border-left: 5px solid var(--gold);
+      border-radius: 8px;
+      padding: 13px 15px;
+      margin-bottom: 18px;
+      color: #4d390d;
+    }
+
+    .lesson-hero,
+    .section-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+    }
+
+    .lesson-hero {
+      padding: clamp(18px, 4vw, 28px);
+    }
+
+    .lesson-kicker {
+      color: var(--teal);
+      font-weight: 700;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .lesson-hero h2 {
+      margin: 4px 0 8px;
+      font-size: clamp(1.6rem, 4vw, 2.55rem);
+      letter-spacing: 0;
+    }
+
+    .target {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      background: #e9f3ff;
+      color: #153d72;
+      font-weight: 650;
+    }
+
+    .section-card header {
+      background: var(--soft);
+      color: var(--ink);
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      padding: 14px 18px;
+    }
+
+    .section-card header h3 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .section-body {
+      padding: 16px 18px 18px;
+    }
+
+    .video-box {
+      border: 1px dashed #aac0d6;
+      background: #f7fbff;
+      border-radius: 8px;
+      padding: 14px;
+      margin: 10px 0 14px;
+    }
+
+    .video-box a {
+      color: var(--blue);
+      font-weight: 700;
+    }
+
+    .watch-for {
+      margin: 10px 0 0;
+      color: #24476b;
+    }
+
+    .question {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 13px;
+      margin-top: 12px;
+      background: #fff;
+    }
+
+    .question p {
+      margin: 0 0 10px;
+      font-weight: 650;
+    }
+
+    .option {
+      display: block;
+      margin: 7px 0;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fbfcfd;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      width: 100%;
+      border: 1px solid #b9c7d5;
+      border-radius: 6px;
+      padding: 10px;
+      font: inherit;
+      min-height: 42px;
+    }
+
+    textarea {
+      min-height: 96px;
+      resize: vertical;
+    }
+
+    .feedback {
+      margin-top: 10px;
+      padding: 9px 10px;
+      border-radius: 6px;
+      font-size: 0.92rem;
+      display: none;
+    }
+
+    .feedback.show { display: block; }
+    .feedback.correct { background: #e8f7ee; color: var(--green); }
+    .feedback.review { background: #fff8e6; color: #6c4a00; }
+    .feedback.incorrect { background: #fff0ee; color: var(--red); }
+
+    .actions {
+      margin-top: 12px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button.check {
+      border: 0;
+      border-radius: 6px;
+      background: var(--blue);
+      color: #fff;
+      padding: 9px 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button.check:hover { background: #1c4585; }
+
+    .steps {
+      margin: 10px 0;
+      padding-left: 22px;
+    }
+
+    .common-mistake {
+      border-left: 4px solid var(--gold);
+      background: #fff8e6;
+      padding: 10px 12px;
+      border-radius: 6px;
+      color: #503b0b;
+    }
+
+    .gate {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .gate div {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      background: #fbfcfd;
+    }
+
+    .gate strong {
+      display: block;
+      color: var(--teal);
+      margin-bottom: 3px;
+    }
+
+    @media (max-width: 860px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        position: static;
+      }
+
+      .gate {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>CAASPP Math Success Academy</h1>
+    <p>Week 1 preview: equations, inequalities, linear functions, slope/intercepts, and function notation.</p>
+  </header>
+
+  <div class="shell">
+    <aside>
+      <div class="side-head">
+        <h2>Week 1 Lessons</h2>
+        <p>Click a lesson to preview the student flow.</p>
+      </div>
+      <div id="lesson-list" class="lesson-list"></div>
+    </aside>
+
+    <main>
+      <div class="notice">
+        <strong>Preview mode:</strong> This shows the student-facing course package. It does not save scores or call AI yet.
+      </div>
+      <div id="lesson-root"></div>
+    </main>
+  </div>
+
+  <script>
+    const lessonIds = ["01", "02", "03", "04", "05"];
+    const state = { lessons: [], active: 0 };
+
+    const escapeHtml = (value) => String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+
+    async function loadLessons() {
+      const loaded = [];
+      for (const id of lessonIds) {
+        const response = await fetch(`lessons/lesson-${id}.json`);
+        loaded.push(await response.json());
+      }
+      state.lessons = loaded;
+      renderList();
+      renderLesson(0);
+    }
+
+    function renderList() {
+      const list = document.getElementById("lesson-list");
+      list.innerHTML = state.lessons.map((lesson, index) => `
+        <button class="lesson-button ${index === state.active ? "active" : ""}" data-index="${index}">
+          <strong>Lesson ${lesson.lessonId}: ${escapeHtml(lesson.title)}</strong>
+          <span>${escapeHtml(lesson.learningTarget)}</span>
+        </button>
+      `).join("");
+
+      list.querySelectorAll("button").forEach((button) => {
+        button.addEventListener("click", () => renderLesson(Number(button.dataset.index)));
+      });
+    }
+
+    function renderLesson(index) {
+      state.active = index;
+      renderList();
+      const lesson = state.lessons[index];
+      const root = document.getElementById("lesson-root");
+      root.innerHTML = `
+        <section class="lesson-hero">
+          <div class="lesson-kicker">Lesson ${lesson.lessonId} • ${lesson.estimatedMinutes} minutes</div>
+          <h2>${escapeHtml(lesson.title)}</h2>
+          <p>${escapeHtml(lesson.whyItMatters)}</p>
+          <div class="target">${escapeHtml(lesson.learningTarget)}</div>
+        </section>
+        ${lesson.sections.map(renderSection).join("")}
+        ${renderGate(lesson.gate)}
+      `;
+      root.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function renderSection(section) {
+      let body = "";
+      if (section.studentText) body += `<p>${escapeHtml(section.studentText)}</p>`;
+      if (section.video) body += renderVideo(section);
+      if (section.workedExample) body += renderWorkedExample(section.workedExample);
+      if (section.scenario) body += `<p><strong>Scenario:</strong> ${escapeHtml(section.scenario)}</p>`;
+
+      const questions = [
+        ...(section.questions || []),
+        ...(section.contextQuestions || [])
+      ];
+      if (questions.length) body += questions.map(renderQuestion).join("");
+
+      return `
+        <section class="section-card">
+          <header><h3>${escapeHtml(section.title)}</h3></header>
+          <div class="section-body">${body}</div>
+        </section>
+      `;
+    }
+
+    function renderVideo(section) {
+      return `
+        <div class="video-box">
+          <strong>Video:</strong> <a href="${escapeHtml(section.video.url)}" target="_blank" rel="noopener">${escapeHtml(section.title)}</a>
+          <p class="watch-for"><strong>Watch for:</strong> ${escapeHtml(section.watchFor)}</p>
+        </div>
+      `;
+    }
+
+    function renderWorkedExample(example) {
+      return `
+        <div>
+          <p><strong>Worked example:</strong> ${escapeHtml(example.prompt)}</p>
+          <ol class="steps">${(example.steps || []).map(step => `<li>${escapeHtml(step)}</li>`).join("")}</ol>
+          <p class="common-mistake"><strong>Common mistake:</strong> ${escapeHtml(example.commonMistake)}</p>
+        </div>
+      `;
+    }
+
+    function renderQuestion(question) {
+      const id = escapeHtml(question.id);
+      let input = "";
+      if (question.options) {
+        input = question.options.map(option => `
+          <label class="option">
+            <input type="radio" name="${id}" value="${escapeHtml(option.value)}">
+            <strong>${escapeHtml(option.value)}.</strong> ${escapeHtml(option.text)}
+          </label>
+        `).join("");
+      } else if (question.type === "numeric") {
+        input = `<input type="number" data-answer="${escapeHtml(question.answer)}" aria-label="${id} answer">`;
+      } else if (question.type === "table_fill") {
+        input = `<input type="text" aria-label="${id} answer" placeholder="Example: 4, 7, 10">`;
+      } else {
+        input = `<textarea aria-label="${id} answer" placeholder="Write your thinking here."></textarea>`;
+      }
+
+      const reviewText = question.grading === "ai_rubric"
+        ? `Rubric graded in the full app. ${escapeHtml(question.feedback || "Your teacher will see the reasoning.")}`
+        : escapeHtml(question.feedback || "Answer submitted.");
+
+      return `
+        <div class="question" data-question='${escapeHtml(JSON.stringify(question))}'>
+          <p>${escapeHtml(question.prompt)}</p>
+          ${input}
+          <div class="actions"><button class="check" type="button">Check Preview</button></div>
+          <div class="feedback" data-review="${escapeHtml(reviewText)}"></div>
+        </div>
+      `;
+    }
+
+    function renderGate(gate) {
+      return `
+        <section class="section-card">
+          <header><h3>Lesson Gate</h3></header>
+          <div class="section-body gate">
+            <div><strong>Completion</strong>${escapeHtml(gate.completion)}</div>
+            <div><strong>Mastery</strong>${escapeHtml(gate.mastery)}</div>
+            <div><strong>Review path</strong>${escapeHtml(gate.remediation)}</div>
+            <div><strong>Challenge</strong>${escapeHtml(gate.enrichment)}</div>
+          </div>
+        </section>
+      `;
+    }
+
+    document.addEventListener("click", (event) => {
+      if (!event.target.matches("button.check")) return;
+      const card = event.target.closest(".question");
+      const question = JSON.parse(card.dataset.question);
+      const feedback = card.querySelector(".feedback");
+
+      if (question.grading === "ai_rubric") {
+        feedback.className = "feedback review show";
+        feedback.textContent = feedback.dataset.review;
+        return;
+      }
+
+      let answer = "";
+      const checked = card.querySelector("input[type='radio']:checked");
+      const textInput = card.querySelector("input[type='number'], input[type='text'], textarea");
+      if (checked) answer = checked.value;
+      if (textInput) answer = textInput.value.trim();
+
+      const expected = Array.isArray(question.answer) ? question.answer.join(", ") : String(question.answer ?? "");
+      const correct = String(answer).toLowerCase() === expected.toLowerCase();
+      feedback.className = `feedback ${correct ? "correct" : "incorrect"} show`;
+      feedback.textContent = correct ? question.feedback : `Preview answer: ${expected}. ${question.feedback || ""}`;
+    });
+
+    loadLessons().catch((error) => {
+      document.getElementById("lesson-root").innerHTML = `
+        <section class="section-card"><div class="section-body">
+          <strong>Preview failed to load.</strong>
+          <p>${escapeHtml(error.message)}</p>
+          <p>Open this through a local web server so the lesson JSON files can load.</p>
+        </div></section>
+      `;
+    });
+  </script>
+</body>
+</html>
