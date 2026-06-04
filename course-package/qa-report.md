@@ -63,6 +63,8 @@ Status: Partial.
 - Infographic specs are written and first-pass SVG infographic assets exist.
 - Preview includes embedded video frames plus fallback links.
 - Khan Academy direct embeds may be blocked by the provider; video links should be tested in the final course environment or Reel workflow.
+- Current SVG graphics are marked `needs revision`, not approved for classroom release.
+- Future real-world/generated graphics must pass visual QA before approval.
 
 ### Gate 7 - AI Supports
 
@@ -85,6 +87,10 @@ Status: Pass for draft.
 - The current lesson JSON is a package contract, not proof that the existing photography/drivers ed renderer can display every math item type.
 - First-pass SVG infographic assets exist, but they need visual teacher review and can be replaced with polished graphics later.
 - More question variety is needed before this becomes a full production retake-ready unit.
+
+## Graphic Verification Rule
+
+Do not approve graphics from filenames or thumbnails. Open each actual image and inspect it on desktop and phone-width previews. Reject or revise any graphic with cropped text, overflowing labels, misspelled text, wrong math, or imagery that distracts from the problem.
 
 ## Recommended Next Build Step
 

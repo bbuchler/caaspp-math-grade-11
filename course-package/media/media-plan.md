@@ -34,6 +34,36 @@ Media must teach a move students will use immediately. For this pilot, every vid
 | INF-04 | `media/infographics/inf-04-slope-intercept.svg` |
 | INF-05 | `media/infographics/inf-05-function-machine.svg` |
 
+## Graphic Approval Workflow
+
+Every graphic must be visually inspected before classroom release.
+
+Approval checks:
+
+- Open the actual image.
+- Check desktop readability.
+- Check phone-size readability.
+- Check that labels, math, and text are not cropped or overflowing.
+- Check that any math shown is correct.
+- Check that the image supports the lesson task.
+- Confirm alt text exists.
+
+Graphic status values:
+
+- `approved`: ready for student use
+- `needs revision`: usable as a draft, not classroom-ready
+- `rejected`: do not use
+
+## Current Graphic QA Status
+
+| Asset ID | Status | Notes |
+| --- | --- | --- |
+| INF-01 | needs revision | Functional placeholder. Replace with real-world sticker fundraiser imagery plus clean HTML math labels. |
+| INF-02 | needs revision | Functional placeholder. Replace with real-world lunch/budget imagery plus number-line overlay. |
+| INF-03 | needs revision | Functional placeholder. Replace with rideshare route imagery plus table/equation overlay. |
+| INF-04 | needs revision | Functional placeholder. Replace with spirit shirt fundraiser imagery plus slope/intercept overlay. |
+| INF-05 | needs revision | Functional placeholder. Replace with school dance budget imagery plus function notation overlay. |
+
 ## Embed Status
 
 The preview includes an embedded video frame area and a direct fallback link. Khan Academy pages may block direct iframe embedding in some environments. Before classroom release, use one of these approved embed paths:
