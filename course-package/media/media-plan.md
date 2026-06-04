@@ -8,6 +8,7 @@ Media must teach a move students will use immediately. For this pilot, every vid
 
 | Lesson | Video | Placement | Student action |
 | --- | --- | --- | --- |
+| Module 1 | NotebookLM overview: Deconstructing the Equation | Course Home / Big Picture | Watch the launch overview before choosing the first daily lesson. |
 | 01 | Level one linear equations | After quick start | Answer transcript-verified questions about 5x, coefficients, dividing both sides, and checking solutions. |
 | 02 | Solving and graphing linear inequalities | After quick start | Identify open/closed boundary and shading direction. |
 | 03 | Graphing a linear equation | Before table-to-graph practice | Explain why a table helps graph a line. |
@@ -82,6 +83,18 @@ Lesson 01 now uses:
 https://www.youtube.com/embed/bAerID24QJ0
 ```
 
+Module 1 overview video uses:
+
+```text
+media/videos/module-01-overview-deconstructing-the-equation-web.mp4
+```
+
+The original dropped MP4 was converted to a smaller web version and paired with:
+
+```text
+media/videos/module-01-overview-deconstructing-the-equation-poster.png
+```
+
 ## Video QA Checklist
 
 - Link opens.
@@ -90,3 +103,5 @@ https://www.youtube.com/embed/bAerID24QJ0
 - Context questions appear directly below the video.
 - Transcript or text fallback is available.
 - Lesson can still be completed if the video is unavailable.
+- Dropped local videos are compressed for web playback before publishing.
+- Each local video has a poster image so the player does not load as a black rectangle.

@@ -52,6 +52,14 @@ The AI receives:
 
 The AI should return structured JSON with score, feedback, missing requirements, confidence, and teacher-review flag.
 
+Current V1 endpoint:
+
+```text
+POST /api/grade
+```
+
+The local preview calls this endpoint for rubric-graded short answers when the course is served by `scripts/local-ai-preview-server.js` or deployed to Vercel with `GEMINI_API_KEY`.
+
 ## Important Boundary
 
 For active graded checks, the Study Buddy should not receive the final answer key in a way that lets it simply reveal answers. It should receive a student-safe context pack:

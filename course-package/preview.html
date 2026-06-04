@@ -291,6 +291,15 @@
       margin: 10px 0;
     }
 
+    .overview-video {
+      display: block;
+      width: 100%;
+      max-height: 520px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #0f263f;
+    }
+
     .video-box a {
       color: var(--blue);
       font-weight: 700;
@@ -299,6 +308,40 @@
     .watch-for {
       margin: 10px 0 0;
       color: #24476b;
+    }
+
+    .study-buddy {
+      border: 1px solid #b9d7d2;
+      background: #f2fbf9;
+    }
+
+    .chat-log {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .chat-message {
+      border-radius: 8px;
+      padding: 10px 12px;
+      max-width: 860px;
+    }
+
+    .chat-message.assistant {
+      background: #ffffff;
+      border: 1px solid #cfe5e1;
+    }
+
+    .chat-message.user {
+      justify-self: end;
+      background: #e9f3ff;
+      border: 1px solid #c8dff7;
+    }
+
+    .ai-note {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.9rem;
     }
 
     .question {
@@ -370,6 +413,18 @@
     }
 
     button.check:hover { background: #1c4585; }
+
+    button.secondary {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--ink);
+      padding: 9px 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button.secondary:hover { background: var(--soft); }
 
     .steps {
       margin: 10px 0;
@@ -480,6 +535,11 @@
       subtitle: "A four-week test-prep course built around short lessons, real situations, practice, feedback, and explain-your-thinking math.",
       currentModule: "Module 1: Linear Foundations",
       currentModuleSummary: "Week 1 builds the core moves students need for many CAASPP questions: undo an equation, read an inequality as a range, connect words, tables, graphs, and equations, and explain slope, intercepts, and function notation in context.",
+      overviewVideo: {
+        title: "Module 1 Overview: Deconstructing the Equation",
+        src: "media/videos/module-01-overview-deconstructing-the-equation-web.mp4",
+        poster: "media/videos/module-01-overview-deconstructing-the-equation-poster.png"
+      },
       modules: [
         {
           title: "Module 1: Linear Foundations",
@@ -555,6 +615,7 @@
           <header><h3>Big Picture For Week 1</h3></header>
           <div class="section-body">
             <p>${escapeHtml(courseHome.currentModuleSummary)}</p>
+            ${renderOverviewVideo()}
             <div class="home-grid">
               <div class="module-card current">
                 <strong>Student flow</strong>
@@ -592,6 +653,19 @@
       root.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
+    function renderOverviewVideo() {
+      const video = courseHome.overviewVideo;
+      return `
+        <div class="video-box">
+          <strong>${escapeHtml(video.title)}</strong>
+          <video class="overview-video" controls preload="metadata" poster="${escapeHtml(video.poster)}">
+            <source src="${escapeHtml(video.src)}" type="video/mp4">
+          </video>
+          <p class="watch-for">Use this as the Module 1 launch: students get the big picture first, then move into the daily practice and exit checks.</p>
+        </div>
+      `;
+    }
+
     function renderLesson(index) {
       state.active = index;
       renderList();
@@ -604,10 +678,29 @@
           <p>${escapeHtml(lesson.whyItMatters)}</p>
           <div class="target">${escapeHtml(lesson.learningTarget)}</div>
         </section>
+        ${renderStudyBuddy(lesson)}
         ${lesson.sections.map(renderSection).join("")}
         ${renderGate(lesson.gate)}
       `;
       root.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function renderStudyBuddy(lesson) {
+      return `
+        <section class="section-card study-buddy" data-study-buddy>
+          <header><h3>Study Buddy</h3></header>
+          <div class="section-body">
+            <div class="chat-log" data-chat-log>
+              <div class="chat-message assistant">Ask me about ${escapeHtml(lesson.title)}. I can explain the idea, check your reasoning, or make a similar practice problem without giving away the graded answer.</div>
+            </div>
+            <textarea data-chat-input placeholder="Ask about the lesson or paste your work here."></textarea>
+            <div class="actions">
+              <button class="check" type="button" data-chat-send>Ask Study Buddy</button>
+            </div>
+            <p class="ai-note">AI works when this course is served with the /api/chat backend and GEMINI_API_KEY is set. Static GitHub Pages will show the interface but cannot call the private key.</p>
+          </div>
+        </section>
+      `;
     }
 
     function renderSection(section) {
@@ -733,8 +826,25 @@
       const feedback = card.querySelector(".feedback");
 
       if (question.grading === "ai_rubric") {
+        const textInput = card.querySelector("textarea, input[type='text']");
+        const answer = textInput ? textInput.value.trim() : "";
+        if (!answer) {
+          feedback.className = "feedback review show";
+          feedback.textContent = "Write your reasoning first, then check it.";
+          return;
+        }
+
         feedback.className = "feedback review show";
-        feedback.textContent = feedback.dataset.review;
+        feedback.textContent = "Checking with AI feedback...";
+        gradeWithAi(question, answer)
+          .then((result) => {
+            feedback.className = `feedback ${result.correct ? "correct" : "review"} show`;
+            feedback.textContent = `${result.score}/${result.maxScore}: ${result.feedback}`;
+          })
+          .catch(() => {
+            feedback.className = "feedback review show";
+            feedback.textContent = `${feedback.dataset.review} AI grading is not connected in this preview server yet.`;
+          });
         return;
       }
 
@@ -749,6 +859,100 @@
       feedback.className = `feedback ${correct ? "correct" : "incorrect"} show`;
       feedback.textContent = correct ? question.feedback : `Preview answer: ${expected}. ${question.feedback || ""}`;
     });
+
+    document.addEventListener("click", (event) => {
+      if (!event.target.matches("[data-chat-send]")) return;
+      const panel = event.target.closest("[data-study-buddy]");
+      const input = panel.querySelector("[data-chat-input]");
+      const log = panel.querySelector("[data-chat-log]");
+      const message = input.value.trim();
+      if (!message) return;
+
+      appendChat(log, "user", message);
+      input.value = "";
+      const pending = appendChat(log, "assistant", "Thinking about this lesson...");
+
+      askStudyBuddy(message)
+        .then((reply) => {
+          pending.textContent = reply;
+        })
+        .catch(() => {
+          pending.textContent = "The Study Buddy interface is ready, but the AI backend is not connected from this preview server. Once this runs on Vercel with GEMINI_API_KEY set, this panel will answer using the current lesson context.";
+        });
+    });
+
+    function appendChat(log, role, text) {
+      const message = document.createElement("div");
+      message.className = `chat-message ${role}`;
+      message.textContent = text;
+      log.appendChild(message);
+      return message;
+    }
+
+    function currentLessonContext() {
+      const lesson = state.lessons[state.active];
+      if (!lesson) return {};
+
+      return {
+        course: "CAASPP Math Success Academy",
+        module: lesson.module,
+        lessonId: lesson.lessonId,
+        lessonTitle: lesson.title,
+        learningTarget: lesson.learningTarget,
+        whyItMatters: lesson.whyItMatters,
+        visibleSections: lesson.sections.map((section) => ({
+          id: section.id,
+          title: section.title,
+          type: section.type,
+          studentText: section.studentText || "",
+          watchFor: section.watchFor || "",
+          workedExample: section.workedExample || null,
+          scenario: section.scenario || "",
+          commonMistake: section.workedExample?.commonMistake || ""
+        })),
+        allowedHelp: [
+          "explain the current concept",
+          "ask one guiding question",
+          "make a similar practice problem",
+          "give feedback on student reasoning"
+        ],
+        blockedHelp: [
+          "reveal final answers for active graded checks",
+          "write the student's constructed response"
+        ]
+      };
+    }
+
+    async function askStudyBuddy(studentMessage) {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [{ role: "user", content: studentMessage }],
+          lessonContext: currentLessonContext()
+        })
+      });
+      if (!response.ok) throw new Error("Study Buddy unavailable");
+      const data = await response.json();
+      return data.reply || "Try asking that another way.";
+    }
+
+    async function gradeWithAi(question, studentAnswer) {
+      const response = await fetch("/api/grade", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          question,
+          questionText: question.prompt,
+          studentAnswer,
+          rubricId: question.rubricId,
+          lessonContext: currentLessonContext(),
+          maxPoints: 3
+        })
+      });
+      if (!response.ok) throw new Error("AI grading unavailable");
+      return response.json();
+    }
 
     loadLessons().catch((error) => {
       document.getElementById("lesson-root").innerHTML = `

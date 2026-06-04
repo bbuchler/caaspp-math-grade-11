@@ -1,5 +1,9 @@
 *.pdf
+.env
+.env.*
+.codex-video-tools/
+course-package/media/videos/*-source.mp4
+course-package/media/videos/module-01-overview-deconstructing-the-equation.mp4
 __pycache__/
 .DS_Store
 Thumbs.db
-

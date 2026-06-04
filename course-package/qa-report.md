@@ -58,9 +58,11 @@ Status: Not complete.
 
 ### Gate 6 - Media Quality
 
-Status: Partial.
+Status: Pass for Module 1 draft, partial for future modules.
 
 - Video candidates are real links and each has contextual questions.
+- Module 1 overview video is inserted on the Course Home page.
+- Module 1 overview video was compressed for web playback and given a poster image.
 - Lesson 01 now uses a YouTube embed URL from the Khan video and transcript-verified questions.
 - Infographic specs are written and first-pass SVG infographic assets exist.
 - Preview includes embedded video frames plus fallback links.
@@ -71,11 +73,16 @@ Status: Partial.
 
 ### Gate 7 - AI Supports
 
-Status: Pass for draft.
+Status: Pass for local Module 1 draft.
 
 - Study Buddy is constrained to Week 1 course content.
 - AI grading is limited to explanations, error analysis, and modeling rubrics.
 - Teacher review triggers are listed.
+- `api/chat.js` and `api/grade.js` are wired to Gemini using `GEMINI_API_KEY`.
+- Existing local API key was copied from the photography course `.env` into this repo's ignored `.env`.
+- Study Buddy was tested from the page on Lesson 01.
+- AI grading was tested from the page on the Lesson 01 exit explanation.
+- GitHub Pages remains static-only; working AI requires the local AI preview server or Vercel with the environment variable set.
 
 ### Gate 8 - Teacher Dashboard
 
@@ -99,6 +106,7 @@ Status: Architecture noted, not implemented in preview.
 - First-pass SVG infographic assets exist, but they need visual teacher review and can be replaced with polished graphics later.
 - More question variety is needed before this becomes a full production retake-ready unit.
 - Full teacher dashboard behavior depends on connecting this package to the existing production app architecture.
+- The current local AI preview does not save scores or chat history; it verifies tutoring and feedback behavior only.
 
 ## Graphic Verification Rule
 
@@ -106,4 +114,4 @@ Do not approve graphics from filenames or thumbnails. Open each actual image and
 
 ## Recommended Next Build Step
 
-Create a small renderer prototype for one lesson, probably Lesson 01, then verify it on desktop and phone. Do not build all four weeks into the app until one math lesson renders, grades, and saves correctly.
+Deploy the Module 1 pilot to Vercel with `GEMINI_API_KEY` set so a teacher can test the Study Buddy and AI feedback from a shareable link.

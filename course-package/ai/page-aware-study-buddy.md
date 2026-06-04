@@ -76,20 +76,20 @@ Study Buddy response:
 
 ## API Shape
 
-Future endpoint:
+Current endpoint:
 
 ```text
-POST /api/study-buddy
+POST /api/chat
 ```
 
 Request:
 
 ```json
 {
-  "lessonContext": {},
-  "visibleQuestion": {},
-  "studentMessage": "",
-  "studentDraft": ""
+  "messages": [
+    { "role": "user", "content": "Why do I subtract 7 first?" }
+  ],
+  "lessonContext": {}
 }
 ```
 
@@ -97,9 +97,13 @@ Response:
 
 ```json
 {
-  "reply": "",
-  "suggestedNextStep": "",
-  "needsTeacherHelp": false
+  "reply": ""
 }
 ```
 
+## Current V1 Status
+
+- `api/chat.js` is wired for Gemini with `GEMINI_API_KEY`.
+- The preview sends the current lesson title, learning target, visible lesson sections, worked examples, and common mistakes.
+- The Study Buddy was tested locally on Lesson 01 and answered using the page context.
+- Static GitHub Pages cannot call the private API key. Use the local AI preview server or a Vercel deployment with `GEMINI_API_KEY` set.
