@@ -24,6 +24,7 @@ Status: Pass for draft.
 - Five Week 1 lessons are mapped to objectives and gates.
 - Each lesson has practice and an exit check.
 - The week now progresses across skill, representation, difficulty, and independence.
+- The preview now opens on a course-home view before students click into a daily lesson.
 
 ### Gate 2 - Learner Quality
 
@@ -76,6 +77,14 @@ Status: Pass for draft.
 - AI grading is limited to explanations, error analysis, and modeling rubrics.
 - Teacher review triggers are listed.
 
+### Gate 8 - Teacher Dashboard
+
+Status: Architecture noted, not implemented in preview.
+
+- The teacher-side plan is recorded in `teacher-notes/teacher-dashboard-plan.md`.
+- Recommendation is to reuse the existing CertReady-style dashboard/auth/grading pattern rather than build a math-only teacher dashboard.
+- The current preview does not manage rosters, passwords, resets, saved progress, or teacher overrides.
+
 ## Automated Text Checks Run
 
 - Placeholder/meta-instruction scan: passed after removing false positives from the report itself.
@@ -89,6 +98,7 @@ Status: Pass for draft.
 - The current lesson JSON is a package contract, not proof that the existing photography/drivers ed renderer can display every math item type.
 - First-pass SVG infographic assets exist, but they need visual teacher review and can be replaced with polished graphics later.
 - More question variety is needed before this becomes a full production retake-ready unit.
+- Full teacher dashboard behavior depends on connecting this package to the existing production app architecture.
 
 ## Graphic Verification Rule
 

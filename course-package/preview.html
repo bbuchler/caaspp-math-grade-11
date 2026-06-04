@@ -88,7 +88,8 @@
     .side-head {
       padding: 16px;
       border-bottom: 1px solid var(--line);
-      background: var(--soft);
+      background: #123354;
+      color: #fff;
     }
 
     .side-head h2 {
@@ -97,9 +98,39 @@
     }
 
     .side-head p {
-      margin: 4px 0 0;
-      color: var(--muted);
+      margin: 6px 0 0;
+      color: #d7e3ef;
       font-size: 0.86rem;
+    }
+
+    .home-button {
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: #fff8e6;
+      text-align: left;
+      padding: 13px 16px;
+      cursor: pointer;
+      font: inherit;
+      color: var(--ink);
+    }
+
+    .home-button:hover,
+    .home-button.active {
+      background: #fce7b2;
+    }
+
+    .home-button strong {
+      display: block;
+      color: #6d4a00;
+      font-size: 0.95rem;
+    }
+
+    .home-button span {
+      display: block;
+      color: #654f1d;
+      font-size: 0.78rem;
+      margin-top: 2px;
     }
 
     .lesson-list {
@@ -174,6 +205,40 @@
       font-size: 0.82rem;
       text-transform: uppercase;
       letter-spacing: 0.04em;
+    }
+
+    .home-grid,
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .module-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 13px;
+      background: #fbfcfd;
+    }
+
+    .module-card.current {
+      border-left: 5px solid var(--blue);
+      background: #edf6ff;
+    }
+
+    .module-card strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .module-card span {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .lesson-mini-list {
+      margin: 10px 0 0;
+      padding-left: 20px;
     }
 
     .lesson-hero h2 {
@@ -352,6 +417,10 @@
       margin-bottom: 3px;
     }
 
+    .challenge-box {
+      margin-top: 12px;
+    }
+
     @media (max-width: 860px) {
       .shell {
         grid-template-columns: 1fr;
@@ -362,6 +431,11 @@
       }
 
       .gate {
+        grid-template-columns: 1fr;
+      }
+
+      .home-grid,
+      .module-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -381,9 +455,13 @@
   <div class="shell">
     <aside>
       <div class="side-head">
-        <h2>Week 1 Lessons</h2>
-        <p>Click a lesson to preview the student flow.</p>
+        <h2>Module 1: Linear Foundations</h2>
+        <p>Five daily lessons that move from solving equations to using linear models in context.</p>
       </div>
+      <button id="home-button" class="home-button" type="button">
+        <strong>Course Home</strong>
+        <span>See the big picture before opening a lesson.</span>
+      </button>
       <div id="lesson-list" class="lesson-list"></div>
     </aside>
 
@@ -397,7 +475,35 @@
 
   <script>
     const lessonIds = ["01", "02", "03", "04", "05"];
-    const state = { lessons: [], active: 0 };
+    const courseHome = {
+      title: "CAASPP Math Success Academy",
+      subtitle: "A four-week test-prep course built around short lessons, real situations, practice, feedback, and explain-your-thinking math.",
+      currentModule: "Module 1: Linear Foundations",
+      currentModuleSummary: "Week 1 builds the core moves students need for many CAASPP questions: undo an equation, read an inequality as a range, connect words, tables, graphs, and equations, and explain slope, intercepts, and function notation in context.",
+      modules: [
+        {
+          title: "Module 1: Linear Foundations",
+          status: "Pilot ready",
+          focus: "Equations, inequalities, linear functions, slope/intercepts, and function notation."
+        },
+        {
+          title: "Module 2: Modeling And Multi-Step Problems",
+          status: "Planned",
+          focus: "Longer CAASPP-style situations where students choose a strategy and justify it."
+        },
+        {
+          title: "Module 3: Graphs, Data, And Reasoning",
+          status: "Planned",
+          focus: "Reading visual information, comparing quantities, and explaining what a graph or table means."
+        },
+        {
+          title: "Module 4: Mixed Review And Performance Tasks",
+          status: "Planned",
+          focus: "Timed practice, short constructed responses, and mixed-topic performance tasks."
+        }
+      ]
+    };
+    const state = { lessons: [], active: null };
 
     const escapeHtml = (value) => String(value ?? "")
       .replaceAll("&", "&amp;")
@@ -413,7 +519,7 @@
       }
       state.lessons = loaded;
       renderList();
-      renderLesson(0);
+      renderHome();
     }
 
     function renderList() {
@@ -428,6 +534,62 @@
       list.querySelectorAll("button").forEach((button) => {
         button.addEventListener("click", () => renderLesson(Number(button.dataset.index)));
       });
+
+      const homeButton = document.getElementById("home-button");
+      homeButton.classList.toggle("active", state.active === null);
+      homeButton.addEventListener("click", renderHome);
+    }
+
+    function renderHome() {
+      state.active = null;
+      renderList();
+      const root = document.getElementById("lesson-root");
+      root.innerHTML = `
+        <section class="lesson-hero">
+          <div class="lesson-kicker">Course Overview</div>
+          <h2>${escapeHtml(courseHome.title)}</h2>
+          <p>${escapeHtml(courseHome.subtitle)}</p>
+          <div class="target">${escapeHtml(courseHome.currentModule)}</div>
+        </section>
+        <section class="section-card">
+          <header><h3>Big Picture For Week 1</h3></header>
+          <div class="section-body">
+            <p>${escapeHtml(courseHome.currentModuleSummary)}</p>
+            <div class="home-grid">
+              <div class="module-card current">
+                <strong>Student flow</strong>
+                <span>Quick start, embedded video with questions, visual guide, worked example, practice, exit check, and next-step feedback.</span>
+              </div>
+              <div class="module-card">
+                <strong>Teacher view</strong>
+                <span>Objective items grade instantly. Written reasoning is rubric-graded in the full app and flagged when it needs teacher review.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="section-card">
+          <header><h3>Course Modules</h3></header>
+          <div class="section-body module-grid">
+            ${courseHome.modules.map((module, index) => `
+              <div class="module-card ${index === 0 ? "current" : ""}">
+                <strong>${escapeHtml(module.title)}</strong>
+                <span>${escapeHtml(module.status)} - ${escapeHtml(module.focus)}</span>
+              </div>
+            `).join("")}
+          </div>
+        </section>
+        <section class="section-card">
+          <header><h3>Week 1 Lessons</h3></header>
+          <div class="section-body">
+            <ol class="lesson-mini-list">
+              ${state.lessons.map((lesson) => `
+                <li><strong>${escapeHtml(lesson.title)}:</strong> ${escapeHtml(lesson.learningTarget)}</li>
+              `).join("")}
+            </ol>
+          </div>
+        </section>
+      `;
+      root.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     function renderLesson(index) {
@@ -437,7 +599,7 @@
       const root = document.getElementById("lesson-root");
       root.innerHTML = `
         <section class="lesson-hero">
-          <div class="lesson-kicker">Lesson ${lesson.lessonId} • ${lesson.estimatedMinutes} minutes</div>
+          <div class="lesson-kicker">Lesson ${lesson.lessonId} &bull; ${lesson.estimatedMinutes} minutes</div>
           <h2>${escapeHtml(lesson.title)}</h2>
           <p>${escapeHtml(lesson.whyItMatters)}</p>
           <div class="target">${escapeHtml(lesson.learningTarget)}</div>
@@ -471,13 +633,21 @@
     }
 
     function renderVideo(section) {
-      const src = section.video.embedUrl || section.video.url;
+      const src = section.video.embedUrl;
+      const frame = src
+        ? `<iframe class="video-frame" src="${escapeHtml(src)}" title="${escapeHtml(section.title)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`
+        : `<div class="video-frame" style="display:grid;place-items:center;color:#d7e3ef;padding:18px;text-align:center;">
+            <div>
+              <strong>Embedded player not available for this source yet.</strong><br>
+              Use the video link above.
+            </div>
+          </div>`;
       return `
         <div class="video-box">
           <strong>Video:</strong> <a href="${escapeHtml(section.video.url)}" target="_blank" rel="noopener">${escapeHtml(section.title)}</a>
-          <iframe class="video-frame" src="${escapeHtml(src)}" title="${escapeHtml(section.title)}" allowfullscreen></iframe>
+          ${frame}
           <p class="watch-for"><strong>Watch for:</strong> ${escapeHtml(section.watchFor)}</p>
-          <p class="watch-for">If the embedded player is blocked, use the video link above.</p>
+          <p class="watch-for">${src ? "If the embedded player is blocked, use the video link above." : "This source needs a YouTube or Reel embed before it can play inside the page."}</p>
         </div>
       `;
     }
@@ -540,12 +710,17 @@
     function renderGate(gate) {
       return `
         <section class="section-card">
-          <header><h3>Lesson Gate</h3></header>
-          <div class="section-body gate">
-            <div><strong>Completion</strong>${escapeHtml(gate.completion)}</div>
-            <div><strong>Mastery</strong>${escapeHtml(gate.mastery)}</div>
-            <div><strong>Review path</strong>${escapeHtml(gate.remediation)}</div>
-            <div><strong>Challenge</strong>${escapeHtml(gate.enrichment)}</div>
+          <header><h3>After This Lesson</h3></header>
+          <div class="section-body">
+            <p>This preview does not save progress. In the full course, the exit check above decides what happens next.</p>
+            <div class="gate">
+              <div><strong>Ready to move on</strong>${escapeHtml(gate.mastery)}</div>
+              <div><strong>If you need review</strong>${escapeHtml(gate.remediation)}</div>
+            </div>
+            <div class="challenge-box">
+              <p><strong>Optional challenge:</strong> ${escapeHtml(gate.enrichment)}</p>
+              <textarea placeholder="Try the challenge here in preview mode."></textarea>
+            </div>
           </div>
         </section>
       `;
