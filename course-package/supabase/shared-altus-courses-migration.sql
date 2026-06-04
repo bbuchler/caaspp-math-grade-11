@@ -43,6 +43,54 @@ create table if not exists public.course_lessons (
   unique(course_id, lesson_number)
 );
 
+-- Optional question catalog. Student responses still store prompt snapshots,
+-- but this table gives the teacher dashboard a stable place to track standards,
+-- concepts, difficulty, and item design across any course.
+create table if not exists public.course_question_catalog (
+  id uuid default gen_random_uuid() primary key,
+  course_id text references public.courses(id) on delete cascade not null,
+  lesson_number int not null,
+  section_id text not null,
+  section_title text,
+  question_id text not null,
+  question_type text not null,
+  prompt text not null,
+  max_score numeric(6,2) default 1,
+  concept_tags text[] default '{}',
+  standard_refs text[] default '{}',
+  skill_level text default 'core' check (skill_level in ('foundation', 'core', 'challenge')),
+  item_purpose text default 'practice' check (item_purpose in ('launch', 'video_check', 'practice', 'exit_check', 'performance_task', 'remediation')),
+  created_at timestamptz default now(),
+  updated_at timestamptz default now(),
+  unique(course_id, lesson_number, question_id)
+);
+
+create table if not exists public.course_concepts (
+  id uuid default gen_random_uuid() primary key,
+  course_id text references public.courses(id) on delete cascade not null,
+  concept_tag text not null,
+  title text not null,
+  description text,
+  subject text,
+  grade_band text,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now(),
+  unique(course_id, concept_tag)
+);
+
+insert into public.course_concepts (course_id, concept_tag, title, description, subject, grade_band)
+values
+  ('caaspp-math-11', 'linear_equations', 'Linear Equations', 'Solve and interpret one-step and two-step linear equations.', 'Math', '11'),
+  ('caaspp-math-11', 'inverse_operations', 'Inverse Operations', 'Undo operations while keeping both sides balanced.', 'Math', '11'),
+  ('caaspp-math-11', 'coefficient', 'Coefficient Meaning', 'Identify the number multiplying a variable and use it to isolate the variable.', 'Math', '11'),
+  ('caaspp-math-11', 'checking_solutions', 'Checking Solutions', 'Substitute a solution back into the original equation to verify it.', 'Math', '11')
+on conflict (course_id, concept_tag) do update set
+  title = excluded.title,
+  description = excluded.description,
+  subject = excluded.subject,
+  grade_band = excluded.grade_band,
+  updated_at = now();
+
 insert into public.course_lessons (course_id, lesson_number, module_number, title, status, total_questions, total_points)
 values
   ('caaspp-math-11', 1, 1, 'Undo the Equation', 'active', 11, 15),
@@ -151,38 +199,43 @@ create table if not exists public.course_remediation_assignments (
   completed_at timestamptz
 );
 
-create or replace function public.update_course_updated_at()
-returns trigger as $$
-begin
-  new.updated_at = now();
-  return new;
-end;
-$$ language plpgsql;
+create table if not exists public.course_remediation_resources (
+  id uuid default gen_random_uuid() primary key,
+  course_id text references public.courses(id) on delete cascade not null,
+  concept_tag text not null,
+  level text not null default 'scaffolded' check (level in ('scaffolded', 'same_level', 'challenge')),
+  title text not null,
+  resource_type text not null default 'lesson' check (resource_type in ('lesson', 'video', 'practice_set', 'infographic', 'teacher_small_group', 'external_link')),
+  url text,
+  teacher_notes text,
+  student_instructions text,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
 
-drop trigger if exists update_courses_updated_at on public.courses;
-create trigger update_courses_updated_at
-  before update on public.courses
-  for each row execute procedure public.update_course_updated_at();
+create table if not exists public.course_small_groups (
+  id uuid default gen_random_uuid() primary key,
+  course_id text references public.courses(id) on delete cascade not null,
+  title text not null,
+  concept_tag text not null,
+  lesson_number int,
+  status text not null default 'planned' check (status in ('planned', 'active', 'completed', 'dismissed')),
+  created_by uuid references public.profiles(id),
+  created_from text default 'teacher' check (created_from in ('teacher', 'trend', 'ai_suggestion')),
+  notes text,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
 
-drop trigger if exists update_course_lessons_updated_at on public.course_lessons;
-create trigger update_course_lessons_updated_at
-  before update on public.course_lessons
-  for each row execute procedure public.update_course_updated_at();
-
-drop trigger if exists update_course_enrollments_updated_at on public.course_enrollments;
-create trigger update_course_enrollments_updated_at
-  before update on public.course_enrollments
-  for each row execute procedure public.update_course_updated_at();
-
-drop trigger if exists update_course_lesson_attempts_updated_at on public.course_lesson_attempts;
-create trigger update_course_lesson_attempts_updated_at
-  before update on public.course_lesson_attempts
-  for each row execute procedure public.update_course_updated_at();
-
-drop trigger if exists update_course_question_responses_updated_at on public.course_question_responses;
-create trigger update_course_question_responses_updated_at
-  before update on public.course_question_responses
-  for each row execute procedure public.update_course_updated_at();
+create table if not exists public.course_small_group_members (
+  id uuid default gen_random_uuid() primary key,
+  group_id uuid references public.course_small_groups(id) on delete cascade not null,
+  student_id uuid references public.profiles(id) on delete cascade not null,
+  reason text,
+  status text not null default 'active' check (status in ('active', 'completed', 'removed')),
+  created_at timestamptz default now(),
+  unique(group_id, student_id)
+);
 
 create or replace view public.course_lesson_score_summary as
 select
@@ -221,6 +274,29 @@ select
 from public.course_question_responses
 group by course_id, lesson_number, question_id;
 
+create or replace view public.course_concept_trends as
+select
+  course_id,
+  lesson_number,
+  concept_tag,
+  count(*) as attempts,
+  count(distinct student_id) as students_attempted,
+  count(*) filter (where score < max_score) as needs_support,
+  round(avg(case when max_score > 0 then score / max_score else 0 end) * 100, 1) as average_percent,
+  count(*) filter (where needs_teacher_review) as teacher_review_count
+from (
+  select
+    course_id,
+    lesson_number,
+    student_id,
+    score,
+    max_score,
+    needs_teacher_review,
+    unnest(case when array_length(concept_tags, 1) is null then array['uncategorized'] else concept_tags end) as concept_tag
+  from public.course_question_responses
+) tagged
+group by course_id, lesson_number, concept_tag;
+
 alter table public.courses enable row level security;
 alter table public.course_lessons enable row level security;
 alter table public.course_enrollments enable row level security;
@@ -228,12 +304,40 @@ alter table public.course_lesson_attempts enable row level security;
 alter table public.course_question_responses enable row level security;
 alter table public.course_teacher_overrides enable row level security;
 alter table public.course_remediation_assignments enable row level security;
+alter table public.course_question_catalog enable row level security;
+alter table public.course_concepts enable row level security;
+alter table public.course_remediation_resources enable row level security;
+alter table public.course_small_groups enable row level security;
+alter table public.course_small_group_members enable row level security;
 
 -- Course-specific helper name so we do not overwrite any existing app helper.
 create or replace function public.altus_courses_get_my_role()
 returns text as $$
   select role from public.profiles where id = auth.uid();
 $$ language sql security definer stable;
+
+drop policy if exists "Signed in users can read active courses" on public.courses;
+drop policy if exists "Signed in users can read course lessons" on public.course_lessons;
+drop policy if exists "Signed in users can read question catalog" on public.course_question_catalog;
+drop policy if exists "Teachers manage question catalog" on public.course_question_catalog;
+drop policy if exists "Signed in users can read course concepts" on public.course_concepts;
+drop policy if exists "Teachers manage course concepts" on public.course_concepts;
+drop policy if exists "Users can read own enrollments" on public.course_enrollments;
+drop policy if exists "Teachers can read course enrollments" on public.course_enrollments;
+drop policy if exists "Teachers can manage course enrollments" on public.course_enrollments;
+drop policy if exists "Students manage own course attempts" on public.course_lesson_attempts;
+drop policy if exists "Teachers read course attempts" on public.course_lesson_attempts;
+drop policy if exists "Teachers update course attempts" on public.course_lesson_attempts;
+drop policy if exists "Students manage own course responses" on public.course_question_responses;
+drop policy if exists "Teachers read course responses" on public.course_question_responses;
+drop policy if exists "Teachers update course responses" on public.course_question_responses;
+drop policy if exists "Teachers manage course overrides" on public.course_teacher_overrides;
+drop policy if exists "Teachers manage remediation assignments" on public.course_remediation_assignments;
+drop policy if exists "Signed in users can read remediation resources" on public.course_remediation_resources;
+drop policy if exists "Teachers manage remediation resources" on public.course_remediation_resources;
+drop policy if exists "Teachers manage small groups" on public.course_small_groups;
+drop policy if exists "Teachers manage small group members" on public.course_small_group_members;
+drop policy if exists "Students read own small group membership" on public.course_small_group_members;
 
 create policy "Signed in users can read active courses"
   on public.courses for select
@@ -242,6 +346,24 @@ create policy "Signed in users can read active courses"
 create policy "Signed in users can read course lessons"
   on public.course_lessons for select
   using (auth.uid() is not null);
+
+create policy "Signed in users can read question catalog"
+  on public.course_question_catalog for select
+  using (auth.uid() is not null);
+
+create policy "Teachers manage question catalog"
+  on public.course_question_catalog for all
+  using (public.altus_courses_get_my_role() in ('teacher', 'staff', 'admin'))
+  with check (public.altus_courses_get_my_role() in ('teacher', 'staff', 'admin'));
+
+create policy "Signed in users can read course concepts"
+  on public.course_concepts for select
+  using (auth.uid() is not null);
+
+create policy "Teachers manage course concepts"
+  on public.course_concepts for all
+  using (public.altus_courses_get_my_role() in ('teacher', 'staff', 'admin'))
+  with check (public.altus_courses_get_my_role() in ('teacher', 'staff', 'admin'));
 
 create policy "Users can read own enrollments"
   on public.course_enrollments for select
@@ -292,6 +414,29 @@ create policy "Teachers manage remediation assignments"
   using (public.altus_courses_get_my_role() in ('teacher', 'staff', 'admin') or auth.uid() = student_id)
   with check (public.altus_courses_get_my_role() in ('teacher', 'staff', 'admin'));
 
+create policy "Signed in users can read remediation resources"
+  on public.course_remediation_resources for select
+  using (auth.uid() is not null);
+
+create policy "Teachers manage remediation resources"
+  on public.course_remediation_resources for all
+  using (public.altus_courses_get_my_role() in ('teacher', 'staff', 'admin'))
+  with check (public.altus_courses_get_my_role() in ('teacher', 'staff', 'admin'));
+
+create policy "Teachers manage small groups"
+  on public.course_small_groups for all
+  using (public.altus_courses_get_my_role() in ('teacher', 'staff', 'admin'))
+  with check (public.altus_courses_get_my_role() in ('teacher', 'staff', 'admin'));
+
+create policy "Teachers manage small group members"
+  on public.course_small_group_members for all
+  using (public.altus_courses_get_my_role() in ('teacher', 'staff', 'admin'))
+  with check (public.altus_courses_get_my_role() in ('teacher', 'staff', 'admin'));
+
+create policy "Students read own small group membership"
+  on public.course_small_group_members for select
+  using (auth.uid() = student_id);
+
 create index if not exists idx_course_lessons_course on public.course_lessons(course_id);
 create index if not exists idx_course_enrollments_course_user on public.course_enrollments(course_id, user_id);
 create index if not exists idx_course_attempts_student on public.course_lesson_attempts(course_id, student_id);
@@ -299,3 +444,8 @@ create index if not exists idx_course_attempts_lesson on public.course_lesson_at
 create index if not exists idx_course_responses_student_lesson on public.course_question_responses(course_id, student_id, lesson_number);
 create index if not exists idx_course_responses_question on public.course_question_responses(course_id, lesson_number, question_id);
 create index if not exists idx_course_responses_review on public.course_question_responses(course_id, needs_teacher_review);
+create index if not exists idx_course_question_catalog_question on public.course_question_catalog(course_id, lesson_number, question_id);
+create index if not exists idx_course_concepts_course_tag on public.course_concepts(course_id, concept_tag);
+create index if not exists idx_course_remediation_resources_tag on public.course_remediation_resources(course_id, concept_tag, level);
+create index if not exists idx_course_small_groups_tag on public.course_small_groups(course_id, concept_tag, status);
+create index if not exists idx_course_small_group_members_student on public.course_small_group_members(student_id);

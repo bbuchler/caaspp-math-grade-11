@@ -716,6 +716,9 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/shared-course-data.js"></script>
   <script>
     const lessonIds = ["01", "02", "03", "04", "05"];
     const courseHome = {
@@ -1118,6 +1121,14 @@
       existing[studentId].lessons[lessonId].updatedAt = now;
       localStorage.setItem(key, JSON.stringify(existing));
       ensurePilotAccount();
+      if (window.CourseData) {
+        window.CourseData.saveQuestionResponse({
+          lessonId,
+          question,
+          answer,
+          result
+        }).catch(() => {});
+      }
     }
 
     function ensurePilotAccount() {

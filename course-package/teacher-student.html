@@ -256,12 +256,17 @@
 
   <main class="page-wrapper" id="root"></main>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/shared-course-data.js"></script>
   <script>
     const ACCOUNT_KEY = "caasppMathPilotAccounts";
     const SUBMISSION_KEY = "caasppMathPilotSubmissions";
     const params = new URLSearchParams(window.location.search);
     const studentId = params.get("student") || "pilot-student";
+    const lessonNumber = Number(params.get("lesson") || "1") || 1;
     let lessonData = null;
+    let remoteResponses = null;
 
     const escapeHtml = (value) => String(value ?? "")
       .replaceAll("&", "&amp;")
@@ -323,12 +328,23 @@
     async function load() {
       const lessonResponse = await fetch("lessons/lesson-01.json");
       lessonData = await lessonResponse.json();
+      if (window.CourseData && studentId !== "pilot-student") {
+        const rows = await window.CourseData.loadStudentResponses(studentId, lessonNumber);
+        remoteResponses = Array.isArray(rows) && rows.length ? rows : null;
+      }
       render();
     }
 
     function render() {
-      const account = getAccounts().find((item) => item.id === studentId) || getAccounts()[0];
-      const submission = getSubmissions()[studentId]?.lessons?.["01"] || { responses: {}, updatedAt: "" };
+      const account = getAccounts().find((item) => item.id === studentId) || {
+        id: studentId,
+        role: "student",
+        name: remoteResponses?.[0]?.full_name || "Student",
+        login: ""
+      };
+      const submission = remoteResponses
+        ? { responses: remoteResponsesToMap(remoteResponses), updatedAt: latestRemoteUpdate(remoteResponses) }
+        : getSubmissions()[studentId]?.lessons?.["01"] || { responses: {}, updatedAt: "" };
       const stats = lessonStats(submission.responses);
       document.title = `${account.name} - CAASPP Math Work Sample`;
       document.getElementById("page-title").textContent = account.name;
@@ -366,6 +382,33 @@
       document.querySelectorAll("[data-save-feedback]").forEach((button) => {
         button.addEventListener("click", () => saveFeedback(button.dataset.saveFeedback));
       });
+    }
+
+    function remoteResponsesToMap(rows) {
+      return rows.reduce((map, row) => {
+        map[row.question_id] = {
+          questionId: row.question_id,
+          sectionId: row.section_id,
+          sectionTitle: row.section_title,
+          prompt: row.prompt,
+          type: row.question_type,
+          grading: row.grading_method,
+          answer: row.answer || "",
+          score: Number(row.score || 0),
+          maxScore: Number(row.max_score || 1),
+          feedback: row.feedback || "",
+          correct: Number(row.score || 0) >= Number(row.max_score || 1),
+          confidence: row.ai_confidence,
+          needsTeacherReview: row.needs_teacher_review,
+          updatedAt: row.updated_at || row.created_at || ""
+        };
+        return map;
+      }, {});
+    }
+
+    function latestRemoteUpdate(rows) {
+      const dates = rows.map((row) => row.updated_at || row.created_at).filter(Boolean).sort();
+      return dates[dates.length - 1] || "";
     }
 
     function renderSection(section, responses) {

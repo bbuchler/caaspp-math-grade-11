@@ -15,7 +15,7 @@ This folder is the first pilot package for the reusable Education Course Studio.
 - `preview.html` - local student-facing preview
 - `teacher-dashboard.html` - teacher gradebook preview with 20 lesson columns and Lesson 1 active
 - `teacher-student.html` - Lesson 1 work sample, grading, reset, and print view
-- `supabase/` - database setup files for the live pilot
+- `supabase/` - shared Altus Courses database setup files for the live pilot
 - `teacher-notes/` - review notes for Baptiste/teacher use
 - `qa-report.md` - readiness report and known risks
 

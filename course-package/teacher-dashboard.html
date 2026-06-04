@@ -531,10 +531,16 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/shared-course-data.js"></script>
   <script>
     const ACCOUNT_KEY = "caasppMathPilotAccounts";
     const SUBMISSION_KEY = "caasppMathPilotSubmissions";
     let selectedAccountId = "pilot-student";
+    let remoteGradebookRows = null;
+    let remoteTrendRows = null;
+    let availableRemoteStudents = null;
 
     const lessonOneSections = [
       { id: "launch", label: "Quick Start", questionIds: ["l1-launch-1"] },
@@ -640,8 +646,48 @@
       return new Date(value).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
     }
 
+    function remoteAccounts() {
+      const byId = {};
+      for (const row of remoteGradebookRows || []) {
+        byId[row.student_id] = {
+          id: row.student_id,
+          role: "student",
+          name: row.full_name,
+          login: row.username || ""
+        };
+      }
+      for (const student of availableRemoteStudents || []) {
+        if (!byId[student.id]) {
+          byId[student.id] = {
+            id: student.id,
+            role: "student",
+            name: student.full_name,
+            login: student.username || student.email || ""
+          };
+        }
+      }
+      return Object.values(byId);
+    }
+
+    function remoteStats(studentId, lessonNumber) {
+      const row = (remoteGradebookRows || []).find((item) =>
+        item.student_id === studentId && Number(item.lesson_number) === Number(lessonNumber)
+      );
+      if (!row || row.attempt_status === "not_started") {
+        return { answered: 0, expected: 11, score: 0, maxScore: 0, percent: null, updatedAt: "" };
+      }
+      return {
+        answered: Number(row.score || 0) || 1,
+        expected: Number(row.max_score || 1) || 1,
+        score: Number(row.score || 0),
+        maxScore: Number(row.max_score || 0),
+        percent: Math.round(Number(row.percent || 0)),
+        updatedAt: row.last_activity || ""
+      };
+    }
+
     function renderGradebook() {
-      const accounts = getAccounts();
+      const accounts = (remoteGradebookRows || availableRemoteStudents) ? remoteAccounts() : getAccounts();
       const submissions = getSubmissions();
       const students = accounts.filter((account) => account.role === "student");
       const head = document.getElementById("gradebook-head-row");
@@ -662,8 +708,10 @@
 
       body.innerHTML = students.map((student) => {
         const studentSubmission = submissions[student.id];
-        const stats = lessonStats(studentSubmission);
+        const stats = (remoteGradebookRows || availableRemoteStudents) ? remoteStats(student.id, 1) : lessonStats(studentSubmission);
         const score = stats.percent === null ? "-" : `${stats.percent}%`;
+        const remoteMode = Boolean(remoteGradebookRows || availableRemoteStudents);
+        const enrolled = !remoteMode || (remoteGradebookRows || []).some((row) => row.student_id === student.id);
         return `
           <tr>
             <td>
@@ -671,13 +719,17 @@
               <span class="muted">${student.login}</span>
             </td>
             ${courseLessons.map((lesson) => {
-              if (lesson.number !== 1) return `<td><span class="score-empty">-</span></td>`;
-              return `<td><a class="${scoreClass(stats.percent)}" href="teacher-student.html?student=${encodeURIComponent(student.id)}&lesson=01">${score}</a></td>`;
+              const lessonStatsForCell = (remoteGradebookRows || availableRemoteStudents) ? remoteStats(student.id, lesson.number) : stats;
+              if (lesson.number !== 1 && !remoteGradebookRows) return `<td><span class="score-empty">-</span></td>`;
+              const lessonScore = lessonStatsForCell.percent === null ? "-" : `${lessonStatsForCell.percent}%`;
+              return `<td><a class="${scoreClass(lessonStatsForCell.percent)}" href="teacher-student.html?student=${encodeURIComponent(student.id)}&lesson=${String(lesson.number).padStart(2, "0")}">${lessonScore}</a></td>`;
             }).join("")}
             <td><a class="${scoreClass(stats.percent)}" href="teacher-student.html?student=${encodeURIComponent(student.id)}&lesson=01">${score}</a></td>
             <td>
               <div class="row-actions">
-                <a class="btn btn-primary btn-small" href="teacher-student.html?student=${encodeURIComponent(student.id)}&lesson=01">View Work</a>
+                ${remoteMode && !enrolled
+                  ? `<button class="btn btn-primary btn-small" type="button" data-enroll-student="${student.id}">Enroll</button>`
+                  : `<a class="btn btn-primary btn-small" href="teacher-student.html?student=${encodeURIComponent(student.id)}&lesson=01">View Work</a>`}
                 <button class="btn btn-secondary btn-small" type="button" data-reset-password="${student.id}">Reset Password</button>
                 <button class="btn btn-danger btn-small" type="button" data-reset-lesson="${student.id}">Reset Lesson</button>
               </div>
@@ -688,13 +740,13 @@
     }
 
     function renderLessonOneBreakdown() {
-      const accounts = getAccounts();
+      const accounts = (remoteGradebookRows || availableRemoteStudents) ? remoteAccounts() : getAccounts();
       const submissions = getSubmissions();
       const students = accounts.filter((account) => account.role === "student");
       const body = document.getElementById("lesson-one-body");
       body.innerHTML = students.map((student) => {
         const studentSubmission = submissions[student.id];
-        const stats = lessonStats(studentSubmission);
+        const stats = (remoteGradebookRows || availableRemoteStudents) ? remoteStats(student.id, 1) : lessonStats(studentSubmission);
         return `
           <tr>
             <td>
@@ -728,6 +780,23 @@
     }
 
     function renderInsights() {
+      if (remoteTrendRows && remoteTrendRows.length) {
+        document.getElementById("ai-insights").innerHTML = `
+          ${remoteTrendRows.slice(0, 3).map((trend) => `
+            <div class="queue-item">
+              <strong>${trend.section_title || "Lesson 1"} Trend</strong>
+              <p>${trend.needs_support} response${Number(trend.needs_support) === 1 ? "" : "s"} need support on: ${trend.prompt}</p>
+              <a class="btn btn-secondary btn-small" href="preview.html?lesson=01">Preview Lesson 1</a>
+            </div>
+          `).join("")}
+          <div class="queue-item">
+            <strong>Small Group Suggestion</strong>
+            <p>Use the top missed concept to create a short review group and assign a scaffolded retry.</p>
+          </div>
+        `;
+        return;
+      }
+
       const submissions = getSubmissions();
       const responses = Object.values(submissions).flatMap((student) => {
         const account = getAccounts().find((item) => item.id === student.studentId);
@@ -825,7 +894,18 @@
       document.querySelectorAll(".modal-overlay").forEach((modal) => modal.classList.remove("open"));
     }
 
-    function renderAll() {
+    async function loadRemoteData() {
+      if (!window.CourseData) return;
+      const gradebook = await window.CourseData.loadGradebook();
+      const trends = await window.CourseData.loadTrends();
+      const availableStudents = await window.CourseData.loadAvailableStudents();
+      remoteGradebookRows = Array.isArray(gradebook) && gradebook.length ? gradebook : null;
+      remoteTrendRows = Array.isArray(trends) && trends.length ? trends : null;
+      availableRemoteStudents = Array.isArray(availableStudents) && availableStudents.length ? availableStudents : null;
+    }
+
+    async function renderAll() {
+      await loadRemoteData();
       renderGradebook();
       renderLessonOneBreakdown();
       renderTeachers();
@@ -850,6 +930,12 @@
 
       const resetLessonButton = event.target.closest("[data-reset-lesson]");
       if (resetLessonButton) resetLesson(resetLessonButton.dataset.resetLesson);
+
+      const enrollButton = event.target.closest("[data-enroll-student]");
+      if (enrollButton && window.CourseData) {
+        window.CourseData.enrollUser(enrollButton.dataset.enrollStudent, "student")
+          .then(() => renderAll());
+      }
 
       if (event.target.matches("[data-close-modal]") || event.target.classList.contains("modal-overlay")) {
         closeModals();

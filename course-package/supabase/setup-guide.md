@@ -75,6 +75,14 @@ That lets the teacher dashboard show real trends, such as:
 - which answers need teacher review
 - which concept should trigger a scaffolded backup lesson
 
+The shared migration also adds future-ready tables for:
+
+- `course_question_catalog` - the question bank metadata across any course
+- `course_concepts` - skills or concepts such as inverse operations, sourcing evidence, thesis writing, etc.
+- `course_concept_trends` - aggregated concept-level trends
+- `course_remediation_resources` - backup lessons, alternate videos, scaffolded practice, or challenge work
+- `course_small_groups` and `course_small_group_members` - teacher-created or trend-suggested tutoring groups
+
 ## V1 Boundary
 
 Lesson 1 should become fully real first. Lessons 2-20 can stay visible as upcoming columns until the Lesson 1 student flow, work sample, gradebook, AI grading, and teacher controls feel right.
