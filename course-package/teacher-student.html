@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CAASPP Math Work Sample</title>
+  <style>
+    :root {
+      --primary: #0f263f;
+      --blue: #2457a6;
+      --gold: #b7791f;
+      --green: #0f7a3f;
+      --orange: #9a6216;
+      --red: #b42318;
+      --white: #ffffff;
+      --soft: #f5f8fb;
+      --line: #d9e1e8;
+      --muted: #5d6b7a;
+      --text: #17202a;
+      --shadow: 0 10px 28px rgba(23, 32, 42, 0.08);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: #eef3f7;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .site-header {
+      background: var(--primary);
+      color: var(--white);
+      border-bottom: 5px solid #f2b84b;
+    }
+
+    .page-wrapper {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 clamp(14px, 3vw, 32px);
+    }
+
+    .site-header .page-wrapper {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding-top: 14px;
+      padding-bottom: 14px;
+    }
+
+    h1, h2, h3, h4, p { margin-top: 0; }
+    h1 { margin: 0; font-size: clamp(1.25rem, 3vw, 1.8rem); letter-spacing: 0; }
+    header p { margin: 4px 0 0; color: #d7e3ef; }
+
+    a, button, input, textarea {
+      font: inherit;
+    }
+
+    a.btn,
+    button {
+      border: 0;
+      border-radius: 6px;
+      padding: 9px 12px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 38px;
+    }
+
+    .btn-primary { background: var(--blue); color: var(--white); }
+    .btn-accent { background: var(--gold); color: var(--white); }
+    .btn-secondary { background: var(--white); color: var(--text); border: 1px solid var(--line); }
+    .btn-danger { background: var(--red); color: var(--white); }
+    .btn-small { min-height: 30px; padding: 5px 9px; font-size: 0.82rem; }
+
+    main.page-wrapper {
+      padding-top: 22px;
+      padding-bottom: 40px;
+    }
+
+    .student-info-bar,
+    .response-card {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+    }
+
+    .student-info-bar {
+      padding: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .student-info-bar h2 {
+      margin-bottom: 4px;
+      color: var(--primary);
+    }
+
+    .student-meta {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .response-card-header {
+      padding: 14px 18px;
+      background: var(--soft);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .response-card-header h3 {
+      margin: 0;
+      color: var(--primary);
+    }
+
+    .response-card-body {
+      padding: 18px;
+    }
+
+    .score-pill,
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-weight: 800;
+    }
+
+    .score-high { background: #e8f7ee; color: var(--green); }
+    .score-mid { background: #fff8e6; color: var(--orange); }
+    .score-low { background: #fff0ee; color: var(--red); }
+    .score-empty { background: #eef3f7; color: var(--muted); }
+
+    .question-block {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 13px;
+      margin-bottom: 12px;
+      background: #fff;
+    }
+
+    .question-block h4 {
+      margin: 0 0 8px;
+      color: #344255;
+    }
+
+    .student-answer {
+      background: var(--soft);
+      border-left: 4px solid var(--blue);
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin: 8px 0;
+      white-space: pre-wrap;
+    }
+
+    .teacher-feedback {
+      color: #344255;
+      font-size: 0.92rem;
+      margin-bottom: 10px;
+    }
+
+    .edit-row {
+      display: grid;
+      grid-template-columns: 120px minmax(0, 1fr);
+      gap: 8px;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid #b9c7d5;
+      border-radius: 6px;
+      padding: 9px 10px;
+    }
+
+    textarea {
+      min-height: 78px;
+      resize: vertical;
+    }
+
+    @media (max-width: 700px) {
+      .actions,
+      .site-header .page-wrapper {
+        align-items: stretch;
+      }
+
+      a.btn,
+      button {
+        flex: 1 1 auto;
+      }
+
+      .edit-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      .site-header,
+      .actions,
+      .btn {
+        display: none !important;
+      }
+
+      body {
+        background: #fff;
+      }
+
+      .student-info-bar,
+      .response-card {
+        box-shadow: none;
+        border-color: #ccc;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="page-wrapper">
+      <div>
+        <h1 id="page-title">Work Sample</h1>
+        <p>Lesson 01: Undo the Equation</p>
+      </div>
+      <div class="actions">
+        <a class="btn btn-secondary" href="teacher-dashboard.html">Back to Gradebook</a>
+        <a class="btn btn-secondary" href="preview.html?lesson=01">Preview Lesson</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-wrapper" id="root"></main>
+
+  <script>
+    const ACCOUNT_KEY = "caasppMathPilotAccounts";
+    const SUBMISSION_KEY = "caasppMathPilotSubmissions";
+    const params = new URLSearchParams(window.location.search);
+    const studentId = params.get("student") || "pilot-student";
+    let lessonData = null;
+
+    const escapeHtml = (value) => String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+
+    function getAccounts() {
+      const saved = JSON.parse(localStorage.getItem(ACCOUNT_KEY) || "[]");
+      if (saved.length) return saved;
+      return [{ id: "pilot-student", role: "student", name: "Test Student", login: "test.student" }];
+    }
+
+    function getSubmissions() {
+      return JSON.parse(localStorage.getItem(SUBMISSION_KEY) || "{}");
+    }
+
+    function saveSubmissions(submissions) {
+      localStorage.setItem(SUBMISSION_KEY, JSON.stringify(submissions));
+    }
+
+    function flattenQuestions(lesson) {
+      return lesson.sections.flatMap((section) => {
+        const questions = [...(section.questions || []), ...(section.contextQuestions || [])];
+        return questions.map((question) => ({ ...question, sectionId: section.id, sectionTitle: section.title }));
+      });
+    }
+
+    function sectionQuestions(section) {
+      return [...(section.questions || []), ...(section.contextQuestions || [])]
+        .map((question) => ({ ...question, sectionId: section.id, sectionTitle: section.title }));
+    }
+
+    function scoreClass(percent) {
+      if (percent === null) return "score-empty";
+      if (percent >= 80) return "score-high";
+      if (percent >= 60) return "score-mid";
+      return "score-low";
+    }
+
+    function lessonStats(responses) {
+      const items = Object.values(responses || {});
+      const score = items.reduce((sum, item) => sum + Number(item.score || 0), 0);
+      const maxScore = items.reduce((sum, item) => sum + Number(item.maxScore || 1), 0);
+      const percent = maxScore ? Math.round((score / maxScore) * 100) : null;
+      return { items, score, maxScore, percent };
+    }
+
+    function formatScore(response, fallbackMax) {
+      if (!response) return "-";
+      return `${response.score ?? 0} / ${response.maxScore ?? fallbackMax ?? 1}`;
+    }
+
+    function formatAnswer(response) {
+      if (!response || response.answer === "") return "(no answer yet)";
+      return response.answer;
+    }
+
+    async function load() {
+      const lessonResponse = await fetch("lessons/lesson-01.json");
+      lessonData = await lessonResponse.json();
+      render();
+    }
+
+    function render() {
+      const account = getAccounts().find((item) => item.id === studentId) || getAccounts()[0];
+      const submission = getSubmissions()[studentId]?.lessons?.["01"] || { responses: {}, updatedAt: "" };
+      const stats = lessonStats(submission.responses);
+      document.title = `${account.name} - CAASPP Math Work Sample`;
+      document.getElementById("page-title").textContent = account.name;
+
+      const root = document.getElementById("root");
+      root.innerHTML = `
+        <section class="student-info-bar">
+          <div>
+            <h2>Lesson 01: ${escapeHtml(lessonData.title)}</h2>
+            <div class="student-meta">${escapeHtml(account.login || "")}${submission.updatedAt ? ` - Last activity ${new Date(submission.updatedAt).toLocaleString()}` : ""}</div>
+          </div>
+          <div class="actions">
+            <button class="btn-primary" type="button" onclick="window.print()">Print Work Sample</button>
+            <button class="btn-secondary" type="button" id="btn-regrade">Regrade AI Responses</button>
+            <button class="btn-danger" type="button" id="btn-reset">Reset Lesson</button>
+          </div>
+        </section>
+
+        <section class="response-card">
+          <div class="response-card-header">
+            <h3>Lesson Score</h3>
+            <span class="score-pill ${scoreClass(stats.percent)}">${stats.percent === null ? "Not Started" : `${stats.percent}%`}</span>
+          </div>
+          <div class="response-card-body">
+            <p><strong>Answered:</strong> ${stats.items.length} of ${flattenQuestions(lessonData).length} questions</p>
+            <p><strong>Score:</strong> ${stats.maxScore ? `${stats.score} / ${stats.maxScore}` : "-"}</p>
+          </div>
+        </section>
+
+        ${lessonData.sections.map((section) => renderSection(section, submission.responses)).join("")}
+      `;
+
+      document.getElementById("btn-reset").addEventListener("click", resetLesson);
+      document.getElementById("btn-regrade").addEventListener("click", regradeAiResponses);
+      document.querySelectorAll("[data-save-feedback]").forEach((button) => {
+        button.addEventListener("click", () => saveFeedback(button.dataset.saveFeedback));
+      });
+    }
+
+    function renderSection(section, responses) {
+      const questions = sectionQuestions(section);
+      if (!questions.length) return "";
+      const answered = questions.filter((question) => responses[question.id]).length;
+      return `
+        <section class="response-card">
+          <div class="response-card-header">
+            <h3>${escapeHtml(section.title)}</h3>
+            <span class="status-pill score-empty">${answered}/${questions.length}</span>
+          </div>
+          <div class="response-card-body">
+            ${questions.map((question) => renderQuestion(question, responses[question.id])).join("")}
+          </div>
+        </section>
+      `;
+    }
+
+    function renderQuestion(question, response) {
+      const feedback = response?.feedback || "";
+      return `
+        <div class="question-block">
+          <h4>${escapeHtml(question.prompt)}</h4>
+          <div class="student-answer">${escapeHtml(formatAnswer(response))}</div>
+          ${question.answer !== undefined ? `<div class="teacher-feedback"><strong>Answer key:</strong> ${escapeHtml(question.answer)}</div>` : ""}
+          <div class="teacher-feedback"><strong>Feedback:</strong> ${escapeHtml(feedback || "No feedback yet.")}</div>
+          <div class="edit-row">
+            <label for="score-${escapeHtml(question.id)}">Score</label>
+            <input id="score-${escapeHtml(question.id)}" type="text" value="${escapeHtml(formatScore(response, question.grading === "ai_rubric" ? 3 : 1))}">
+          </div>
+          <div class="edit-row">
+            <label for="feedback-${escapeHtml(question.id)}">Teacher Note</label>
+            <textarea id="feedback-${escapeHtml(question.id)}">${escapeHtml(feedback)}</textarea>
+          </div>
+          <div class="actions" style="margin-top:10px;">
+            <button class="btn-secondary btn-small" type="button" data-save-feedback="${escapeHtml(question.id)}">Save Feedback</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function saveFeedback(questionId) {
+      const submissions = getSubmissions();
+      const lesson = submissions[studentId]?.lessons?.["01"];
+      if (!lesson?.responses?.[questionId]) return;
+      const scoreValue = document.getElementById(`score-${questionId}`).value;
+      const [scoreRaw, maxRaw] = scoreValue.split("/").map((part) => Number(String(part || "").trim()));
+      lesson.responses[questionId].score = Number.isFinite(scoreRaw) ? scoreRaw : lesson.responses[questionId].score;
+      lesson.responses[questionId].maxScore = Number.isFinite(maxRaw) ? maxRaw : lesson.responses[questionId].maxScore;
+      lesson.responses[questionId].feedback = document.getElementById(`feedback-${questionId}`).value.trim();
+      lesson.updatedAt = new Date().toISOString();
+      saveSubmissions(submissions);
+      render();
+    }
+
+    function resetLesson() {
+      const submissions = getSubmissions();
+      if (submissions[studentId]?.lessons?.["01"]) delete submissions[studentId].lessons["01"];
+      saveSubmissions(submissions);
+      render();
+    }
+
+    async function regradeAiResponses() {
+      const submissions = getSubmissions();
+      const lesson = submissions[studentId]?.lessons?.["01"];
+      if (!lesson) return;
+      const questions = flattenQuestions(lessonData).filter((question) => question.grading === "ai_rubric" && lesson.responses[question.id]?.answer);
+      for (const question of questions) {
+        const response = lesson.responses[question.id];
+        try {
+          const gradeResponse = await fetch("/api/grade", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              question,
+              questionText: question.prompt,
+              studentAnswer: response.answer,
+              rubricId: question.rubricId,
+              lessonContext: { lessonId: "01", lessonTitle: lessonData.title, learningTarget: lessonData.learningTarget },
+              maxPoints: 3
+            })
+          });
+          if (!gradeResponse.ok) continue;
+          const result = await gradeResponse.json();
+          lesson.responses[question.id] = { ...response, ...result, updatedAt: new Date().toISOString() };
+        } catch {}
+      }
+      lesson.updatedAt = new Date().toISOString();
+      saveSubmissions(submissions);
+      render();
+    }
+
+    load().catch((error) => {
+      document.getElementById("root").innerHTML = `<section class="response-card"><div class="response-card-body">Could not load work sample: ${escapeHtml(error.message)}</div></section>`;
+    });
+  </script>
+</body>
+</html>

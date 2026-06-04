@@ -885,7 +885,11 @@
         ...(section.questions || []),
         ...(section.contextQuestions || [])
       ];
-      if (questions.length) body += questions.map(renderQuestion).join("");
+      if (questions.length) {
+        body += questions
+          .map((question) => renderQuestion({ ...question, sectionId: section.id, sectionTitle: section.title }))
+          .join("");
+      }
 
       return `
         <section class="section-card">
@@ -1049,8 +1053,16 @@
         feedback.textContent = "Checking with AI feedback...";
         gradeWithAi(question, answer)
           .then((result) => {
-            feedback.className = `feedback ${result.correct ? "correct" : "review"} show`;
-            feedback.textContent = `${result.score}/${result.maxScore}: ${result.feedback}`;
+          feedback.className = `feedback ${result.correct ? "correct" : "review"} show`;
+          feedback.textContent = `${result.score}/${result.maxScore}: ${result.feedback}`;
+            savePilotSubmission(question, answer, {
+              score: result.score,
+              maxScore: result.maxScore,
+              feedback: result.feedback,
+              correct: result.correct,
+              confidence: result.confidence,
+              needsTeacherReview: result.needsTeacherReview
+            });
           })
           .catch(() => {
             feedback.className = "feedback review show";
@@ -1069,7 +1081,53 @@
       const correct = String(answer).toLowerCase() === expected.toLowerCase();
       feedback.className = `feedback ${correct ? "correct" : "incorrect"} show`;
       feedback.textContent = correct ? question.feedback : `Check this answer: ${expected}. ${question.feedback || ""}`;
+      savePilotSubmission(question, answer, {
+        score: correct ? 1 : 0,
+        maxScore: 1,
+        feedback: feedback.textContent,
+        correct,
+        confidence: 1,
+        needsTeacherReview: false
+      });
     });
+
+    function savePilotSubmission(question, answer, result) {
+      const key = "caasppMathPilotSubmissions";
+      const now = new Date().toISOString();
+      const existing = JSON.parse(localStorage.getItem(key) || "{}");
+      const studentId = "pilot-student";
+      const lessonId = state.lessons[state.active]?.lessonId || "01";
+      existing[studentId] = existing[studentId] || { studentId, studentName: "Test Student", lessons: {} };
+      existing[studentId].lessons[lessonId] = existing[studentId].lessons[lessonId] || { lessonId, responses: {}, updatedAt: now };
+      existing[studentId].lessons[lessonId].responses[question.id] = {
+        questionId: question.id,
+        sectionId: question.sectionId || "",
+        sectionTitle: question.sectionTitle || "",
+        prompt: question.prompt,
+        type: question.type,
+        grading: question.grading,
+        answer,
+        score: Number(result.score) || 0,
+        maxScore: Number(result.maxScore) || 1,
+        feedback: result.feedback || "",
+        correct: Boolean(result.correct),
+        confidence: Number(result.confidence ?? 1),
+        needsTeacherReview: Boolean(result.needsTeacherReview),
+        updatedAt: now
+      };
+      existing[studentId].lessons[lessonId].updatedAt = now;
+      localStorage.setItem(key, JSON.stringify(existing));
+      ensurePilotAccount();
+    }
+
+    function ensurePilotAccount() {
+      const key = "caasppMathPilotAccounts";
+      const accounts = JSON.parse(localStorage.getItem(key) || "[]");
+      if (!accounts.some((account) => account.id === "pilot-student")) {
+        accounts.push({ id: "pilot-student", role: "student", name: "Test Student", login: "test.student", createdAt: new Date().toISOString() });
+        localStorage.setItem(key, JSON.stringify(accounts));
+      }
+    }
 
     function currentLessonContext() {
       const lesson = state.lessons[state.active];

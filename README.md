@@ -32,7 +32,11 @@ Teacher dashboard preview:
 http://127.0.0.1:8766/course-package/teacher-dashboard.html
 ```
 
-The student course and teacher dashboard are separate areas. The teacher dashboard includes gradebook-style lesson links that open student lesson previews.
+The student course and teacher dashboard are separate areas. The teacher dashboard shows the 20-lesson gradebook shape, with Lesson 1 active for the pilot. Lesson 1 scores open a teacher work-sample page:
+
+```text
+http://127.0.0.1:8766/course-package/teacher-student.html?student=pilot-student&lesson=01
+```
 
 ## Current Package
 
@@ -44,6 +48,8 @@ The student course and teacher dashboard are separate areas. The teacher dashboa
 - `course-package/assessments/` - quiz bank and rubrics
 - `course-package/ai/` - Study Buddy and grading rules
 - `course-package/teacher-dashboard.html` - static teacher dashboard preview
+- `course-package/teacher-student.html` - Lesson 1 work-sample and grading view
+- `course-package/supabase/` - database schema and setup guide for the production pilot
 - `course-package/qa-report.md` - readiness and known risks
 
 ## Note

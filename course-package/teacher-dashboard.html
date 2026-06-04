@@ -3,19 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CAASPP Math - Teacher Dashboard</title>
+  <title>CAASPP Math - Teacher Gradebook</title>
   <style>
     :root {
-      --ink: #17202a;
-      --muted: #5d6b7a;
-      --line: #d9e1e8;
-      --soft: #f5f8fb;
-      --panel: #ffffff;
+      --primary: #0f263f;
       --blue: #2457a6;
       --gold: #b7791f;
       --green: #0f7a3f;
+      --orange: #9a6216;
       --red: #b42318;
+      --white: #ffffff;
+      --soft: #f5f8fb;
+      --line: #d9e1e8;
+      --muted: #5d6b7a;
+      --text: #17202a;
       --shadow: 0 10px 28px rgba(23, 32, 42, 0.08);
+      --radius: 8px;
     }
 
     * { box-sizing: border-box; }
@@ -23,26 +26,32 @@
     body {
       margin: 0;
       font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-      color: var(--ink);
       background: #eef3f7;
+      color: var(--text);
       line-height: 1.45;
     }
 
-    header {
-      background: #0f263f;
-      color: #fff;
+    .site-header {
+      background: var(--primary);
+      color: var(--white);
       border-bottom: 5px solid #f2b84b;
-      padding: 18px clamp(16px, 4vw, 40px);
     }
 
-    .topbar {
+    .page-wrapper {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 clamp(14px, 3vw, 32px);
+    }
+
+    .site-header .page-wrapper {
+      min-height: 76px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
       flex-wrap: wrap;
-      max-width: 1400px;
-      margin: 0 auto;
+      padding-top: 14px;
+      padding-bottom: 14px;
     }
 
     .brand {
@@ -51,39 +60,37 @@
       gap: 14px;
     }
 
-    .brand-logo {
-      width: 130px;
+    .header-logo {
+      width: 128px;
       max-width: 38vw;
-      background: #fff;
+      background: var(--white);
       border-radius: 6px;
       padding: 7px;
     }
 
-    h1, h2, h3, p {
-      margin-top: 0;
-    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin: 0; font-size: clamp(1.25rem, 3vw, 1.8rem); letter-spacing: 0; }
+    h2 { margin-bottom: 4px; color: var(--primary); font-size: 1.45rem; }
+    h3 { margin-bottom: 8px; color: var(--primary); }
 
-    h1 {
-      margin-bottom: 2px;
-      font-size: clamp(1.3rem, 3vw, 2rem);
-      letter-spacing: 0;
-    }
-
-    header p {
-      margin-bottom: 0;
+    .header-subtitle {
+      margin: 4px 0 0;
       color: #d7e3ef;
+      font-size: 0.92rem;
     }
 
-    .header-actions,
-    .actions {
+    .header-right,
+    .actions,
+    .teacher-controls,
+    .row-actions {
       display: flex;
+      align-items: center;
       gap: 8px;
       flex-wrap: wrap;
-      align-items: center;
     }
 
-    button,
-    .nav-link {
+    .header-nav-link,
+    .btn {
       border: 0;
       border-radius: 6px;
       padding: 9px 12px;
@@ -95,333 +102,791 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
+      min-height: 38px;
     }
 
-    .primary { background: var(--blue); color: #fff; }
-    .secondary { background: #fff; color: var(--ink); border: 1px solid var(--line); }
-    .accent { background: var(--gold); color: #fff; }
-
-    main {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 22px clamp(14px, 3vw, 36px) 40px;
+    .header-nav-link {
+      background: rgba(255,255,255,0.1);
+      color: var(--white);
+      border: 1px solid rgba(255,255,255,0.24);
     }
 
-    .summary-grid,
-    .dashboard-grid {
-      display: grid;
-      gap: 14px;
+    .btn-primary { background: var(--blue); color: var(--white); }
+    .btn-accent { background: var(--gold); color: var(--white); }
+    .btn-secondary { background: var(--white); color: var(--text); border: 1px solid var(--line); }
+    .btn-danger { background: var(--red); color: var(--white); }
+    .btn-small { min-height: 30px; padding: 5px 9px; font-size: 0.82rem; }
+
+    main.page-wrapper {
+      padding-top: 22px;
+      padding-bottom: 40px;
     }
 
-    .summary-grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      margin-bottom: 18px;
-    }
-
-    .dashboard-grid {
-      grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.75fr);
-      align-items: start;
-    }
-
-    .panel,
-    .metric {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      box-shadow: var(--shadow);
-    }
-
-    .metric {
-      padding: 14px;
-    }
-
-    .metric strong {
-      display: block;
-      font-size: 1.5rem;
-      color: var(--blue);
-    }
-
-    .metric span {
-      color: var(--muted);
-      font-size: 0.88rem;
-    }
-
-    .panel header {
-      background: var(--soft);
-      color: var(--ink);
-      border: 0;
-      border-bottom: 1px solid var(--line);
-      padding: 14px 16px;
-    }
-
-    .panel header h2,
-    .panel header h3 {
-      margin: 0;
-      font-size: 1.05rem;
-    }
-
-    .panel-body {
-      padding: 16px;
-    }
-
-    .tabs {
+    .dashboard-header {
       display: flex;
-      gap: 8px;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
       flex-wrap: wrap;
       margin-bottom: 14px;
     }
 
-    .tabs button {
-      background: #fff;
+    .dashboard-header p {
+      margin-bottom: 0;
+      color: var(--muted);
+    }
+
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .module-card {
+      background: var(--white);
       border: 1px solid var(--line);
-      color: var(--ink);
+      border-radius: var(--radius);
+      padding: 12px;
+      box-shadow: var(--shadow);
     }
 
-    .tabs button.active {
-      background: #e9f3ff;
-      color: #153d72;
-      border-color: #b6d2f1;
+    .module-card.active {
+      border-left: 5px solid var(--blue);
+      background: #edf6ff;
     }
 
-    .table-wrap {
-      overflow: auto;
+    .module-card strong {
+      display: block;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .module-card span {
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .gradebook-table-wrapper {
+      overflow-x: auto;
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
       border: 1px solid var(--line);
-      border-radius: 8px;
     }
 
-    table {
+    .gradebook-table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 820px;
-      background: #fff;
+      font-size: 0.88rem;
+      min-width: 980px;
     }
 
-    th,
-    td {
-      padding: 11px 12px;
+    .gradebook-table th,
+    .gradebook-table td {
+      padding: 10px 12px;
+      text-align: center;
       border-bottom: 1px solid var(--line);
-      text-align: left;
       white-space: nowrap;
     }
 
-    th {
-      background: #f8fafc;
-      color: #344255;
-      font-size: 0.84rem;
+    .gradebook-table th {
+      background: var(--primary);
+      color: var(--white);
+      font-weight: 700;
     }
 
-    tr:last-child td {
-      border-bottom: 0;
+    .gradebook-table th:first-child,
+    .gradebook-table td:first-child {
+      text-align: left;
+      position: sticky;
+      left: 0;
+      z-index: 1;
     }
 
-    .score {
-      font-weight: 800;
+    .gradebook-table td:first-child {
+      background: var(--white);
+      font-weight: 700;
     }
 
-    .good { color: var(--green); }
-    .warn { color: #8a5b00; }
-    .bad { color: var(--red); }
+    .gradebook-table tr:hover td,
+    .gradebook-table tr:hover td:first-child {
+      background: var(--soft);
+    }
 
-    .tag {
+    .muted {
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 400;
+    }
+
+    .status-pill,
+    .score-pill {
       display: inline-flex;
       align-items: center;
       border-radius: 999px;
       padding: 3px 8px;
-      background: #eef3f7;
-      color: #39485a;
       font-size: 0.78rem;
-      font-weight: 700;
+      font-weight: 800;
     }
 
-    .lesson-link {
-      color: inherit;
-      text-decoration: none;
-      border-bottom: 1px dotted currentColor;
+    .status-not-started { background: #eef3f7; color: var(--muted); }
+    .status-progress { background: #fff8e6; color: var(--orange); }
+    .status-complete { background: #e8f7ee; color: var(--green); }
+    .score-high { color: var(--green); }
+    .score-mid { color: var(--orange); }
+    .score-low { color: var(--red); }
+    .score-empty { color: var(--muted); }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 330px;
+      gap: 16px;
+      align-items: start;
+      margin-top: 18px;
     }
 
-    .lesson-link:hover {
-      color: var(--blue);
+    .panel {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      background: var(--soft);
+      border-bottom: 1px solid var(--line);
+      padding: 13px 15px;
+    }
+
+    .panel-header h3 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .panel-body {
+      padding: 15px;
     }
 
     .queue-item,
-    .student-card {
+    .teacher-account {
       border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 12px;
-      background: #fff;
+      border-radius: var(--radius);
+      padding: 11px;
       margin-bottom: 10px;
+      background: var(--white);
     }
 
     .queue-item p,
-    .student-card p {
+    .teacher-account p {
       color: var(--muted);
       margin-bottom: 10px;
-      font-size: 0.92rem;
+      font-size: 0.9rem;
     }
 
-    .small-actions {
+    .empty-panel {
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 38, 63, 0.52);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 100;
+    }
+
+    .modal-overlay.open {
       display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
     }
 
-    .small-actions button {
-      padding: 6px 9px;
-      font-size: 0.82rem;
+    .modal {
+      width: min(540px, 100%);
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: 0 18px 48px rgba(23, 32, 42, 0.28);
+      overflow: hidden;
     }
 
-    @media (max-width: 960px) {
-      .summary-grid,
-      .dashboard-grid {
+    .modal-header,
+    .modal-footer {
+      padding: 14px 16px;
+      background: var(--soft);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .modal-footer {
+      border-top: 1px solid var(--line);
+      border-bottom: 0;
+      justify-content: flex-end;
+    }
+
+    .modal-body {
+      padding: 16px;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      border: 1px solid #b9c7d5;
+      border-radius: 6px;
+      padding: 9px 10px;
+      font: inherit;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .dashboard-grid,
+      .module-grid {
         grid-template-columns: 1fr;
+      }
+
+      .teacher-controls,
+      .header-right,
+      .row-actions {
+        width: 100%;
+      }
+
+      .btn,
+      .header-nav-link {
+        flex: 1 1 auto;
       }
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="topbar">
+  <header class="site-header">
+    <div class="page-wrapper">
       <div class="brand">
-        <img class="brand-logo" src="assets/altus-logo.png" alt="Altus Schools">
+        <img src="assets/altus-logo.png" alt="Altus Schools" class="header-logo">
         <div>
-          <h1>CAASPP Math - Teacher Dashboard</h1>
-          <p>Module 1 gradebook, roster, review queue, and lesson controls.</p>
+          <h1>CAASPP Math - Gradebook</h1>
+          <p class="header-subtitle">20-lesson CAASPP Math course gradebook</p>
         </div>
       </div>
-      <div class="header-actions">
-        <a class="nav-link secondary" href="preview.html">Student View</a>
-        <button class="secondary" type="button">Change Password</button>
-        <button class="secondary" type="button">Sign Out</button>
+      <div class="header-right">
+        <a href="preview.html?lesson=01" class="header-nav-link">Preview Lesson 1</a>
+        <a href="preview.html" class="header-nav-link">Student Home</a>
+        <button class="header-nav-link" type="button" data-open-modal="modal-change-password">Change Password</button>
+        <button class="header-nav-link" type="button">Sign Out</button>
       </div>
     </div>
   </header>
 
-  <main>
-    <section class="summary-grid" aria-label="Module summary">
-      <div class="metric"><strong>5</strong><span>Module 1 lessons</span></div>
-      <div class="metric"><strong>24</strong><span>Students enrolled</span></div>
-      <div class="metric"><strong>78%</strong><span>Average progress</span></div>
-      <div class="metric"><strong>6</strong><span>Responses to review</span></div>
-    </section>
+  <main class="page-wrapper">
+    <div class="dashboard-header">
+      <div>
+        <h2>Course Gradebook</h2>
+        <p>Lesson 1 is open. Lessons 2-20 appear as upcoming.</p>
+      </div>
+      <div class="teacher-controls">
+        <button class="btn btn-accent" type="button" data-open-modal="modal-add-account">+ Add Account</button>
+        <button class="btn btn-secondary" type="button" id="btn-export">Export CSV</button>
+        <button class="btn btn-secondary" type="button" onclick="window.print()">Print</button>
+      </div>
+    </div>
 
-    <section class="panel" style="margin-bottom: 18px;">
-      <header><h2>Teacher Controls</h2></header>
-      <div class="panel-body actions">
-        <button class="primary" type="button">+ Add Student</button>
-        <button class="primary" type="button">+ Add Teacher</button>
-        <button class="secondary" type="button">Export CSV</button>
-        <button class="secondary" type="button">Print Gradebook</button>
-        <button class="accent" type="button">Open AI Review Queue</button>
+    <section class="module-grid" aria-label="Course modules">
+      <div class="module-card active">
+        <strong>Module 1</strong>
+        <span>Lesson 1 is active for the pilot.</span>
+      </div>
+      <div class="module-card">
+        <strong>Module 2</strong>
+        <span>Systems and modeling</span>
+      </div>
+      <div class="module-card">
+        <strong>Module 3</strong>
+        <span>Functions and data</span>
+      </div>
+      <div class="module-card">
+        <strong>Module 4</strong>
+        <span>Mixed CAASPP practice</span>
       </div>
     </section>
 
+    <div class="gradebook-table-wrapper">
+      <table class="gradebook-table">
+        <thead>
+          <tr id="gradebook-head-row"></tr>
+        </thead>
+        <tbody id="gradebook-body"></tbody>
+      </table>
+    </div>
+
     <div class="dashboard-grid">
       <section class="panel">
-        <header><h2>Module 1 Gradebook</h2></header>
+        <div class="panel-header"><h3>Lesson 1 Breakdown</h3></div>
         <div class="panel-body">
-          <div class="tabs" aria-label="Lesson filter">
-            <button class="active" type="button">All Lessons</button>
-            <button type="button">Lesson 01</button>
-            <button type="button">Lesson 02</button>
-            <button type="button">Lesson 03</button>
-            <button type="button">Lesson 04</button>
-            <button type="button">Lesson 05</button>
-          </div>
-          <div class="table-wrap">
-            <table>
+          <div class="gradebook-table-wrapper" style="box-shadow:none;">
+            <table class="gradebook-table" style="min-width:720px;">
               <thead>
                 <tr>
                   <th>Student</th>
-                  <th>Progress</th>
-                  <th><a class="lesson-link" href="preview.html?lesson=01" title="Preview Lesson 01">L01</a></th>
-                  <th><a class="lesson-link" href="preview.html?lesson=02" title="Preview Lesson 02">L02</a></th>
-                  <th><a class="lesson-link" href="preview.html?lesson=03" title="Preview Lesson 03">L03</a></th>
-                  <th><a class="lesson-link" href="preview.html?lesson=04" title="Preview Lesson 04">L04</a></th>
-                  <th><a class="lesson-link" href="preview.html?lesson=05" title="Preview Lesson 05">L05</a></th>
-                  <th>Flags</th>
-                  <th>Manage</th>
+                  <th>Quick Start</th>
+                  <th>Video Questions</th>
+                  <th>Practice</th>
+                  <th>Exit Check</th>
+                  <th>Last Activity</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Ana Martinez</strong><br><span class="tag">active</span></td>
-                  <td>5 / 5</td>
-                  <td class="score good">92%</td>
-                  <td class="score good">88%</td>
-                  <td class="score good">90%</td>
-                  <td class="score warn">76%</td>
-                  <td class="score good">84%</td>
-                  <td><span class="tag">1 review</span></td>
-                  <td><div class="small-actions"><button class="secondary" type="button">View</button><button class="secondary" type="button">Reset</button></div></td>
-                </tr>
-                <tr>
-                  <td><strong>Jordan Lee</strong><br><span class="tag">active</span></td>
-                  <td>3 / 5</td>
-                  <td class="score good">85%</td>
-                  <td class="score warn">72%</td>
-                  <td class="score bad">58%</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td><span class="tag">3 reviews</span></td>
-                  <td><div class="small-actions"><button class="secondary" type="button">View</button><button class="secondary" type="button">Reset</button></div></td>
-                </tr>
-                <tr>
-                  <td><strong>Maya Singh</strong><br><span class="tag">active</span></td>
-                  <td>2 / 5</td>
-                  <td class="score good">95%</td>
-                  <td class="score good">91%</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td><span class="tag">clear</span></td>
-                  <td><div class="small-actions"><button class="secondary" type="button">View</button><button class="secondary" type="button">Reset</button></div></td>
-                </tr>
-              </tbody>
+              <tbody id="lesson-one-body"></tbody>
             </table>
           </div>
         </div>
       </section>
+    </div>
 
-      <aside>
-        <section class="panel" style="margin-bottom: 14px;">
-          <header><h3>AI Review Queue</h3></header>
-          <div class="panel-body">
-            <div class="queue-item">
-              <strong>Jordan Lee - Lesson 03</strong>
-              <p>Explanation mentions slope but does not connect it to the real situation.</p>
-              <div class="small-actions"><button class="primary" type="button">Review</button><button class="secondary" type="button">Override</button></div>
-            </div>
-            <div class="queue-item">
-              <strong>Ana Martinez - Lesson 04</strong>
-              <p>AI confidence is low on an intercept interpretation response.</p>
-              <div class="small-actions"><button class="primary" type="button">Review</button><button class="secondary" type="button">Override</button></div>
-            </div>
-          </div>
-        </section>
+    <div class="dashboard-grid">
+      <section class="panel">
+        <div class="panel-header"><h3>AI Review Queue And Class Trends</h3></div>
+        <div class="panel-body" id="ai-insights"></div>
+      </section>
 
-        <section class="panel">
-          <header><h3>Roster Tools</h3></header>
-          <div class="panel-body">
-            <div class="student-card">
-              <strong>Account Actions</strong>
-              <p>Add students, add teachers, reset passwords, deactivate accounts, and send welcome instructions.</p>
-              <div class="small-actions">
-                <button class="primary" type="button">Add Account</button>
-                <button class="secondary" type="button">Reset Password</button>
-              </div>
-            </div>
-            <div class="student-card">
-              <strong>Lesson Actions</strong>
-              <p>Reset a lesson attempt, reopen a check, re-run AI grading, or print a work sample.</p>
-              <div class="small-actions">
-                <button class="secondary" type="button">Reset Lesson</button>
-                <button class="secondary" type="button">Print Work</button>
-              </div>
-            </div>
-          </div>
-        </section>
+      <aside class="panel">
+        <div class="panel-header"><h3>Teacher Accounts</h3></div>
+        <div class="panel-body">
+          <div id="teacher-list"></div>
+          <button class="btn btn-primary" type="button" data-open-modal="modal-add-account" data-role="teacher">Add Teacher</button>
+        </div>
       </aside>
     </div>
   </main>
+
+  <div class="modal-overlay" id="modal-add-account">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Account</h3>
+        <button class="btn btn-secondary btn-small" type="button" data-close-modal>Close</button>
+      </div>
+      <div class="modal-body">
+        <label for="account-role">Role</label>
+        <select id="account-role">
+          <option value="student">Student</option>
+          <option value="teacher">Teacher</option>
+        </select>
+        <label for="account-name">Full name</label>
+        <input id="account-name" type="text" placeholder="Student or teacher name">
+        <label for="account-login">Username or email</label>
+        <input id="account-login" type="text" placeholder="test.student">
+        <label for="account-password">Temporary password</label>
+        <input id="account-password" type="text" placeholder="At least 6 characters">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-close-modal>Cancel</button>
+        <button class="btn btn-primary" type="button" id="btn-create-account">Create Account</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-reset-password">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Reset Password</h3>
+        <button class="btn btn-secondary btn-small" type="button" data-close-modal>Close</button>
+      </div>
+      <div class="modal-body">
+        <p>Resetting password for <strong id="reset-account-name">Test Student</strong>.</p>
+        <label for="new-password">New password</label>
+        <input id="new-password" type="text" placeholder="At least 6 characters">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-close-modal>Cancel</button>
+        <button class="btn btn-primary" type="button" id="btn-reset-password">Reset Password</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-change-password">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Change Password</h3>
+        <button class="btn btn-secondary btn-small" type="button" data-close-modal>Close</button>
+      </div>
+      <div class="modal-body">
+        <label for="teacher-password">New password</label>
+        <input id="teacher-password" type="password" placeholder="At least 6 characters">
+        <label for="teacher-password-confirm">Confirm password</label>
+        <input id="teacher-password-confirm" type="password" placeholder="Type it again">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-close-modal>Cancel</button>
+        <button class="btn btn-primary" type="button" data-close-modal>Update Password</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ACCOUNT_KEY = "caasppMathPilotAccounts";
+    const SUBMISSION_KEY = "caasppMathPilotSubmissions";
+    let selectedAccountId = "pilot-student";
+
+    const lessonOneSections = [
+      { id: "launch", label: "Quick Start", questionIds: ["l1-launch-1"] },
+      { id: "video", label: "Video Questions", questionIds: ["l1-vq1", "l1-vq2", "l1-vq3", "l1-vq4"] },
+      { id: "practice", label: "Practice", questionIds: ["l1-p1", "l1-p2", "l1-p3"] },
+      { id: "check", label: "Exit Check", questionIds: ["w1-l1-q1", "w1-l1-q2", "w1-l1-q3"] }
+    ];
+
+    const courseLessons = Array.from({ length: 20 }, (_, index) => {
+      const number = index + 1;
+      return {
+        number,
+        title: [
+          "Undo the Equation",
+          "Inequalities Are Ranges",
+          "Lines Tell Stories",
+          "Slope, Intercepts, and Meaning",
+          "Function Notation and Mini Performance Task"
+        ][index] || `Lesson ${number}`,
+        active: number === 1,
+        preview: number <= 5
+      };
+    });
+
+    function defaultAccounts() {
+      return [
+        {
+          id: "pilot-student",
+          role: "student",
+          name: "Test Student",
+          login: "test.student",
+          passwordUpdatedAt: "",
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: "pilot-teacher",
+          role: "teacher",
+          name: "Test Teacher",
+          login: "test.teacher",
+          passwordUpdatedAt: "",
+          createdAt: new Date().toISOString()
+        }
+      ];
+    }
+
+    function getAccounts() {
+      const saved = JSON.parse(localStorage.getItem(ACCOUNT_KEY) || "null");
+      if (Array.isArray(saved) && saved.length) return saved;
+      const defaults = defaultAccounts();
+      localStorage.setItem(ACCOUNT_KEY, JSON.stringify(defaults));
+      return defaults;
+    }
+
+    function saveAccounts(accounts) {
+      localStorage.setItem(ACCOUNT_KEY, JSON.stringify(accounts));
+    }
+
+    function getSubmissions() {
+      return JSON.parse(localStorage.getItem(SUBMISSION_KEY) || "{}");
+    }
+
+    function sectionStats(studentSubmission, section) {
+      const responses = studentSubmission?.lessons?.["01"]?.responses || {};
+      const items = section.questionIds.map((id) => responses[id]).filter(Boolean);
+      const answered = items.length;
+      const score = items.reduce((sum, item) => sum + Number(item.score || 0), 0);
+      const maxScore = items.reduce((sum, item) => sum + Number(item.maxScore || 1), 0);
+      return { answered, expected: section.questionIds.length, score, maxScore };
+    }
+
+    function lessonStats(studentSubmission) {
+      const sections = lessonOneSections.map((section) => sectionStats(studentSubmission, section));
+      const answered = sections.reduce((sum, section) => sum + section.answered, 0);
+      const expected = sections.reduce((sum, section) => sum + section.expected, 0);
+      const score = sections.reduce((sum, section) => sum + section.score, 0);
+      const maxScore = sections.reduce((sum, section) => sum + section.maxScore, 0);
+      const percent = maxScore ? Math.round((score / maxScore) * 100) : null;
+      const updatedAt = studentSubmission?.lessons?.["01"]?.updatedAt || "";
+      return { answered, expected, score, maxScore, percent, updatedAt };
+    }
+
+    function scoreClass(percent) {
+      if (percent === null) return "score-empty";
+      if (percent >= 80) return "score-high";
+      if (percent >= 60) return "score-mid";
+      return "score-low";
+    }
+
+    function statusMarkup(stats) {
+      if (!stats.answered) return `<span class="status-pill status-not-started">Not Started</span>`;
+      if (stats.answered < stats.expected) return `<span class="status-pill status-progress">In Progress</span>`;
+      return `<span class="status-pill status-complete">Complete</span>`;
+    }
+
+    function formatSection(studentSubmission, section) {
+      const stats = sectionStats(studentSubmission, section);
+      if (!stats.answered) return `<span class="score-empty">-</span>`;
+      return `${stats.answered}/${stats.expected}`;
+    }
+
+    function formatDate(value) {
+      if (!value) return `<span class="score-empty">-</span>`;
+      return new Date(value).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+    }
+
+    function renderGradebook() {
+      const accounts = getAccounts();
+      const submissions = getSubmissions();
+      const students = accounts.filter((account) => account.role === "student");
+      const head = document.getElementById("gradebook-head-row");
+      const body = document.getElementById("gradebook-body");
+
+      head.innerHTML = `
+        <th>Student</th>
+        ${courseLessons.map((lesson) => `
+          <th>
+            ${lesson.preview
+              ? `<a href="preview.html?lesson=${String(lesson.number).padStart(2, "0")}" style="color:inherit;text-decoration:none;border-bottom:1px dotted currentColor;" title="${lesson.title}">L${lesson.number}</a>`
+              : `<span title="${lesson.title}">L${lesson.number}</span>`}
+          </th>
+        `).join("")}
+        <th>Overall</th>
+        <th>Actions</th>
+      `;
+
+      body.innerHTML = students.map((student) => {
+        const studentSubmission = submissions[student.id];
+        const stats = lessonStats(studentSubmission);
+        const score = stats.percent === null ? "-" : `${stats.percent}%`;
+        return `
+          <tr>
+            <td>
+              <a href="teacher-student.html?student=${encodeURIComponent(student.id)}&lesson=01">${student.name}</a>
+              <span class="muted">${student.login}</span>
+            </td>
+            ${courseLessons.map((lesson) => {
+              if (lesson.number !== 1) return `<td><span class="score-empty">-</span></td>`;
+              return `<td><a class="${scoreClass(stats.percent)}" href="teacher-student.html?student=${encodeURIComponent(student.id)}&lesson=01">${score}</a></td>`;
+            }).join("")}
+            <td><a class="${scoreClass(stats.percent)}" href="teacher-student.html?student=${encodeURIComponent(student.id)}&lesson=01">${score}</a></td>
+            <td>
+              <div class="row-actions">
+                <a class="btn btn-primary btn-small" href="teacher-student.html?student=${encodeURIComponent(student.id)}&lesson=01">View Work</a>
+                <button class="btn btn-secondary btn-small" type="button" data-reset-password="${student.id}">Reset Password</button>
+                <button class="btn btn-danger btn-small" type="button" data-reset-lesson="${student.id}">Reset Lesson</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function renderLessonOneBreakdown() {
+      const accounts = getAccounts();
+      const submissions = getSubmissions();
+      const students = accounts.filter((account) => account.role === "student");
+      const body = document.getElementById("lesson-one-body");
+      body.innerHTML = students.map((student) => {
+        const studentSubmission = submissions[student.id];
+        const stats = lessonStats(studentSubmission);
+        return `
+          <tr>
+            <td>
+              <a href="teacher-student.html?student=${encodeURIComponent(student.id)}&lesson=01">${student.name}</a>
+              <span class="muted">${statusMarkup(stats)}</span>
+            </td>
+            <td>${formatSection(studentSubmission, lessonOneSections[0])}</td>
+            <td>${formatSection(studentSubmission, lessonOneSections[1])}</td>
+            <td>${formatSection(studentSubmission, lessonOneSections[2])}</td>
+            <td>${formatSection(studentSubmission, lessonOneSections[3])}</td>
+            <td>${formatDate(stats.updatedAt)}</td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function renderTeachers() {
+      const teachers = getAccounts().filter((account) => account.role === "teacher");
+      const list = document.getElementById("teacher-list");
+      if (!teachers.length) {
+        list.innerHTML = `<p class="empty-panel">No teacher accounts yet.</p>`;
+        return;
+      }
+      list.innerHTML = teachers.map((teacher) => `
+        <div class="teacher-account">
+          <strong>${teacher.name}</strong>
+          <p>${teacher.login}</p>
+          <button class="btn btn-secondary btn-small" type="button" data-reset-password="${teacher.id}">Reset Password</button>
+        </div>
+      `).join("");
+    }
+
+    function renderInsights() {
+      const submissions = getSubmissions();
+      const responses = Object.values(submissions).flatMap((student) => {
+        const account = getAccounts().find((item) => item.id === student.studentId);
+        const lesson = student.lessons?.["01"];
+        return Object.values(lesson?.responses || {}).map((response) => ({ ...response, studentName: account?.name || student.studentName || "Student" }));
+      });
+      const flagged = responses.filter((response) => response.needsTeacherReview || Number(response.score) < Number(response.maxScore || 1));
+      const panel = document.getElementById("ai-insights");
+
+      if (!responses.length) {
+        panel.innerHTML = `<p class="empty-panel">No Lesson 1 submissions yet.</p>`;
+        return;
+      }
+
+      const byQuestion = flagged.reduce((map, response) => {
+        map[response.questionId] = map[response.questionId] || { count: 0, prompt: response.prompt };
+        map[response.questionId].count += 1;
+        return map;
+      }, {});
+      const topTrend = Object.values(byQuestion).sort((a, b) => b.count - a.count)[0];
+
+      panel.innerHTML = `
+        ${flagged.slice(0, 3).map((response) => `
+          <div class="queue-item">
+            <strong>${response.studentName} - ${response.sectionTitle || "Lesson 1"}</strong>
+            <p>${response.prompt}</p>
+            <a class="btn btn-primary btn-small" href="teacher-student.html?student=pilot-student&lesson=01">Review Work</a>
+          </div>
+        `).join("") || `<p class="empty-panel">No flagged responses right now.</p>`}
+        ${topTrend ? `
+          <div class="queue-item">
+            <strong>Class Trend</strong>
+            <p>${topTrend.count} response${topTrend.count === 1 ? "" : "s"} need support on: ${topTrend.prompt}</p>
+            <a class="btn btn-secondary btn-small" href="preview.html?lesson=01">Preview Lesson 1</a>
+          </div>
+          <div class="queue-item">
+            <strong>Small Group Suggestion</strong>
+            <p>Review inverse operations, then give a second equation with different numbers before students retry.</p>
+          </div>
+        ` : ""}
+      `;
+    }
+
+    function createAccount() {
+      const role = document.getElementById("account-role").value;
+      const name = document.getElementById("account-name").value.trim();
+      const login = document.getElementById("account-login").value.trim();
+      const password = document.getElementById("account-password").value.trim();
+      if (!name || !login || password.length < 6) return;
+
+      const accounts = getAccounts();
+      accounts.push({
+        id: `${role}-${Date.now()}`,
+        role,
+        name,
+        login,
+        passwordUpdatedAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
+      });
+      saveAccounts(accounts);
+      document.getElementById("account-name").value = "";
+      document.getElementById("account-login").value = "";
+      document.getElementById("account-password").value = "";
+      closeModals();
+      renderAll();
+    }
+
+    function resetPassword() {
+      const password = document.getElementById("new-password").value.trim();
+      if (password.length < 6) return;
+      const accounts = getAccounts().map((account) => account.id === selectedAccountId
+        ? { ...account, passwordUpdatedAt: new Date().toISOString() }
+        : account
+      );
+      saveAccounts(accounts);
+      document.getElementById("new-password").value = "";
+      closeModals();
+      renderAll();
+    }
+
+    function resetLesson(studentId) {
+      const submissions = getSubmissions();
+      if (submissions[studentId]?.lessons?.["01"]) {
+        delete submissions[studentId].lessons["01"];
+      }
+      localStorage.setItem(SUBMISSION_KEY, JSON.stringify(submissions));
+      renderAll();
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.add("open");
+    }
+
+    function closeModals() {
+      document.querySelectorAll(".modal-overlay").forEach((modal) => modal.classList.remove("open"));
+    }
+
+    function renderAll() {
+      renderGradebook();
+      renderLessonOneBreakdown();
+      renderTeachers();
+      renderInsights();
+    }
+
+    document.addEventListener("click", (event) => {
+      const opener = event.target.closest("[data-open-modal]");
+      if (opener) {
+        const preferredRole = opener.dataset.role;
+        if (preferredRole) document.getElementById("account-role").value = preferredRole;
+        openModal(opener.dataset.openModal);
+      }
+
+      const resetPasswordButton = event.target.closest("[data-reset-password]");
+      if (resetPasswordButton) {
+        selectedAccountId = resetPasswordButton.dataset.resetPassword;
+        const account = getAccounts().find((item) => item.id === selectedAccountId);
+        document.getElementById("reset-account-name").textContent = account?.name || "Account";
+        openModal("modal-reset-password");
+      }
+
+      const resetLessonButton = event.target.closest("[data-reset-lesson]");
+      if (resetLessonButton) resetLesson(resetLessonButton.dataset.resetLesson);
+
+      if (event.target.matches("[data-close-modal]") || event.target.classList.contains("modal-overlay")) {
+        closeModals();
+      }
+    });
+
+    document.getElementById("btn-create-account").addEventListener("click", createAccount);
+    document.getElementById("btn-reset-password").addEventListener("click", resetPassword);
+    document.getElementById("btn-export").addEventListener("click", () => {
+      const rows = [["Student", "Login", "Status", "Quick Start", "Video Questions", "Practice", "Exit Check", "Lesson Score", "Last Activity"]];
+      const submissions = getSubmissions();
+      getAccounts().filter((account) => account.role === "student").forEach((student) => {
+        const studentSubmission = submissions[student.id];
+        const stats = lessonStats(studentSubmission);
+        rows.push([
+          student.name,
+          student.login,
+          stats.answered ? (stats.answered === stats.expected ? "Complete" : "In Progress") : "Not Started",
+          lessonOneSections.map((section) => formatSection(studentSubmission, section).replace(/<[^>]*>/g, ""))[0],
+          lessonOneSections.map((section) => formatSection(studentSubmission, section).replace(/<[^>]*>/g, ""))[1],
+          lessonOneSections.map((section) => formatSection(studentSubmission, section).replace(/<[^>]*>/g, ""))[2],
+          lessonOneSections.map((section) => formatSection(studentSubmission, section).replace(/<[^>]*>/g, ""))[3],
+          stats.percent === null ? "" : `${stats.percent}%`,
+          stats.updatedAt
+        ]);
+      });
+      const csv = rows.map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(",")).join("\n");
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "caaspp-math-lesson-1-gradebook.csv";
+      link.click();
+      URL.revokeObjectURL(url);
+    });
+
+    renderAll();
+  </script>
 </body>
 </html>

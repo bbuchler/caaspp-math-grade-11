@@ -86,13 +86,16 @@ Status: Pass for local Module 1 draft.
 
 ### Gate 8 - Teacher Dashboard
 
-Status: Static teacher dashboard preview created.
+Status: Lesson 1 pilot dashboard created; production database pending.
 
 - The teacher-side plan is recorded in `teacher-notes/teacher-dashboard-plan.md`.
 - Recommendation is to reuse the existing CertReady-style dashboard/auth/grading pattern rather than build a math-only teacher dashboard.
-- `teacher-dashboard.html` is a separate teacher-facing area with gradebook, roster controls, AI review queue, and lesson preview links.
-- Like photography, lesson headers in the teacher gradebook link to student lesson previews.
-- The current static dashboard does not yet save rosters, passwords, resets, progress, or teacher overrides.
+- `teacher-dashboard.html` is a separate teacher-facing gradebook area.
+- The gradebook shows the 20-lesson course shape, with Lesson 1 active and Lessons 2-20 visible as upcoming columns.
+- Lesson 1 scores open `teacher-student.html`, which shows the work sample, grading fields, print button, AI regrade button, and reset lesson button.
+- The local preview can save Lesson 1 answers in browser storage for a test-student workflow.
+- `supabase/math-pilot-schema.sql` defines the production pilot database structure for accounts, lesson attempts, question responses, teacher overrides, review flags, class trends, and remediation assignments.
+- The current static dashboard does not yet use a shared Supabase database. A real multi-user pilot requires a new Supabase project and deployment with environment variables.
 
 ## Automated Text Checks Run
 
@@ -108,7 +111,8 @@ Status: Static teacher dashboard preview created.
 - First-pass SVG infographic assets exist, but they need visual teacher review and can be replaced with polished graphics later.
 - More question variety is needed before this becomes a full production retake-ready unit.
 - Full teacher dashboard behavior depends on connecting this package to the existing production app architecture.
-- The current local AI preview does not save scores or chat history; it verifies tutoring and feedback behavior only.
+- The current local AI preview saves Lesson 1 answers only in browser storage. It verifies tutoring, feedback, and the teacher workflow on one computer, not a shared class roster.
+- AI class trends and small-group suggestions need the Supabase schema to be connected before they are trustworthy for multiple students.
 
 ## Graphic Verification Rule
 
