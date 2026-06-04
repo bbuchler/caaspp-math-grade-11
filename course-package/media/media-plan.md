@@ -24,6 +24,24 @@ Media must teach a move students will use immediately. For this pilot, every vid
 | INF-04 | 04 | Explain slope and intercept in context | Annotated line graph | Before exit check |
 | INF-05 | 05 | Show input-rule-output function machine | Simple diagram | Before mini performance task |
 
+## Created Infographic Assets
+
+| Asset ID | File |
+| --- | --- |
+| INF-01 | `media/infographics/inf-01-equation-undo.svg` |
+| INF-02 | `media/infographics/inf-02-inequality-graph.svg` |
+| INF-03 | `media/infographics/inf-03-four-forms.svg` |
+| INF-04 | `media/infographics/inf-04-slope-intercept.svg` |
+| INF-05 | `media/infographics/inf-05-function-machine.svg` |
+
+## Embed Status
+
+The preview includes an embedded video frame area and a direct fallback link. Khan Academy pages may block direct iframe embedding in some environments. Before classroom release, use one of these approved embed paths:
+
+- verified YouTube embed URLs from the original Khan video where available
+- Reel-hosted or school-hosted video embeds
+- direct Khan Academy links with transcript/text fallback
+
 ## Video QA Checklist
 
 - Link opens.
@@ -32,4 +50,3 @@ Media must teach a move students will use immediately. For this pilot, every vid
 - Context questions appear directly below the video.
 - Transcript or text fallback is available.
 - Lesson can still be completed if the video is unavailable.
-

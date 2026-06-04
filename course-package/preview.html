@@ -36,6 +36,22 @@
       border-bottom: 5px solid #f2b84b;
     }
 
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand-logo {
+      width: 150px;
+      max-width: 42vw;
+      height: auto;
+      background: #fff;
+      border-radius: 6px;
+      padding: 8px;
+    }
+
     header h1 {
       margin: 0;
       font-size: clamp(1.35rem, 3vw, 2.1rem);
@@ -201,6 +217,15 @@
       margin: 10px 0 14px;
     }
 
+    .video-frame {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #0f263f;
+      margin: 10px 0;
+    }
+
     .video-box a {
       color: var(--blue);
       font-weight: 700;
@@ -294,6 +319,20 @@
       color: #503b0b;
     }
 
+    .infographic {
+      margin: 14px 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .infographic img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
     .gate {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -330,8 +369,13 @@
 </head>
 <body>
   <header>
-    <h1>CAASPP Math Success Academy</h1>
-    <p>Week 1 preview: equations, inequalities, linear functions, slope/intercepts, and function notation.</p>
+    <div class="brand-row">
+      <img class="brand-logo" src="assets/altus-logo.png" alt="Altus Schools">
+      <div>
+        <h1>CAASPP Math Success Academy</h1>
+        <p>Week 1 preview: equations, inequalities, linear functions, slope/intercepts, and function notation.</p>
+      </div>
+    </div>
   </header>
 
   <div class="shell">
@@ -409,6 +453,7 @@
       if (section.studentText) body += `<p>${escapeHtml(section.studentText)}</p>`;
       if (section.video) body += renderVideo(section);
       if (section.workedExample) body += renderWorkedExample(section.workedExample);
+      if (section.type === "teaching") body += renderInfographic(state.lessons[state.active].lessonId);
       if (section.scenario) body += `<p><strong>Scenario:</strong> ${escapeHtml(section.scenario)}</p>`;
 
       const questions = [
@@ -426,12 +471,28 @@
     }
 
     function renderVideo(section) {
+      const src = section.video.embedUrl || section.video.url;
       return `
         <div class="video-box">
           <strong>Video:</strong> <a href="${escapeHtml(section.video.url)}" target="_blank" rel="noopener">${escapeHtml(section.title)}</a>
+          <iframe class="video-frame" src="${escapeHtml(src)}" title="${escapeHtml(section.title)}" allowfullscreen></iframe>
           <p class="watch-for"><strong>Watch for:</strong> ${escapeHtml(section.watchFor)}</p>
+          <p class="watch-for">If the embedded player is blocked, use the video link above.</p>
         </div>
       `;
+    }
+
+    function renderInfographic(lessonId) {
+      const map = {
+        "01": "media/infographics/inf-01-equation-undo.svg",
+        "02": "media/infographics/inf-02-inequality-graph.svg",
+        "03": "media/infographics/inf-03-four-forms.svg",
+        "04": "media/infographics/inf-04-slope-intercept.svg",
+        "05": "media/infographics/inf-05-function-machine.svg"
+      };
+      const src = map[lessonId];
+      if (!src) return "";
+      return `<figure class="infographic"><img src="${src}" alt="Lesson ${lessonId} infographic"></figure>`;
     }
 
     function renderWorkedExample(example) {

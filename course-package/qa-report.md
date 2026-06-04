@@ -2,7 +2,7 @@
 
 ## Verdict
 
-Status: Draft pilot package ready for teacher review.
+Status: Draft pilot package ready for teacher review and preview testing.
 
 This is not yet a deployed app. It is a structured course package with Week 1 lessons, source-locking, media plan, rubrics, AI rules, and QA notes.
 
@@ -60,9 +60,9 @@ Status: Not complete.
 Status: Partial.
 
 - Video candidates are real Khan Academy links and each has contextual questions.
-- Infographic specs are written.
-- Actual infographic image files have not been created yet.
-- Video links should be tested in the final course environment or Reel workflow.
+- Infographic specs are written and first-pass SVG infographic assets exist.
+- Preview includes embedded video frames plus fallback links.
+- Khan Academy direct embeds may be blocked by the provider; video links should be tested in the final course environment or Reel workflow.
 
 ### Gate 7 - AI Supports
 
@@ -81,9 +81,9 @@ Status: Pass for draft.
 
 ## Known Risks
 
-- Khan Academy pages may need a different embed method than the older course sites, which used YouTube IDs.
+- Khan Academy pages may need a different embed method than the older course sites, which used YouTube IDs. Reel-hosted embeds may be the cleanest path.
 - The current lesson JSON is a package contract, not proof that the existing photography/drivers ed renderer can display every math item type.
-- The course needs actual infographic image assets before media Gate 6 can fully pass.
+- First-pass SVG infographic assets exist, but they need visual teacher review and can be replaced with polished graphics later.
 - More question variety is needed before this becomes a full production retake-ready unit.
 
 ## Recommended Next Build Step
