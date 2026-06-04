@@ -68,7 +68,9 @@ Teacher review tools can receive answer keys. Student tutoring tools should not 
 
 ## Video Question Accuracy
 
-The current V1 video questions are topic-aligned to the selected videos and lesson objectives. They are not yet transcript-locked.
+The Lesson 01 video questions are transcript-verified using the teacher-provided transcript for the YouTube/Khan video "Level one linear equations."
+
+The remaining V1 video questions are topic-aligned to the selected videos and lesson objectives. They are not yet transcript-locked.
 
 Before classroom release, each video question should be one of these:
 
@@ -86,4 +88,3 @@ For the first release, make the video questions mostly lesson-anchored:
 - "What does the number inside f(3) mean?"
 
 Those are safe because the lesson itself teaches the answer. Later, if we pull full transcripts through Reel or another source, we can make tighter timestamp questions.
-

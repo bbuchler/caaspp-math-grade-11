@@ -8,7 +8,7 @@ Media must teach a move students will use immediately. For this pilot, every vid
 
 | Lesson | Video | Placement | Student action |
 | --- | --- | --- | --- |
-| 01 | Linear equations 1 | After quick start | Answer inverse-operation questions, then solve a similar equation. |
+| 01 | Level one linear equations | After quick start | Answer transcript-verified questions about 5x, coefficients, dividing both sides, and checking solutions. |
 | 02 | Solving and graphing linear inequalities | After quick start | Identify open/closed boundary and shading direction. |
 | 03 | Graphing a linear equation | Before table-to-graph practice | Explain why a table helps graph a line. |
 | 04 | Finding slope and intercepts from tables | Before slope/intercept practice | Identify change in y over change in x and intercept meaning. |
@@ -29,6 +29,7 @@ Media must teach a move students will use immediately. For this pilot, every vid
 | Asset ID | File |
 | --- | --- |
 | INF-01 | `media/infographics/inf-01-equation-undo.svg` |
+| INF-01A | `media/infographics/lesson-01-undo-the-equation-guide.png` |
 | INF-02 | `media/infographics/inf-02-inequality-graph.svg` |
 | INF-03 | `media/infographics/inf-03-four-forms.svg` |
 | INF-04 | `media/infographics/inf-04-slope-intercept.svg` |
@@ -58,7 +59,8 @@ Graphic status values:
 
 | Asset ID | Status | Notes |
 | --- | --- | --- |
-| INF-01 | needs revision | Functional placeholder. Replace with real-world sticker fundraiser imagery plus clean HTML math labels. |
+| INF-01 | replaced | Functional placeholder replaced in preview by INF-01A. |
+| INF-01A | approved for draft | Full-size visual inspection completed. Core math is correct: `4x + 18 = 46`, `4x = 28`, `x = 7`. Minor final-copy caveats: "packs earned $28" should mean sticker-pack sales earned $28, and the quick-reference table appears cropped at the bottom. Use near overview video for draft; revise before final classroom approval if source editing is possible. |
 | INF-02 | needs revision | Functional placeholder. Replace with real-world lunch/budget imagery plus number-line overlay. |
 | INF-03 | needs revision | Functional placeholder. Replace with rideshare route imagery plus table/equation overlay. |
 | INF-04 | needs revision | Functional placeholder. Replace with spirit shirt fundraiser imagery plus slope/intercept overlay. |
@@ -66,11 +68,19 @@ Graphic status values:
 
 ## Embed Status
 
-The preview includes an embedded video frame area and a direct fallback link. Khan Academy pages may block direct iframe embedding in some environments. Before classroom release, use one of these approved embed paths:
+The preview includes an embedded video frame area and a direct fallback link. Khan Academy pages may block direct iframe embedding in some environments. When a Khan Academy video has a YouTube version, use the YouTube embed URL or a Reel-hosted embed instead of directly embedding the Khan page.
+
+Approved embed paths:
 
 - verified YouTube embed URLs from the original Khan video where available
 - Reel-hosted or school-hosted video embeds
 - direct Khan Academy links with transcript/text fallback
+
+Lesson 01 now uses:
+
+```text
+https://www.youtube.com/embed/bAerID24QJ0
+```
 
 ## Video QA Checklist
 

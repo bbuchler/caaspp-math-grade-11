@@ -4,10 +4,21 @@
 
 - Lesson: 01
 - Purpose: Help students choose inverse operations in the correct order.
-- Format: Two-column process card.
+- Format: Real-world sticker-pack scenario guide or two-column process card.
 - Required labels: "Operation in equation", "Undo move", "Keep both sides balanced", "Check in original equation".
 - Do not include: Extra algebra rules not used in Lesson 01.
 - Alt text: A chart showing how addition, subtraction, multiplication, and division are undone when solving equations.
+
+## INF-01A - Undo The Equation Math Guide
+
+- Lesson: 01
+- File: `media/infographics/lesson-01-undo-the-equation-guide.png`
+- Purpose: Give students a visual overview of inverse operations and the sticker-pack scenario before practice.
+- Placement: Near the overview video or immediately after the video questions.
+- QA status: Approved for draft after visual inspection.
+- Math check: Correct solution flow: `4x + 18 = 46`, subtract 18 to get `4x = 28`, divide by 4 to get `x = 7`.
+- Revision note: If editable, change "packs earned $28 total" to "sticker-pack sales earned $28" and make sure the quick-reference table is not cropped.
+- Alt text: A colorful math guide showing balanced scales, inverse operations, and the sticker-pack equation `4x + 18 = 46` solved to `x = 7`.
 
 ## INF-02 - Inequality Graph Decision Table
 
@@ -40,4 +51,3 @@
 - Format: Input-rule-output diagram.
 - Required labels: "input", "rule", "output", "f(3) means input 3".
 - Alt text: A function machine diagram showing an input number going through a rule to produce an output.
-

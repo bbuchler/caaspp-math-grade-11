@@ -32,30 +32,53 @@
     {
       "id": "video",
       "type": "video",
-      "title": "Watch: Linear equations 1",
+      "title": "Watch: Level one linear equations",
       "video": {
-        "provider": "khanacademy",
-        "url": "https://www.khanacademy.org/video/algebra-linear-equations-1",
+        "provider": "youtube",
+        "url": "https://www.youtube.com/watch?v=bAerID24QJ0",
+        "embedUrl": "https://www.youtube.com/embed/bAerID24QJ0",
         "sourceRef": "V1",
         "transcriptRequired": true
       },
-      "watchFor": "Watch for the moment the teacher uses the opposite operation to isolate the variable.",
+      "watchFor": "Watch how the teacher turns 5x = 20 into a question you can answer, then shows the systematic divide-by-the-coefficient method.",
       "contextQuestions": [
         {
           "id": "l1-vq1",
           "type": "short_answer",
-          "prompt": "When a number is multiplying the variable, what opposite operation helps isolate the variable?",
-          "answer": "division",
+          "prompt": "In the video, what does 5x mean?",
+          "answer": "5 times x",
           "grading": "deterministic",
-          "feedback": "Use division to undo multiplication."
+          "feedback": "The video explains that a number written next to a variable means multiplication, so 5x means 5 times x."
         },
         {
           "id": "l1-vq2",
+          "type": "multiple_choice",
+          "prompt": "For 5x = 20, what operation does the teacher use to isolate x?",
+          "options": [
+            {"value": "A", "text": "Add 5 to both sides"},
+            {"value": "B", "text": "Subtract 5 from both sides"},
+            {"value": "C", "text": "Divide both sides by 5"},
+            {"value": "D", "text": "Multiply both sides by 20"}
+          ],
+          "answer": "C",
+          "grading": "deterministic",
+          "feedback": "The coefficient is 5, so divide both sides by 5 to get x = 4."
+        },
+        {
+          "id": "l1-vq3",
           "type": "short_answer",
-          "prompt": "Why does the teacher do the same operation to both sides of the equation?",
+          "prompt": "The video says the coefficient is the number being multiplied by x. In -5/6x = 7/8, what is the coefficient?",
+          "answer": "-5/6",
+          "grading": "deterministic",
+          "feedback": "The coefficient is -5/6 because that is the number multiplying x."
+        },
+        {
+          "id": "l1-vq4",
+          "type": "short_answer",
+          "prompt": "Why does the teacher check the answer by substituting it back into the original equation?",
           "grading": "ai_rubric",
           "rubricId": "math-explanation-3",
-          "feedback": "A strong answer says that keeping both sides balanced preserves the equality."
+          "feedback": "A strong answer says checking proves the solution makes the original equation true."
         }
       ]
     },
@@ -152,4 +175,3 @@
   },
   "teacherReviewTriggers": ["low_ai_confidence", "off_topic_explanation", "rubric_score_1_or_lower"]
 }
-

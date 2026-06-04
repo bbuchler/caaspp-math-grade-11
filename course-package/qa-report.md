@@ -59,12 +59,14 @@ Status: Not complete.
 
 Status: Partial.
 
-- Video candidates are real Khan Academy links and each has contextual questions.
+- Video candidates are real links and each has contextual questions.
+- Lesson 01 now uses a YouTube embed URL from the Khan video and transcript-verified questions.
 - Infographic specs are written and first-pass SVG infographic assets exist.
 - Preview includes embedded video frames plus fallback links.
-- Khan Academy direct embeds may be blocked by the provider; video links should be tested in the final course environment or Reel workflow.
+- Khan Academy direct embeds may be blocked by the provider. Future lessons should use YouTube embed URLs or Reel-hosted embeds where possible.
 - Current SVG graphics are marked `needs revision`, not approved for classroom release.
 - Future real-world/generated graphics must pass visual QA before approval.
+- Lesson 01 NotebookLM infographic was visually inspected and inserted into preview. It is approved for draft use with minor final-copy caveats.
 
 ### Gate 7 - AI Supports
 
@@ -83,7 +85,7 @@ Status: Pass for draft.
 
 ## Known Risks
 
-- Khan Academy pages may need a different embed method than the older course sites, which used YouTube IDs. Reel-hosted embeds may be the cleanest path.
+- Khan Academy pages may need a different embed method than the older course sites, which used YouTube IDs. Lesson 01 confirms the better pattern: use YouTube embed when available; Reel-hosted embeds may be the cleanest path for teacher-created overviews.
 - The current lesson JSON is a package contract, not proof that the existing photography/drivers ed renderer can display every math item type.
 - First-pass SVG infographic assets exist, but they need visual teacher review and can be replaced with polished graphics later.
 - More question variety is needed before this becomes a full production retake-ready unit.

@@ -22,7 +22,7 @@
 
 | Video ID | Title | URL | Provider | Lesson | Why this video is allowed |
 | --- | --- | --- | --- | --- | --- |
-| V1 | Linear equations 1 | https://www.khanacademy.org/video/algebra-linear-equations-1 | Khan Academy | 01 | Short direct review of solving one-variable linear equations. |
+| V1 | Level one linear equations | https://www.youtube.com/watch?v=bAerID24QJ0 | YouTube / Khan Academy | 01 | Short direct review of solving one-variable linear equations. Transcript provided by teacher on 2026-06-04 and used for video questions. |
 | V2 | Solving and graphing linear inequalities | https://www.khanacademy.org/video/solving-and-graphing-linear-inequalities-in-two-variables-1 | Khan Academy | 02 | Models open/closed boundary logic and graphing inequalities. |
 | V3 | Graphing a linear equation: y=2x+7 | https://www.khanacademy.org/video/graphs-of-linear-equations | Khan Academy | 03 | Shows table-to-graph reasoning for linear equations. |
 | V4 | Finding slope and intercepts from tables | https://www.khanacademy.org/math/algebra-1-fl-best/x91c6a5a4a9698230%3Aanalyzing-linear-functions/x91c6a5a4a9698230%3Afinding-key-features-of-linear-functions/v/find-slope-intercepts-table | Khan Academy | 04 | Supports rate of change and intercept interpretation. |
@@ -35,6 +35,8 @@
 - Use teacher-created questions for practice, but tag every question to a lesson objective.
 - Keep math objective grading deterministic where possible.
 - Use AI only for explanation quality, error analysis, and modeling/rubric feedback.
+- If a Khan Academy video has a YouTube version, use the YouTube embed URL or Reel embed for the page instead of directly iframing the Khan page.
+- When a transcript is available, write video questions from transcript-verified moments or keep them lesson-anchored.
 
 ## Open Questions
 
@@ -43,4 +45,3 @@
 | Does the final app need direct YouTube embed IDs or can it accept Khan Academy URLs? | Existing course sites used YouTube IDs. Reel may handle URLs differently. | Store provider, URL, and contextual questions. Add embed IDs later if needed. |
 | Should this be a four-week intensive, advisory course, or self-paced intervention? | Affects lesson length and gates. | Draft Week 1 as five 35-45 minute lessons. |
 | Will students use Desmos during practice? | Grade 11 test has graphing calculator available for some math/science items. | Include calculator-friendly extension tasks, but do not make every item calculator-dependent. |
-
