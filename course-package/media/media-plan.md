@@ -8,7 +8,7 @@ Media must teach a move students will use immediately. For this pilot, every vid
 
 | Lesson | Video | Placement | Student action |
 | --- | --- | --- | --- |
-| Module 1 | NotebookLM overview: Deconstructing the Equation | Course Home / Big Picture | Watch the launch overview before choosing the first daily lesson. |
+| 01 | NotebookLM overview: Deconstructing the Equation | Start of Lesson 01 | Watch the launch overview before practicing inverse operations. |
 | 01 | Level one linear equations | After quick start | Answer transcript-verified questions about 5x, coefficients, dividing both sides, and checking solutions. |
 | 02 | Solving and graphing linear inequalities | After quick start | Identify open/closed boundary and shading direction. |
 | 03 | Graphing a linear equation | Before table-to-graph practice | Explain why a table helps graph a line. |
@@ -83,7 +83,7 @@ Lesson 01 now uses:
 https://www.youtube.com/embed/bAerID24QJ0
 ```
 
-Module 1 overview video uses:
+Lesson 01 overview video uses:
 
 ```text
 media/videos/module-01-overview-deconstructing-the-equation-web.mp4

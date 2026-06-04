@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CAASPP Math - Teacher Dashboard</title>
+  <style>
+    :root {
+      --ink: #17202a;
+      --muted: #5d6b7a;
+      --line: #d9e1e8;
+      --soft: #f5f8fb;
+      --panel: #ffffff;
+      --blue: #2457a6;
+      --gold: #b7791f;
+      --green: #0f7a3f;
+      --red: #b42318;
+      --shadow: 0 10px 28px rgba(23, 32, 42, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--ink);
+      background: #eef3f7;
+      line-height: 1.45;
+    }
+
+    header {
+      background: #0f263f;
+      color: #fff;
+      border-bottom: 5px solid #f2b84b;
+      padding: 18px clamp(16px, 4vw, 40px);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo {
+      width: 130px;
+      max-width: 38vw;
+      background: #fff;
+      border-radius: 6px;
+      padding: 7px;
+    }
+
+    h1, h2, h3, p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 2px;
+      font-size: clamp(1.3rem, 3vw, 2rem);
+      letter-spacing: 0;
+    }
+
+    header p {
+      margin-bottom: 0;
+      color: #d7e3ef;
+    }
+
+    .header-actions,
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    button,
+    .nav-link {
+      border: 0;
+      border-radius: 6px;
+      padding: 9px 12px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .primary { background: var(--blue); color: #fff; }
+    .secondary { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+    .accent { background: var(--gold); color: #fff; }
+
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 22px clamp(14px, 3vw, 36px) 40px;
+    }
+
+    .summary-grid,
+    .dashboard-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .summary-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-bottom: 18px;
+    }
+
+    .dashboard-grid {
+      grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.75fr);
+      align-items: start;
+    }
+
+    .panel,
+    .metric {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .metric {
+      padding: 14px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.5rem;
+      color: var(--blue);
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .panel header {
+      background: var(--soft);
+      color: var(--ink);
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      padding: 14px 16px;
+    }
+
+    .panel header h2,
+    .panel header h3 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .panel-body {
+      padding: 16px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .tabs button {
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--ink);
+    }
+
+    .tabs button.active {
+      background: #e9f3ff;
+      color: #153d72;
+      border-color: #b6d2f1;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 820px;
+      background: #fff;
+    }
+
+    th,
+    td {
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      background: #f8fafc;
+      color: #344255;
+      font-size: 0.84rem;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .score {
+      font-weight: 800;
+    }
+
+    .good { color: var(--green); }
+    .warn { color: #8a5b00; }
+    .bad { color: var(--red); }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 3px 8px;
+      background: #eef3f7;
+      color: #39485a;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .lesson-link {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px dotted currentColor;
+    }
+
+    .lesson-link:hover {
+      color: var(--blue);
+    }
+
+    .queue-item,
+    .student-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fff;
+      margin-bottom: 10px;
+    }
+
+    .queue-item p,
+    .student-card p {
+      color: var(--muted);
+      margin-bottom: 10px;
+      font-size: 0.92rem;
+    }
+
+    .small-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .small-actions button {
+      padding: 6px 9px;
+      font-size: 0.82rem;
+    }
+
+    @media (max-width: 960px) {
+      .summary-grid,
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="topbar">
+      <div class="brand">
+        <img class="brand-logo" src="assets/altus-logo.png" alt="Altus Schools">
+        <div>
+          <h1>CAASPP Math - Teacher Dashboard</h1>
+          <p>Module 1 gradebook, roster, review queue, and lesson controls.</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a class="nav-link secondary" href="preview.html">Student View</a>
+        <button class="secondary" type="button">Change Password</button>
+        <button class="secondary" type="button">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="summary-grid" aria-label="Module summary">
+      <div class="metric"><strong>5</strong><span>Module 1 lessons</span></div>
+      <div class="metric"><strong>24</strong><span>Students enrolled</span></div>
+      <div class="metric"><strong>78%</strong><span>Average progress</span></div>
+      <div class="metric"><strong>6</strong><span>Responses to review</span></div>
+    </section>
+
+    <section class="panel" style="margin-bottom: 18px;">
+      <header><h2>Teacher Controls</h2></header>
+      <div class="panel-body actions">
+        <button class="primary" type="button">+ Add Student</button>
+        <button class="primary" type="button">+ Add Teacher</button>
+        <button class="secondary" type="button">Export CSV</button>
+        <button class="secondary" type="button">Print Gradebook</button>
+        <button class="accent" type="button">Open AI Review Queue</button>
+      </div>
+    </section>
+
+    <div class="dashboard-grid">
+      <section class="panel">
+        <header><h2>Module 1 Gradebook</h2></header>
+        <div class="panel-body">
+          <div class="tabs" aria-label="Lesson filter">
+            <button class="active" type="button">All Lessons</button>
+            <button type="button">Lesson 01</button>
+            <button type="button">Lesson 02</button>
+            <button type="button">Lesson 03</button>
+            <button type="button">Lesson 04</button>
+            <button type="button">Lesson 05</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>Progress</th>
+                  <th><a class="lesson-link" href="preview.html?lesson=01" title="Preview Lesson 01">L01</a></th>
+                  <th><a class="lesson-link" href="preview.html?lesson=02" title="Preview Lesson 02">L02</a></th>
+                  <th><a class="lesson-link" href="preview.html?lesson=03" title="Preview Lesson 03">L03</a></th>
+                  <th><a class="lesson-link" href="preview.html?lesson=04" title="Preview Lesson 04">L04</a></th>
+                  <th><a class="lesson-link" href="preview.html?lesson=05" title="Preview Lesson 05">L05</a></th>
+                  <th>Flags</th>
+                  <th>Manage</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Ana Martinez</strong><br><span class="tag">active</span></td>
+                  <td>5 / 5</td>
+                  <td class="score good">92%</td>
+                  <td class="score good">88%</td>
+                  <td class="score good">90%</td>
+                  <td class="score warn">76%</td>
+                  <td class="score good">84%</td>
+                  <td><span class="tag">1 review</span></td>
+                  <td><div class="small-actions"><button class="secondary" type="button">View</button><button class="secondary" type="button">Reset</button></div></td>
+                </tr>
+                <tr>
+                  <td><strong>Jordan Lee</strong><br><span class="tag">active</span></td>
+                  <td>3 / 5</td>
+                  <td class="score good">85%</td>
+                  <td class="score warn">72%</td>
+                  <td class="score bad">58%</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td><span class="tag">3 reviews</span></td>
+                  <td><div class="small-actions"><button class="secondary" type="button">View</button><button class="secondary" type="button">Reset</button></div></td>
+                </tr>
+                <tr>
+                  <td><strong>Maya Singh</strong><br><span class="tag">active</span></td>
+                  <td>2 / 5</td>
+                  <td class="score good">95%</td>
+                  <td class="score good">91%</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td><span class="tag">clear</span></td>
+                  <td><div class="small-actions"><button class="secondary" type="button">View</button><button class="secondary" type="button">Reset</button></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <aside>
+        <section class="panel" style="margin-bottom: 14px;">
+          <header><h3>AI Review Queue</h3></header>
+          <div class="panel-body">
+            <div class="queue-item">
+              <strong>Jordan Lee - Lesson 03</strong>
+              <p>Explanation mentions slope but does not connect it to the real situation.</p>
+              <div class="small-actions"><button class="primary" type="button">Review</button><button class="secondary" type="button">Override</button></div>
+            </div>
+            <div class="queue-item">
+              <strong>Ana Martinez - Lesson 04</strong>
+              <p>AI confidence is low on an intercept interpretation response.</p>
+              <div class="small-actions"><button class="primary" type="button">Review</button><button class="secondary" type="button">Override</button></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <header><h3>Roster Tools</h3></header>
+          <div class="panel-body">
+            <div class="student-card">
+              <strong>Account Actions</strong>
+              <p>Add students, add teachers, reset passwords, deactivate accounts, and send welcome instructions.</p>
+              <div class="small-actions">
+                <button class="primary" type="button">Add Account</button>
+                <button class="secondary" type="button">Reset Password</button>
+              </div>
+            </div>
+            <div class="student-card">
+              <strong>Lesson Actions</strong>
+              <p>Reset a lesson attempt, reopen a check, re-run AI grading, or print a work sample.</p>
+              <div class="small-actions">
+                <button class="secondary" type="button">Reset Lesson</button>
+                <button class="secondary" type="button">Print Work</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </main>
+</body>
+</html>

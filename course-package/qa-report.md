@@ -61,8 +61,8 @@ Status: Not complete.
 Status: Pass for Module 1 draft, partial for future modules.
 
 - Video candidates are real links and each has contextual questions.
-- Module 1 overview video is inserted on the Course Home page.
-- Module 1 overview video was compressed for web playback and given a poster image.
+- Lesson 01 overview video is inserted at the start of Lesson 01, not on Course Home.
+- Lesson 01 overview video was compressed for web playback and given a poster image.
 - Lesson 01 now uses a YouTube embed URL from the Khan video and transcript-verified questions.
 - Infographic specs are written and first-pass SVG infographic assets exist.
 - Preview includes embedded video frames plus fallback links.
@@ -86,11 +86,13 @@ Status: Pass for local Module 1 draft.
 
 ### Gate 8 - Teacher Dashboard
 
-Status: Architecture noted, not implemented in preview.
+Status: Static teacher dashboard preview created.
 
 - The teacher-side plan is recorded in `teacher-notes/teacher-dashboard-plan.md`.
 - Recommendation is to reuse the existing CertReady-style dashboard/auth/grading pattern rather than build a math-only teacher dashboard.
-- The current preview does not manage rosters, passwords, resets, saved progress, or teacher overrides.
+- `teacher-dashboard.html` is a separate teacher-facing area with gradebook, roster controls, AI review queue, and lesson preview links.
+- Like photography, lesson headers in the teacher gradebook link to student lesson previews.
+- The current static dashboard does not yet save rosters, passwords, resets, progress, or teacher overrides.
 
 ## Automated Text Checks Run
 

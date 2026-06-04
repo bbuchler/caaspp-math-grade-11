@@ -26,6 +26,14 @@ http://127.0.0.1:8766/course-package/preview.html
 
 The AI-enabled preview uses `/api/chat` and `/api/grade`, which require `GEMINI_API_KEY` in `.env` or the deployment environment. The `.env` file is ignored by git and should not be committed.
 
+Teacher dashboard preview:
+
+```text
+http://127.0.0.1:8766/course-package/teacher-dashboard.html
+```
+
+The student course and teacher dashboard are separate areas. The teacher dashboard includes gradebook-style lesson links that open student lesson previews.
+
 ## Current Package
 
 - `course-package/source-lock.md` - source list and open questions
@@ -35,6 +43,7 @@ The AI-enabled preview uses `/api/chat` and `/api/grade`, which require `GEMINI_
 - `course-package/media/` - video and infographic plan
 - `course-package/assessments/` - quiz bank and rubrics
 - `course-package/ai/` - Study Buddy and grading rules
+- `course-package/teacher-dashboard.html` - static teacher dashboard preview
 - `course-package/qa-report.md` - readiness and known risks
 
 ## Note

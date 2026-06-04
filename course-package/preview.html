@@ -310,40 +310,6 @@
       color: #24476b;
     }
 
-    .study-buddy {
-      border: 1px solid #b9d7d2;
-      background: #f2fbf9;
-    }
-
-    .chat-log {
-      display: grid;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .chat-message {
-      border-radius: 8px;
-      padding: 10px 12px;
-      max-width: 860px;
-    }
-
-    .chat-message.assistant {
-      background: #ffffff;
-      border: 1px solid #cfe5e1;
-    }
-
-    .chat-message.user {
-      justify-self: end;
-      background: #e9f3ff;
-      border: 1px solid #c8dff7;
-    }
-
-    .ai-note {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
     .question {
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -476,6 +442,200 @@
       margin-top: 12px;
     }
 
+    .study-buddy-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: #fff;
+      border: 0;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(23, 32, 42, 0.22);
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .study-buddy-btn:hover {
+      background: #9a6216;
+      transform: scale(1.05);
+    }
+
+    .study-buddy-btn.active {
+      background: #4b5563;
+    }
+
+    .study-buddy-panel {
+      position: fixed;
+      bottom: 92px;
+      right: 24px;
+      width: 370px;
+      height: 520px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 12px 36px rgba(23, 32, 42, 0.2);
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(18px) scale(0.96);
+      pointer-events: none;
+      transition: opacity 0.22s, transform 0.22s;
+    }
+
+    .study-buddy-panel.open {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .sb-header {
+      background: #123354;
+      color: #fff;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .sb-title {
+      font-weight: 700;
+    }
+
+    .sb-close {
+      background: none;
+      border: 0;
+      color: #fff;
+      font-size: 1.4rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 4px;
+    }
+
+    .sb-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #f5f8fb;
+    }
+
+    .sb-msg {
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: 16px;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      word-wrap: break-word;
+    }
+
+    .sb-msg-bot {
+      background: #fff;
+      color: var(--ink);
+      align-self: flex-start;
+      border: 1px solid var(--line);
+      border-bottom-left-radius: 4px;
+    }
+
+    .sb-msg-bot p {
+      margin: 0 0 6px;
+    }
+
+    .sb-msg-bot p:last-child {
+      margin-bottom: 0;
+    }
+
+    .sb-msg-user {
+      background: var(--blue);
+      color: #fff;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+
+    .sb-typing {
+      display: flex;
+      gap: 4px;
+      padding: 12px 18px;
+    }
+
+    .sb-typing span {
+      width: 8px;
+      height: 8px;
+      background: #9aa8b6;
+      border-radius: 50%;
+      animation: sb-bounce 1.2s infinite;
+    }
+
+    .sb-typing span:nth-child(2) { animation-delay: 0.15s; }
+    .sb-typing span:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes sb-bounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-6px); }
+    }
+
+    .sb-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .sb-suggestion {
+      background: #fff;
+      border: 1px solid var(--gold);
+      color: #6d4a00;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+
+    .sb-suggestion:hover {
+      background: #fff8e6;
+    }
+
+    .sb-input-area {
+      display: flex;
+      gap: 8px;
+      padding: 10px;
+      border-top: 1px solid var(--line);
+      background: #fff;
+      flex-shrink: 0;
+    }
+
+    .sb-input {
+      flex: 1;
+      border: 1px solid #b9c7d5;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font: inherit;
+      outline: none;
+    }
+
+    .sb-send {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 0;
+      background: var(--blue);
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
     @media (max-width: 860px) {
       .shell {
         grid-template-columns: 1fr;
@@ -492,6 +652,20 @@
       .home-grid,
       .module-grid {
         grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .study-buddy-panel {
+        width: calc(100% - 16px);
+        height: calc(100% - 120px);
+        right: 8px;
+        bottom: 88px;
+      }
+
+      .study-buddy-btn {
+        right: 16px;
+        bottom: 16px;
       }
     }
   </style>
@@ -521,46 +695,44 @@
     </aside>
 
     <main>
-      <div class="notice">
-        <strong>Preview mode:</strong> This shows the student-facing course package. It does not save scores or call AI yet.
-      </div>
       <div id="lesson-root"></div>
     </main>
+  </div>
+
+  <button class="study-buddy-btn" type="button" aria-label="Open Study Buddy">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  </button>
+  <div class="study-buddy-panel" aria-live="polite">
+    <div class="sb-header">
+      <span class="sb-title">Study Buddy</span>
+      <button class="sb-close" type="button" aria-label="Close Study Buddy">&times;</button>
+    </div>
+    <div class="sb-messages"></div>
+    <div class="sb-input-area">
+      <input type="text" class="sb-input" placeholder="Ask about this lesson..." maxlength="500">
+      <button class="sb-send" type="button" aria-label="Send">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
   </div>
 
   <script>
     const lessonIds = ["01", "02", "03", "04", "05"];
     const courseHome = {
       title: "CAASPP Math Success Academy",
-      subtitle: "A four-week test-prep course built around short lessons, real situations, practice, feedback, and explain-your-thinking math.",
+      subtitle: "Build confidence with the math moves that show up again and again on CAASPP.",
       currentModule: "Module 1: Linear Foundations",
-      currentModuleSummary: "Week 1 builds the core moves students need for many CAASPP questions: undo an equation, read an inequality as a range, connect words, tables, graphs, and equations, and explain slope, intercepts, and function notation in context.",
+      currentModuleSummary: "This module starts with equations, then moves into inequalities, tables, graphs, slope, intercepts, and function notation. The goal is to see the same linear relationship in different forms and explain what it means.",
       overviewVideo: {
-        title: "Module 1 Overview: Deconstructing the Equation",
+        title: "Lesson 1 Overview: Deconstructing the Equation",
         src: "media/videos/module-01-overview-deconstructing-the-equation-web.mp4",
         poster: "media/videos/module-01-overview-deconstructing-the-equation-poster.png"
       },
-      modules: [
-        {
-          title: "Module 1: Linear Foundations",
-          status: "Pilot ready",
-          focus: "Equations, inequalities, linear functions, slope/intercepts, and function notation."
-        },
-        {
-          title: "Module 2: Modeling And Multi-Step Problems",
-          status: "Planned",
-          focus: "Longer CAASPP-style situations where students choose a strategy and justify it."
-        },
-        {
-          title: "Module 3: Graphs, Data, And Reasoning",
-          status: "Planned",
-          focus: "Reading visual information, comparing quantities, and explaining what a graph or table means."
-        },
-        {
-          title: "Module 4: Mixed Review And Performance Tasks",
-          status: "Planned",
-          focus: "Timed practice, short constructed responses, and mixed-topic performance tasks."
-        }
+      moduleMoves: [
+        "Undo equations while keeping both sides balanced.",
+        "Read inequalities as ranges of possible values.",
+        "Connect a situation to a table, graph, and equation.",
+        "Explain slope, intercepts, and function notation in context."
       ]
     };
     const state = { lessons: [], active: null };
@@ -579,6 +751,19 @@
       }
       state.lessons = loaded;
       renderList();
+      renderInitialRoute();
+    }
+
+    function renderInitialRoute() {
+      const params = new URLSearchParams(window.location.search);
+      const lessonParam = params.get("lesson");
+      if (lessonParam) {
+        const index = state.lessons.findIndex((lesson) => lesson.lessonId === lessonParam.padStart(2, "0"));
+        if (index >= 0) {
+          renderLesson(index);
+          return;
+        }
+      }
       renderHome();
     }
 
@@ -597,7 +782,10 @@
 
       const homeButton = document.getElementById("home-button");
       homeButton.classList.toggle("active", state.active === null);
-      homeButton.addEventListener("click", renderHome);
+      homeButton.addEventListener("click", () => {
+        history.replaceState(null, "", "preview.html");
+        renderHome();
+      });
     }
 
     function renderHome() {
@@ -612,31 +800,25 @@
           <div class="target">${escapeHtml(courseHome.currentModule)}</div>
         </section>
         <section class="section-card">
-          <header><h3>Big Picture For Week 1</h3></header>
+          <header><h3>What You Are Working Toward</h3></header>
           <div class="section-body">
             <p>${escapeHtml(courseHome.currentModuleSummary)}</p>
-            ${renderOverviewVideo()}
             <div class="home-grid">
-              <div class="module-card current">
-                <strong>Student flow</strong>
-                <span>Quick start, embedded video with questions, visual guide, worked example, practice, exit check, and next-step feedback.</span>
-              </div>
-              <div class="module-card">
-                <strong>Teacher view</strong>
-                <span>Objective items grade instantly. Written reasoning is rubric-graded in the full app and flagged when it needs teacher review.</span>
-              </div>
+              ${courseHome.moduleMoves.map((move) => `
+                <div class="module-card"><span>${escapeHtml(move)}</span></div>
+              `).join("")}
             </div>
           </div>
         </section>
         <section class="section-card">
-          <header><h3>Course Modules</h3></header>
-          <div class="section-body module-grid">
-            ${courseHome.modules.map((module, index) => `
-              <div class="module-card ${index === 0 ? "current" : ""}">
-                <strong>${escapeHtml(module.title)}</strong>
-                <span>${escapeHtml(module.status)} - ${escapeHtml(module.focus)}</span>
-              </div>
-            `).join("")}
+          <header><h3>How The Lessons Work</h3></header>
+          <div class="section-body">
+            <ol class="steps">
+              <li>Start with a quick real-world problem.</li>
+              <li>Watch or study the visual explanation.</li>
+              <li>Practice the skill with immediate feedback.</li>
+              <li>Use the exit check to see whether you are ready for the next lesson.</li>
+            </ol>
           </div>
         </section>
         <section class="section-card">
@@ -656,13 +838,18 @@
     function renderOverviewVideo() {
       const video = courseHome.overviewVideo;
       return `
-        <div class="video-box">
-          <strong>${escapeHtml(video.title)}</strong>
-          <video class="overview-video" controls preload="metadata" poster="${escapeHtml(video.poster)}">
-            <source src="${escapeHtml(video.src)}" type="video/mp4">
-          </video>
-          <p class="watch-for">Use this as the Module 1 launch: students get the big picture first, then move into the daily practice and exit checks.</p>
-        </div>
+        <section class="section-card">
+          <header><h3>Start Here: Deconstructing the Equation</h3></header>
+          <div class="section-body">
+            <p>Watch this quick overview before you start the first problem. It gives you the main idea for Lesson 1: solving an equation is about undoing one step at a time while keeping the equation balanced.</p>
+            <div class="video-box">
+              <strong>${escapeHtml(video.title)}</strong>
+              <video class="overview-video" controls preload="metadata" poster="${escapeHtml(video.poster)}">
+                <source src="${escapeHtml(video.src)}" type="video/mp4">
+              </video>
+            </div>
+          </div>
+        </section>
       `;
     }
 
@@ -670,6 +857,7 @@
       state.active = index;
       renderList();
       const lesson = state.lessons[index];
+      history.replaceState(null, "", `preview.html?lesson=${lesson.lessonId}`);
       const root = document.getElementById("lesson-root");
       root.innerHTML = `
         <section class="lesson-hero">
@@ -678,29 +866,11 @@
           <p>${escapeHtml(lesson.whyItMatters)}</p>
           <div class="target">${escapeHtml(lesson.learningTarget)}</div>
         </section>
-        ${renderStudyBuddy(lesson)}
+        ${lesson.lessonId === "01" ? renderOverviewVideo() : ""}
         ${lesson.sections.map(renderSection).join("")}
-        ${renderGate(lesson.gate)}
+        ${renderNextSteps(lesson)}
       `;
       root.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-
-    function renderStudyBuddy(lesson) {
-      return `
-        <section class="section-card study-buddy" data-study-buddy>
-          <header><h3>Study Buddy</h3></header>
-          <div class="section-body">
-            <div class="chat-log" data-chat-log>
-              <div class="chat-message assistant">Ask me about ${escapeHtml(lesson.title)}. I can explain the idea, check your reasoning, or make a similar practice problem without giving away the graded answer.</div>
-            </div>
-            <textarea data-chat-input placeholder="Ask about the lesson or paste your work here."></textarea>
-            <div class="actions">
-              <button class="check" type="button" data-chat-send>Ask Study Buddy</button>
-            </div>
-            <p class="ai-note">AI works when this course is served with the /api/chat backend and GEMINI_API_KEY is set. Static GitHub Pages will show the interface but cannot call the private key.</p>
-          </div>
-        </section>
-      `;
     }
 
     function renderSection(section) {
@@ -787,7 +957,7 @@
       }
 
       const reviewText = question.grading === "ai_rubric"
-        ? `Rubric graded in the full app. ${escapeHtml(question.feedback || "Your teacher will see the reasoning.")}`
+        ? escapeHtml(question.feedback || "Write a complete answer that explains your reasoning.")
         : escapeHtml(question.feedback || "Answer submitted.");
 
       return `
@@ -800,19 +970,60 @@
       `;
     }
 
-    function renderGate(gate) {
+    function lessonNextSteps(lesson) {
+      const defaults = {
+        "01": {
+          done: [
+            "Answer the video questions.",
+            "Complete the three practice problems.",
+            "Finish the exit check."
+          ],
+          retry: [
+            "Redo this equation: x + 9 = 17.",
+            "Redo this equation: 3x - 4 = 20.",
+            "For each one, write the operation you used first."
+          ],
+          challenge: "A student solves 3x + 7 = 31 and writes: 3x = 38, so x = 12.7. Explain the mistake, then solve it correctly."
+        },
+        "02": {
+          done: ["Solve the inequality.", "Choose the correct open or closed point.", "Explain which direction the graph should go."],
+          retry: ["Graph x > 4.", "Graph x <= -2.", "Write one sentence explaining each graph."],
+          challenge: "Write a school rule that could be modeled with an inequality, then graph the possible values."
+        },
+        "03": {
+          done: ["Complete the table.", "Match the table to an equation.", "Explain what the pattern means."],
+          retry: ["Make a three-row table for y = 2x + 5.", "Circle the starting value and the repeated change."],
+          challenge: "Create a real situation that matches y = 3x + 10, then explain what 3 and 10 mean."
+        },
+        "04": {
+          done: ["Identify the slope.", "Identify the intercept.", "Explain both numbers in the situation."],
+          retry: ["For y = 6x + 12, explain the 6 and the 12 in a real-world context."],
+          challenge: "Compare two plans with different starting costs and rates. Decide when one becomes better than the other."
+        },
+        "05": {
+          done: ["Evaluate the function.", "Identify input and output.", "Use the model to answer a real question."],
+          retry: ["If f(x) = 4x + 3, find f(2), f(5), and f(10)."],
+          challenge: "Change one number in your model and explain how the answer changes."
+        }
+      };
+      return defaults[lesson.lessonId] || defaults["01"];
+    }
+
+    function renderNextSteps(lesson) {
+      const next = lessonNextSteps(lesson);
       return `
         <section class="section-card">
-          <header><h3>After This Lesson</h3></header>
+          <header><h3>Finish Line</h3></header>
           <div class="section-body">
-            <p>This preview does not save progress. In the full course, the exit check above decides what happens next.</p>
+            <p>Before moving on, make sure you can do these three things:</p>
+            <ol class="steps">${next.done.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ol>
             <div class="gate">
-              <div><strong>Ready to move on</strong>${escapeHtml(gate.mastery)}</div>
-              <div><strong>If you need review</strong>${escapeHtml(gate.remediation)}</div>
+              <div><strong>If you feel ready</strong>Open the next lesson and keep going.</div>
+              <div><strong>If this still feels shaky</strong>${next.retry.map((item) => escapeHtml(item)).join(" ")}</div>
             </div>
             <div class="challenge-box">
-              <p><strong>Optional challenge:</strong> ${escapeHtml(gate.enrichment)}</p>
-              <textarea placeholder="Try the challenge here in preview mode."></textarea>
+              <p><strong>Challenge:</strong> ${escapeHtml(next.challenge)}</p>
+              <textarea placeholder="Write your challenge answer here."></textarea>
             </div>
           </div>
         </section>
@@ -843,7 +1054,7 @@
           })
           .catch(() => {
             feedback.className = "feedback review show";
-            feedback.textContent = `${feedback.dataset.review} AI grading is not connected in this preview server yet.`;
+            feedback.textContent = `I couldn't check this automatically right now. ${feedback.dataset.review}`;
           });
         return;
       }
@@ -857,41 +1068,26 @@
       const expected = Array.isArray(question.answer) ? question.answer.join(", ") : String(question.answer ?? "");
       const correct = String(answer).toLowerCase() === expected.toLowerCase();
       feedback.className = `feedback ${correct ? "correct" : "incorrect"} show`;
-      feedback.textContent = correct ? question.feedback : `Preview answer: ${expected}. ${question.feedback || ""}`;
+      feedback.textContent = correct ? question.feedback : `Check this answer: ${expected}. ${question.feedback || ""}`;
     });
-
-    document.addEventListener("click", (event) => {
-      if (!event.target.matches("[data-chat-send]")) return;
-      const panel = event.target.closest("[data-study-buddy]");
-      const input = panel.querySelector("[data-chat-input]");
-      const log = panel.querySelector("[data-chat-log]");
-      const message = input.value.trim();
-      if (!message) return;
-
-      appendChat(log, "user", message);
-      input.value = "";
-      const pending = appendChat(log, "assistant", "Thinking about this lesson...");
-
-      askStudyBuddy(message)
-        .then((reply) => {
-          pending.textContent = reply;
-        })
-        .catch(() => {
-          pending.textContent = "The Study Buddy interface is ready, but the AI backend is not connected from this preview server. Once this runs on Vercel with GEMINI_API_KEY set, this panel will answer using the current lesson context.";
-        });
-    });
-
-    function appendChat(log, role, text) {
-      const message = document.createElement("div");
-      message.className = `chat-message ${role}`;
-      message.textContent = text;
-      log.appendChild(message);
-      return message;
-    }
 
     function currentLessonContext() {
       const lesson = state.lessons[state.active];
-      if (!lesson) return {};
+      if (!lesson) {
+        return {
+          course: "CAASPP Math Success Academy",
+          module: courseHome.currentModule,
+          lessonTitle: "Course Home",
+          learningTarget: "Understand the goals for Module 1.",
+          visibleSections: [
+            {
+              title: "Big Picture For Week 1",
+              studentText: courseHome.currentModuleSummary,
+              moves: courseHome.moduleMoves
+            }
+          ]
+        };
+      }
 
       return {
         course: "CAASPP Math Success Academy",
@@ -954,6 +1150,150 @@
       return response.json();
     }
 
+    const StudyBuddy = {
+      history: [],
+      isOpen: false,
+      isLoading: false,
+
+      init() {
+        this.btn = document.querySelector(".study-buddy-btn");
+        this.panel = document.querySelector(".study-buddy-panel");
+        this.messagesEl = document.querySelector(".sb-messages");
+        this.inputEl = document.querySelector(".sb-input");
+        this.btn.addEventListener("click", () => this.toggle());
+        document.querySelector(".sb-close").addEventListener("click", () => this.toggle());
+        document.querySelector(".sb-send").addEventListener("click", () => this.handleSend());
+        this.inputEl.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            this.handleSend();
+          }
+        });
+        this.showWelcome();
+      },
+
+      toggle() {
+        this.isOpen = !this.isOpen;
+        this.panel.classList.toggle("open", this.isOpen);
+        this.btn.classList.toggle("active", this.isOpen);
+        if (this.isOpen) {
+          this.inputEl.focus();
+          this.scrollToBottom();
+        }
+      },
+
+      showWelcome() {
+        this.addBotMessage("Hi! I'm your CAASPP Math Study Buddy. Ask me to explain a step, check your reasoning, or make a similar practice problem.");
+        const suggestions = document.createElement("div");
+        suggestions.className = "sb-suggestions";
+        [
+          "Help me start Lesson 1",
+          "Quiz me on inverse operations",
+          "What does coefficient mean?"
+        ].forEach((text) => {
+          const chip = document.createElement("button");
+          chip.className = "sb-suggestion";
+          chip.type = "button";
+          chip.textContent = text;
+          chip.addEventListener("click", () => {
+            suggestions.remove();
+            this.sendMessage(text);
+          });
+          suggestions.appendChild(chip);
+        });
+        this.messagesEl.appendChild(suggestions);
+      },
+
+      formatMarkdown(text) {
+        let html = escapeHtml(text).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+        return html.split("\n").map((line) => line.trim() ? `<p>${line}</p>` : "<br>").join("");
+      },
+
+      addBotMessage(text) {
+        const message = document.createElement("div");
+        message.className = "sb-msg sb-msg-bot";
+        message.innerHTML = this.formatMarkdown(text);
+        this.messagesEl.appendChild(message);
+        this.scrollToBottom();
+      },
+
+      addUserMessage(text) {
+        const message = document.createElement("div");
+        message.className = "sb-msg sb-msg-user";
+        message.textContent = text;
+        this.messagesEl.appendChild(message);
+        this.scrollToBottom();
+      },
+
+      showTyping() {
+        const typing = document.createElement("div");
+        typing.className = "sb-msg sb-msg-bot sb-typing";
+        typing.id = "sb-typing";
+        typing.innerHTML = "<span></span><span></span><span></span>";
+        this.messagesEl.appendChild(typing);
+        this.scrollToBottom();
+      },
+
+      hideTyping() {
+        const typing = document.getElementById("sb-typing");
+        if (typing) typing.remove();
+      },
+
+      scrollToBottom() {
+        requestAnimationFrame(() => {
+          this.messagesEl.scrollTop = this.messagesEl.scrollHeight;
+        });
+      },
+
+      handleSend() {
+        const text = this.inputEl.value.trim();
+        if (!text || this.isLoading) return;
+        this.inputEl.value = "";
+        this.sendMessage(text);
+      },
+
+      async sendMessage(text) {
+        const suggestions = this.messagesEl.querySelector(".sb-suggestions");
+        if (suggestions) suggestions.remove();
+
+        this.addUserMessage(text);
+        this.history.push({ role: "user", content: text });
+        this.isLoading = true;
+        this.inputEl.disabled = true;
+        this.showTyping();
+
+        try {
+          const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              messages: this.history,
+              lessonContext: currentLessonContext()
+            })
+          });
+          const data = await response.json();
+          this.hideTyping();
+          if (response.ok && data.reply) {
+            this.history.push({ role: "assistant", content: data.reply });
+            this.addBotMessage(data.reply);
+          } else {
+            this.addBotMessage(data.error || "I couldn't answer that right now. Try again in a moment.");
+          }
+        } catch {
+          this.hideTyping();
+          this.addBotMessage("I couldn't connect right now. Try again in a moment.");
+        } finally {
+          this.isLoading = false;
+          this.inputEl.disabled = false;
+          this.inputEl.focus();
+        }
+
+        if (this.history.length > 20) {
+          this.history = this.history.slice(-20);
+        }
+      }
+    };
+
     loadLessons().catch((error) => {
       document.getElementById("lesson-root").innerHTML = `
         <section class="section-card"><div class="section-body">
@@ -963,6 +1303,7 @@
         </div></section>
       `;
     });
+    StudyBuddy.init();
   </script>
 </body>
 </html>
