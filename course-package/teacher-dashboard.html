@@ -288,6 +288,26 @@
       font-size: 0.95rem;
     }
 
+    .active-lesson-controls {
+      display: flex;
+      align-items: end;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .active-lesson-controls label {
+      display: grid;
+      gap: 5px;
+      font-weight: 800;
+      color: var(--primary);
+      min-width: 260px;
+    }
+
+    .active-lesson-controls select {
+      margin-bottom: 0;
+    }
+
     .empty-panel {
       color: var(--muted);
       margin: 0;
@@ -460,9 +480,15 @@
 
     <div class="dashboard-grid">
       <section class="panel">
-        <div class="panel-header"><h3>Active Lesson Detail: Lesson 1</h3></div>
+        <div class="panel-header"><h3 id="active-detail-title">Active Lesson Detail: Lesson 1</h3></div>
         <div class="panel-body">
-          <p class="insight-intro">This panel expands the selected lesson. In the full course, clicking a lesson score will keep the 20-lesson grid on top and show that lesson's sections here.</p>
+          <div class="active-lesson-controls">
+            <label for="active-lesson-select">
+              Choose lesson to inspect
+              <select id="active-lesson-select"></select>
+            </label>
+          </div>
+          <p class="insight-intro">The top grid shows the whole course. This panel shows where students struggled inside the selected lesson.</p>
           <div class="gradebook-table-wrapper" style="box-shadow:none;">
             <table class="gradebook-table" style="min-width:720px;">
               <thead>
@@ -590,6 +616,7 @@
     let remoteLessonOneResponses = [];
     let remoteDataLoaded = false;
     let activeModuleFilter = "all";
+    let activeDetailLessonNumber = 1;
 
     const lessonOneSections = [
       { id: "overview", label: "Overview", questionIds: ["l1-overview-reflection"] },
@@ -615,6 +642,25 @@
         preview: number === 1
       };
     });
+
+    function activeLesson() {
+      return courseLessons.find((lesson) => lesson.number === activeDetailLessonNumber) || courseLessons[0];
+    }
+
+    function activeLessonSections() {
+      return activeDetailLessonNumber === 1 ? lessonOneSections : [];
+    }
+
+    function renderActiveLessonSelector() {
+      const select = document.getElementById("active-lesson-select");
+      if (!select) return;
+      select.innerHTML = courseLessons.map((lesson) => `
+        <option value="${lesson.number}" ${lesson.number === activeDetailLessonNumber ? "selected" : ""}>
+          Lesson ${lesson.number}: ${escapeHtml(lesson.title)}${lesson.active ? "" : " (coming soon)"}
+        </option>
+      `).join("");
+      document.getElementById("active-detail-title").textContent = `Active Lesson Detail: Lesson ${activeDetailLessonNumber}`;
+    }
 
     function visibleLessons() {
       if (activeModuleFilter === "all") return courseLessons;
@@ -737,7 +783,9 @@
     function formatSection(studentSubmission, section) {
       const stats = sectionStats(studentSubmission, section);
       if (!stats.answered) return `<span class="score-empty">-</span>`;
-      return `${stats.answered}/${stats.expected}`;
+      if (!stats.maxScore) return `${stats.answered}/${stats.expected} answered`;
+      const percent = Math.round((stats.score / stats.maxScore) * 100);
+      return `<span class="${scoreClass(percent)}">${stats.score}/${stats.maxScore} (${percent}%)</span>`;
     }
 
     function formatDate(value) {
@@ -865,12 +913,24 @@
     }
 
     function renderLessonOneBreakdown() {
+      renderActiveLessonSelector();
+      if (activeDetailLessonNumber !== 1) {
+        const lesson = activeLesson();
+        document.getElementById("lesson-one-body").innerHTML = `
+          <tr>
+            <td colspan="8">
+              <span class="score-empty">Lesson ${lesson.number}: ${escapeHtml(lesson.title)} is visible in the course plan but does not have live section data yet.</span>
+            </td>
+          </tr>
+        `;
+        return;
+      }
       const accounts = remoteDataLoaded ? remoteAccounts() : getAccounts();
       const submissions = getSubmissions();
       const students = accounts.filter((account) => account.role === "student");
       const body = document.getElementById("lesson-one-body");
       if (!students.length) {
-        body.innerHTML = `<tr><td colspan="6"><span class="score-empty">No CAASPP Math students enrolled yet.</span></td></tr>`;
+        body.innerHTML = `<tr><td colspan="8"><span class="score-empty">No CAASPP Math students enrolled yet.</span></td></tr>`;
         return;
       }
       body.innerHTML = students.map((student) => {
@@ -898,38 +958,45 @@
 
     function renderInsights() {
       if (remoteDataLoaded) {
-        const flagged = (remoteGradebookRows || []).filter((row) => row.needs_teacher_review);
+        const lesson = activeLesson();
+        const flagged = (remoteGradebookRows || [])
+          .filter((row) => Number(row.lesson_number) === activeDetailLessonNumber && row.needs_teacher_review);
+        const studentCountForTrends = new Set((remoteLessonOneResponses || []).map((row) => row.student_id)).size;
         const trends = (remoteTrendRows || [])
           .filter((trend) => Number(trend.needs_support || 0) > 0)
           .slice(0, 3);
         document.getElementById("ai-insights").innerHTML = `
-          <p class="insight-intro">This panel answers two teacher questions: who needs follow-up, and what is the class struggling with? It uses saved Lesson 1 responses and exit-check flags.</p>
-          <h4 class="insight-group-title">Students Needing Follow-Up</h4>
+          <p class="insight-intro">This panel answers three questions for the selected lesson: who needs follow-up, what pattern is emerging, and what should the teacher do next?</p>
+          <h4 class="insight-group-title">1. Students Needing Follow-Up - Lesson ${lesson.number}</h4>
           ${flagged.length
             ? flagged.slice(0, 5).map((row) => {
-                const stats = remoteStats(row.student_id, row.lesson_number || 1);
+                const stats = remoteStats(row.student_id, activeDetailLessonNumber);
                 const reason = stats.exitNeedsReview
                   ? "Exit check was below 70%, so this student should get a quick teacher follow-up."
                   : "AI-scored work or a saved response was flagged for review.";
                 return `
                   <div class="queue-item">
-                    <strong>${escapeHtml(row.full_name || "Student")} - Lesson ${Number(row.lesson_number || 1)} (${Math.round(Number(row.percent || 0))}%)</strong>
+                    <strong>${escapeHtml(row.full_name || "Student")} - Lesson ${activeDetailLessonNumber} (${Math.round(Number(row.percent || 0))}%)</strong>
                     <p>${reason}</p>
-                    <a class="btn btn-primary btn-small" href="teacher-student.html?student=${encodeURIComponent(row.student_id)}&lesson=${String(row.lesson_number || 1).padStart(2, "0")}">Review Work</a>
+                    <a class="btn btn-primary btn-small" href="teacher-student.html?student=${encodeURIComponent(row.student_id)}&lesson=${String(activeDetailLessonNumber).padStart(2, "0")}">Review Work</a>
                   </div>
                 `;
               }).join("")
             : `<p class="empty-panel">No students are flagged for follow-up right now.</p>`}
-          <h4 class="insight-group-title">Early Class Patterns</h4>
-          ${trends.length
+          <h4 class="insight-group-title">2. Class Pattern</h4>
+          ${studentCountForTrends >= 3 && trends.length
             ? trends.map((trend) => `
                 <div class="queue-item">
                   <strong>${escapeHtml(trend.section_title || "Lesson 1")}</strong>
                   <p>${Number(trend.needs_support)} response${Number(trend.needs_support) === 1 ? "" : "s"} need support on: ${escapeHtml(trend.prompt)}</p>
-                  <a class="btn btn-secondary btn-small" href="preview.html?lesson=01">Open Lesson 1</a>
+                  <a class="btn btn-secondary btn-small" href="preview.html?lesson=${String(activeDetailLessonNumber).padStart(2, "0")}">Open Lesson ${activeDetailLessonNumber}</a>
                 </div>
               `).join("")
-            : `<p class="empty-panel">Patterns will appear after more students submit responses.</p>`}
+            : `<p class="empty-panel">Not enough class data yet. Class patterns will appear after at least 3 students submit this lesson.</p>`}
+          <h4 class="insight-group-title">3. Next Teacher Move</h4>
+          <p class="empty-panel">${flagged.length
+            ? "Start by reviewing the flagged work sample. With more student data, this area can recommend small groups or remediation by concept."
+            : "No immediate follow-up is needed for this lesson right now."}</p>
         `;
         return;
       }
@@ -1138,9 +1205,9 @@ If you have trouble signing in, contact your teacher.`;
     async function loadRemoteData() {
       if (!window.CourseData) return;
       const gradebook = await window.CourseData.loadGradebook();
-      const trends = await window.CourseData.loadTrends();
+      const trends = await window.CourseData.loadTrends(activeDetailLessonNumber);
       const courseStudents = await window.CourseData.loadCourseStudents();
-      const lessonResponses = await window.CourseData.loadLessonResponses(1);
+      const lessonResponses = await window.CourseData.loadLessonResponses(activeDetailLessonNumber);
       remoteDataLoaded = Array.isArray(gradebook) || Array.isArray(courseStudents);
       remoteGradebookRows = Array.isArray(gradebook) ? gradebook : [];
       remoteTrendRows = Array.isArray(trends) && trends.length ? trends : null;
@@ -1199,6 +1266,10 @@ If you have trouble signing in, contact your teacher.`;
 
     document.getElementById("btn-create-account").addEventListener("click", createAccount);
     document.getElementById("account-role").addEventListener("change", updateAccountFields);
+    document.getElementById("active-lesson-select").addEventListener("change", async (event) => {
+      activeDetailLessonNumber = Number(event.target.value) || 1;
+      await renderAll();
+    });
     document.getElementById("btn-add-another-account").addEventListener("click", resetAccountForm);
     document.getElementById("btn-copy-welcome").addEventListener("click", async () => {
       const text = document.getElementById("welcome-email-preview").dataset.copyText || "";

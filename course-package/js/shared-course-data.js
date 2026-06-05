@@ -260,14 +260,14 @@
     return { saved: true };
   }
 
-  async function loadTrends() {
+  async function loadTrends(lessonNumber = 1) {
     const session = await getSession();
     if (!session) return null;
     const { data, error } = await window.supabase
       .from("course_class_question_trends")
       .select("*")
       .eq("course_id", COURSE_ID)
-      .eq("lesson_number", 1)
+      .eq("lesson_number", lessonNumber)
       .order("needs_support", { ascending: false });
     if (error) return null;
     return data || [];
