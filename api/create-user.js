@@ -6,7 +6,7 @@ module.exports = async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
-  const { name, password, role, username, email, contactEmail } = req.body;
+  const { name, password, role, username, email, contactEmail, classSectionId } = req.body;
   const userRole = ["student", "teacher"].includes(role) ? role : "student";
   const courseRole = userRole === "teacher" ? "teacher" : "student";
   const courseId = "caaspp-math-11";
@@ -121,6 +121,53 @@ module.exports = async function handler(req, res) {
     if (!enrollmentRes.ok) {
       const text = await enrollmentRes.text();
       return res.status(400).json({ error: text || "Account created, but course enrollment failed." });
+    }
+
+    if (classSectionId) {
+      const classRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/course_class_sections?id=eq.${classSectionId}&course_id=eq.${courseId}&select=id`,
+        {
+          headers: {
+            apikey: SERVICE_ROLE_KEY,
+            Authorization: `Bearer ${SERVICE_ROLE_KEY}`
+          }
+        }
+      );
+      const classRows = await classRes.json().catch(() => []);
+      if (!classRes.ok || !Array.isArray(classRows) || !classRows.length) {
+        return res.status(400).json({ error: "Account created, but the selected class section was not found for this course." });
+      }
+
+      const membershipTable = userRole === "teacher" ? "course_class_teachers" : "course_class_students";
+      const membershipData = userRole === "teacher"
+        ? {
+            class_id: classSectionId,
+            teacher_id: newUser.id,
+            role: "teacher",
+            status: "active",
+            created_by: callerUser.id
+          }
+        : {
+            class_id: classSectionId,
+            student_id: newUser.id,
+            status: "active",
+            created_by: callerUser.id
+          };
+      const membershipRes = await fetch(`${SUPABASE_URL}/rest/v1/${membershipTable}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: SERVICE_ROLE_KEY,
+          Authorization: `Bearer ${SERVICE_ROLE_KEY}`,
+          Prefer: "resolution=merge-duplicates,return=minimal"
+        },
+        body: JSON.stringify(membershipData)
+      });
+
+      if (!membershipRes.ok) {
+        const text = await membershipRes.text();
+        return res.status(400).json({ error: text || "Account created, but class-section assignment failed." });
+      }
     }
 
     return res.status(200).json({

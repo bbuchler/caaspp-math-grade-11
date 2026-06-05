@@ -155,9 +155,18 @@
       color: var(--primary);
     }
 
-    .gradebook-search input {
+    .gradebook-search input,
+    .gradebook-filter-select select {
       margin-bottom: 0;
       background: var(--white);
+    }
+
+    .gradebook-filter-select {
+      display: grid;
+      gap: 5px;
+      min-width: min(260px, 100%);
+      font-weight: 800;
+      color: var(--primary);
     }
 
     .filter-note {
@@ -503,7 +512,15 @@
         Search students
         <input id="student-search" type="search" placeholder="Type a student name or username" autocomplete="off">
       </label>
-      <p class="filter-note">Teacher/class filters will come after students are assigned to real class sections.</p>
+      <label class="gradebook-filter-select" for="class-filter">
+        Class section
+        <select id="class-filter"></select>
+      </label>
+      <label class="gradebook-filter-select" for="teacher-filter">
+        Teacher
+        <select id="teacher-filter"></select>
+      </label>
+      <p class="filter-note" id="class-filter-note">Class filters activate after the class-section SQL is installed and students are assigned.</p>
     </div>
 
     <div class="gradebook-table-wrapper">
@@ -585,6 +602,11 @@
           <label for="account-password">Temporary password</label>
           <input id="account-password" type="text" placeholder="At least 6 characters" autocomplete="new-password">
         </div>
+        <div class="form-row" id="account-class-row">
+          <label for="account-class-section">Class section <span class="muted">(optional)</span></label>
+          <select id="account-class-section"></select>
+          <small class="field-note">Assigns the account to a class section when class-section setup is installed.</small>
+        </div>
         <div class="welcome-panel" id="account-success-panel">
           <strong id="account-success-title">Account created</strong>
           <p class="field-note" id="account-success-login"></p>
@@ -641,7 +663,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="js/supabase-config.js"></script>
-  <script src="js/shared-course-data.js"></script>
+  <script src="js/shared-course-data.js?v=class-sections-1"></script>
   <script src="js/auth.js"></script>
   <script>
     const ACCOUNT_KEY = "caasppMathPilotAccounts";
@@ -651,10 +673,13 @@
     let remoteTrendRows = null;
     let remoteCourseStudents = null;
     let remoteLessonOneResponses = [];
+    let remoteClassArchitecture = null;
     let remoteDataLoaded = false;
     let activeModuleFilter = "all";
     let activeDetailLessonNumber = 1;
     let studentSearchQuery = "";
+    let activeClassFilter = "all";
+    let activeTeacherFilter = "all";
 
     const lessonOneSections = [
       { id: "overview", label: "Overview", questionIds: ["l1-overview-reflection"] },
@@ -698,6 +723,57 @@
         </option>
       `).join("");
       document.getElementById("active-detail-title").textContent = `Active Lesson Detail: Lesson ${activeDetailLessonNumber}`;
+    }
+
+    function uniqueTeachers() {
+      const byId = {};
+      for (const row of remoteClassArchitecture?.teachers || []) {
+        byId[row.teacher_id] = {
+          id: row.teacher_id,
+          name: row.full_name || row.username || row.email || "Teacher"
+        };
+      }
+      return Object.values(byId).sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    function renderClassFilters() {
+      const classSelect = document.getElementById("class-filter");
+      const teacherSelect = document.getElementById("teacher-filter");
+      const note = document.getElementById("class-filter-note");
+      if (!classSelect || !teacherSelect || !note) return;
+
+      const sections = remoteClassArchitecture?.sections || [];
+      const teachers = uniqueTeachers();
+      const hasSections = sections.length > 0;
+
+      classSelect.disabled = !hasSections;
+      teacherSelect.disabled = !hasSections || teachers.length === 0;
+      classSelect.innerHTML = hasSections
+        ? `<option value="all">All class sections</option>${sections.map((section) => `
+            <option value="${section.id}" ${section.id === activeClassFilter ? "selected" : ""}>${escapeHtml(section.name)}${section.location ? ` - ${escapeHtml(section.location)}` : ""}</option>
+          `).join("")}`
+        : `<option value="all">All course students</option>`;
+      teacherSelect.innerHTML = hasSections && teachers.length
+        ? `<option value="all">All teachers</option>${teachers.map((teacher) => `
+            <option value="${teacher.id}" ${teacher.id === activeTeacherFilter ? "selected" : ""}>${escapeHtml(teacher.name)}</option>
+          `).join("")}`
+        : `<option value="all">Teacher filter setup needed</option>`;
+      note.textContent = hasSections
+        ? "Filters use class-section memberships. Teachers see assigned sections; admins can view all."
+        : "Class filters activate after the class-section SQL is installed and students are assigned.";
+      renderAccountClassOptions();
+    }
+
+    function renderAccountClassOptions() {
+      const select = document.getElementById("account-class-section");
+      if (!select) return;
+      const sections = remoteClassArchitecture?.sections || [];
+      select.disabled = !sections.length;
+      select.innerHTML = sections.length
+        ? `<option value="">No class section</option>${sections.map((section) => `
+            <option value="${section.id}">${escapeHtml(section.name)}${section.location ? ` - ${escapeHtml(section.location)}` : ""}</option>
+          `).join("")}`
+        : `<option value="">Class-section setup needed</option>`;
     }
 
     function visibleLessons() {
@@ -869,10 +945,36 @@
       return text.includes(query);
     }
 
+    function teacherClassIds() {
+      if (activeTeacherFilter === "all") return null;
+      return new Set((remoteClassArchitecture?.teachers || [])
+        .filter((row) => row.teacher_id === activeTeacherFilter)
+        .map((row) => row.class_id));
+    }
+
+    function matchesClassFilters(student) {
+      const memberships = (remoteClassArchitecture?.students || [])
+        .filter((row) => row.student_id === student.id);
+      const hasClassData = (remoteClassArchitecture?.sections || []).length > 0;
+      if (!hasClassData) return true;
+
+      if (activeClassFilter !== "all" && !memberships.some((row) => row.class_id === activeClassFilter)) {
+        return false;
+      }
+
+      const teacherClasses = teacherClassIds();
+      if (teacherClasses && !memberships.some((row) => teacherClasses.has(row.class_id))) {
+        return false;
+      }
+
+      return true;
+    }
+
     function visibleStudents(accounts) {
       return accounts
         .filter((account) => account.role === "student")
-        .filter(matchesStudentSearch);
+        .filter(matchesStudentSearch)
+        .filter(matchesClassFilters);
     }
 
     function remoteStats(studentId, lessonNumber) {
@@ -1107,6 +1209,7 @@
       const contactEmail = document.getElementById("account-contact-email").value.trim();
       const login = username;
       const password = document.getElementById("account-password").value.trim();
+      const classSectionId = document.getElementById("account-class-section").value;
       if (!name || !login || password.length < 6) return;
 
       const token = await authToken();
@@ -1122,7 +1225,8 @@
             name,
             password,
             username,
-            contactEmail
+            contactEmail,
+            classSectionId
           })
         });
         const result = await response.json().catch(() => ({}));
@@ -1204,6 +1308,7 @@
       document.getElementById("account-username").value = "";
       document.getElementById("account-contact-email").value = "";
       document.getElementById("account-password").value = "";
+      document.getElementById("account-class-section").value = "";
       document.getElementById("account-success-panel").classList.remove("open");
       document.getElementById("welcome-email-preview").innerHTML = "";
       document.getElementById("account-success-login").textContent = "";
@@ -1259,15 +1364,20 @@ If you have trouble signing in, contact your teacher.`;
       const trends = await window.CourseData.loadTrends(activeDetailLessonNumber);
       const courseStudents = await window.CourseData.loadCourseStudents();
       const lessonResponses = await window.CourseData.loadLessonResponses(activeDetailLessonNumber);
+      const classArchitecture = typeof window.CourseData.loadClassArchitecture === "function"
+        ? await window.CourseData.loadClassArchitecture()
+        : null;
       remoteDataLoaded = Array.isArray(gradebook) || Array.isArray(courseStudents);
       remoteGradebookRows = Array.isArray(gradebook) ? gradebook : [];
       remoteTrendRows = Array.isArray(trends) && trends.length ? trends : null;
       remoteCourseStudents = Array.isArray(courseStudents) ? courseStudents : [];
       remoteLessonOneResponses = Array.isArray(lessonResponses) ? lessonResponses : [];
+      remoteClassArchitecture = classArchitecture;
     }
 
     async function renderAll() {
       await loadRemoteData();
+      renderClassFilters();
       renderGradebook();
       renderLessonOneBreakdown();
       renderTeachers();
@@ -1319,6 +1429,16 @@ If you have trouble signing in, contact your teacher.`;
     document.getElementById("account-role").addEventListener("change", updateAccountFields);
     document.getElementById("student-search").addEventListener("input", (event) => {
       studentSearchQuery = event.target.value;
+      renderGradebook();
+      renderLessonOneBreakdown();
+    });
+    document.getElementById("class-filter").addEventListener("change", (event) => {
+      activeClassFilter = event.target.value;
+      renderGradebook();
+      renderLessonOneBreakdown();
+    });
+    document.getElementById("teacher-filter").addEventListener("change", (event) => {
+      activeTeacherFilter = event.target.value;
       renderGradebook();
       renderLessonOneBreakdown();
     });

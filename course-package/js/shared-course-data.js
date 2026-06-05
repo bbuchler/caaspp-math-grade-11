@@ -273,6 +273,39 @@
     return data || [];
   }
 
+  async function loadClassArchitecture() {
+    const session = await getSession();
+    if (!session) return null;
+
+    const [sectionsResult, teachersResult, studentsResult] = await Promise.all([
+      window.supabase
+        .from("course_class_sections")
+        .select("*")
+        .eq("course_id", COURSE_ID)
+        .eq("status", "active")
+        .order("name"),
+      window.supabase
+        .from("course_class_teacher_directory")
+        .select("*")
+        .eq("course_id", COURSE_ID)
+        .eq("status", "active")
+        .order("full_name"),
+      window.supabase
+        .from("course_class_student_directory")
+        .select("*")
+        .eq("course_id", COURSE_ID)
+        .eq("status", "active")
+        .order("full_name")
+    ]);
+
+    if (sectionsResult.error || teachersResult.error || studentsResult.error) return null;
+    return {
+      sections: sectionsResult.data || [],
+      teachers: teachersResult.data || [],
+      students: studentsResult.data || []
+    };
+  }
+
   window.CourseData = {
     COURSE_ID,
     getSession,
@@ -285,6 +318,7 @@
     loadStudentResponses,
     loadLessonResponses,
     updateQuestionResponse,
-    loadTrends
+    loadTrends,
+    loadClassArchitecture
   };
 })();

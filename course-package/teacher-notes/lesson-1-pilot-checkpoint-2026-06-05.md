@@ -86,6 +86,7 @@ Default pacing: **60 minutes** unless Baptiste asks for a different target.
 - Dashboard insights should answer only three teacher questions: who needs follow-up, what pattern is emerging, and what the teacher should do next. Do not show "class trends" from a single student as if that is a real pattern.
 - For multi-teacher or multi-location use, add real class/section scoping before launch. The data model should support class sections, teacher memberships, student memberships, location/site labels, and admin-level aggregation across sections.
 - Gradebooks need student search immediately. Teacher/class dropdown filters should not be faked; they require real class-section and teacher-membership data first.
+- Class-section architecture has been scaffolded with `course_class_sections`, `course_class_teachers`, and `course_class_students`. Dashboard filters and Add Account class assignment are wired, but they activate only after the SQL migration is run and the Vercel/backend account API is deployed.
 
 ## Critical Failures To Avoid
 
