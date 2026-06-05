@@ -117,8 +117,7 @@
       </div>
       <div class="header-right">
         <a href="teacher-dashboard.html" class="header-nav-link">Gradebook</a>
-        <a href="preview.html?lesson=01" class="header-nav-link">Preview Lesson 1</a>
-        <a href="preview.html" class="header-nav-link">Course Home</a>
+        <a href="preview.html" class="header-nav-link">Student Course View</a>
         <button class="header-nav-link" type="button" id="btn-logout">Sign Out</button>
       </div>
     </div>
@@ -127,35 +126,55 @@
   <main class="page-wrapper">
     <section class="panel">
       <h2>How This Pilot Works</h2>
-      <p>Module 1 starts with Lesson 1 fully built: overview video, embedded lesson video, contextual questions, practice, exit check, Study Buddy, and gradebook tracking. Lessons 2-20 are visible in the gradebook so the course shape is clear, but only Lesson 1 is active for the first review.</p>
+      <p>Module 1 starts with Lesson 1 fully built so we can test the student experience, grading, work samples, and teacher follow-up before building the other 19 lessons. Lessons 2-20 are visible in the gradebook to show the course shape, but only Lesson 1 is active for this first review.</p>
     </section>
 
     <section class="grid">
       <div class="panel">
-        <h2>Teacher Flow</h2>
+        <h2>Lesson Structure</h2>
         <ol>
-          <li>Open the gradebook.</li>
-          <li>Add or enroll a test student.</li>
-          <li>Preview Lesson 1 from the header or gradebook column.</li>
-          <li>Have the test student answer Lesson 1 questions.</li>
-          <li>Open the student's work sample from the gradebook.</li>
+          <li>Overview video and short reflection.</li>
+          <li>Lesson vocabulary for the math terms students will use.</li>
+          <li>Quick start question to check the main idea.</li>
+          <li>Video questions, worked examples, infographic, and hands-on practice.</li>
+          <li>Real-world problem with an image so the math has a concrete setting.</li>
+          <li>Practice questions students can update as they learn.</li>
+          <li>Exit check, finish line, optional bonus, and final lesson submit.</li>
         </ol>
       </div>
       <div class="panel">
-        <h2>What To Check</h2>
+        <h2>Grading Rules</h2>
         <ul>
-          <li>Video plays or opens cleanly in a new tab.</li>
-          <li>Students can answer video questions while watching.</li>
-          <li>Objective math items grade immediately.</li>
-          <li>Written explanations are flagged for rubric/AI review.</li>
-          <li>The gradebook shows Lesson 1 progress without hiding the 20-lesson course shape.</li>
+          <li>Practice questions save as students go and can be updated.</li>
+          <li>Exit check questions are one attempt because they are the final evidence.</li>
+          <li>A lesson can still pass overall if the total score is 70% or higher.</li>
+          <li>A low exit check should still flag the student for teacher follow-up.</li>
+          <li>Teachers can open the work sample, override individual scores, and regrade individual AI responses.</li>
         </ul>
       </div>
     </section>
 
     <section class="panel">
-      <h2>Later Enhancements</h2>
-      <p class="muted">Once real student responses exist, the trends area can show missed concepts, small group suggestions, remediation paths, and backup lessons. That should come from saved response data, not static cards.</p>
+      <h2>AI Support</h2>
+      <p>The Study Buddy should use the current lesson, visible page context, student answer, answer key, and rubric so it can help with the exact concept on screen. AI grading should give partial credit and feedback for written math explanations, while objective items still use deterministic checks when possible.</p>
+      <p class="muted">The teacher insight area should come from saved student responses. For now it flags students who need review. Once more students use the course, it can summarize trends, suggest small groups, and point to remediation lessons.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Teacher Flow</h2>
+      <ol>
+        <li>Open the gradebook.</li>
+        <li>Add a test student or teacher account.</li>
+        <li>Click Lesson 1 in the gradebook to preview the lesson or open a student's work sample.</li>
+        <li>Have the test student complete Lesson 1.</li>
+        <li>Check the Lesson 1 breakdown, work sample, and AI insights for exit-check follow-up.</li>
+      </ol>
+    </section>
+
+    <section class="panel">
+      <h2>How This Scales</h2>
+      <p>The gradebook is meant to handle a full class by showing one row per student and one column per lesson. With 20 lessons and 30 students, teachers should use the module tabs to narrow the view, then click a lesson score to open that student's work sample.</p>
+      <p>The detailed section breakdown should show only the selected active lesson, not all 20 lessons at once. For this pilot, the active detail panel is Lesson 1. After Lesson 1 is approved, each new lesson should reuse the same data structure so the dashboard can switch the detail panel to Lesson 2, Lesson 3, and so on.</p>
     </section>
   </main>
 

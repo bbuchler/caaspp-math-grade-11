@@ -235,6 +235,10 @@
       margin-top: 18px;
     }
 
+    .dashboard-grid-single {
+      grid-template-columns: 1fr;
+    }
+
     .panel {
       background: var(--white);
       border: 1px solid var(--line);
@@ -258,8 +262,7 @@
       padding: 15px;
     }
 
-    .queue-item,
-    .teacher-account {
+    .queue-item {
       border: 1px solid var(--line);
       border-radius: var(--radius);
       padding: 11px;
@@ -267,11 +270,22 @@
       background: var(--white);
     }
 
-    .queue-item p,
-    .teacher-account p {
+    .queue-item p {
       color: var(--muted);
       margin-bottom: 10px;
       font-size: 0.9rem;
+    }
+
+    .insight-intro {
+      margin-bottom: 12px;
+      color: var(--muted);
+      max-width: 880px;
+    }
+
+    .insight-group-title {
+      margin: 16px 0 8px;
+      color: var(--primary);
+      font-size: 0.95rem;
     }
 
     .empty-panel {
@@ -406,11 +420,9 @@
         </div>
       </div>
       <div class="header-right">
-        <a href="preview.html?lesson=01" class="header-nav-link">Preview Lesson 1</a>
         <a href="teacher-guide.html" class="header-nav-link">Teacher Guide</a>
-        <a href="preview.html" class="header-nav-link">Course Home</a>
+        <a href="preview.html" class="header-nav-link">Student Course View</a>
         <span class="user-name" id="user-name"></span>
-        <button class="header-nav-link" type="button" data-open-modal="modal-change-password">Change Password</button>
         <button class="header-nav-link" type="button" id="btn-logout">Sign Out</button>
       </div>
     </div>
@@ -420,7 +432,7 @@
     <div class="dashboard-header">
       <div>
         <h2>Course Gradebook</h2>
-        <p>Lesson 1 is open. Lessons 2-20 appear as upcoming.</p>
+        <p>Click a lesson score to open that student's work sample. Lesson 1 is active; Lessons 2-20 are placeholders until we build them.</p>
       </div>
       <div class="teacher-controls">
         <button class="btn btn-accent" type="button" data-open-modal="modal-add-account">+ Add Account</button>
@@ -448,8 +460,9 @@
 
     <div class="dashboard-grid">
       <section class="panel">
-        <div class="panel-header"><h3>Lesson 1 Breakdown</h3></div>
+        <div class="panel-header"><h3>Active Lesson Detail: Lesson 1</h3></div>
         <div class="panel-body">
+          <p class="insight-intro">This panel expands the selected lesson. In the full course, clicking a lesson score will keep the 20-lesson grid on top and show that lesson's sections here.</p>
           <div class="gradebook-table-wrapper" style="box-shadow:none;">
             <table class="gradebook-table" style="min-width:720px;">
               <thead>
@@ -471,19 +484,11 @@
       </section>
     </div>
 
-    <div class="dashboard-grid">
+    <div class="dashboard-grid dashboard-grid-single">
       <section class="panel">
-        <div class="panel-header"><h3>AI Review Queue And Class Trends</h3></div>
+        <div class="panel-header"><h3>Follow-Up And Class Patterns</h3></div>
         <div class="panel-body" id="ai-insights"></div>
       </section>
-
-      <aside class="panel">
-        <div class="panel-header"><h3>Teacher Accounts</h3></div>
-        <div class="panel-body">
-          <div id="teacher-list"></div>
-          <button class="btn btn-primary" type="button" data-open-modal="modal-add-account" data-role="teacher">Add Teacher</button>
-        </div>
-      </aside>
     </div>
   </main>
 
@@ -582,6 +587,7 @@
     let remoteGradebookRows = null;
     let remoteTrendRows = null;
     let remoteCourseStudents = null;
+    let remoteLessonOneResponses = [];
     let remoteDataLoaded = false;
     let activeModuleFilter = "all";
 
@@ -667,6 +673,38 @@
       return { answered, expected: section.questionIds.length, score, maxScore, needsTeacherReview, exitNeedsReview };
     }
 
+    function remoteResponsesToSubmission(studentId) {
+      const rows = (remoteLessonOneResponses || []).filter((row) => row.student_id === studentId);
+      const responses = rows.reduce((map, row) => {
+        map[row.question_id] = {
+          questionId: row.question_id,
+          sectionId: row.section_id,
+          sectionTitle: row.section_title,
+          prompt: row.prompt,
+          type: row.question_type,
+          answer: row.answer || "",
+          score: Number(row.score || 0),
+          maxScore: Number(row.max_score ?? 1),
+          needsTeacherReview: Boolean(row.needs_teacher_review),
+          updatedAt: row.updated_at || row.created_at || ""
+        };
+        return map;
+      }, {});
+      const updatedAt = rows
+        .map((row) => row.updated_at || row.created_at)
+        .filter(Boolean)
+        .sort()
+        .at(-1) || "";
+      return {
+        lessons: {
+          "01": {
+            responses,
+            updatedAt
+          }
+        }
+      };
+    }
+
     function lessonStats(studentSubmission) {
       const sections = lessonOneSections.map((section) => sectionStats(studentSubmission, section));
       const exitSection = sections[lessonOneSections.findIndex((section) => section.id === "check")];
@@ -746,6 +784,9 @@
         const expected = lessonOneSections.reduce((sum, section) => sum + section.questionIds.length, 0);
         return { answered: 0, expected, score: 0, maxScore: 0, percent: null, needsTeacherReview: false, exitNeedsReview: false, updatedAt: "" };
       }
+      const submissionStats = Number(lessonNumber) === 1
+        ? lessonStats(remoteResponsesToSubmission(studentId))
+        : null;
       return {
         answered: Number(row.score || 0) || 1,
         expected: Number(row.max_score || 1) || 1,
@@ -753,7 +794,7 @@
         maxScore: Number(row.max_score || 0),
         percent: Math.round(Number(row.percent || 0)),
         needsTeacherReview: Boolean(row.needs_teacher_review),
-        exitNeedsReview: false,
+        exitNeedsReview: Boolean(submissionStats?.exitNeedsReview),
         updatedAt: row.last_activity || ""
       };
     }
@@ -791,7 +832,7 @@
       }
 
       body.innerHTML = students.map((student) => {
-        const studentSubmission = submissions[student.id];
+        const studentSubmission = remoteDataLoaded ? remoteResponsesToSubmission(student.id) : submissions[student.id];
         const stats = remoteDataLoaded ? remoteStats(student.id, 1) : lessonStats(studentSubmission);
         const score = stats.percent === null ? "-" : `${stats.percent}%`;
         const remoteMode = remoteDataLoaded;
@@ -833,7 +874,7 @@
         return;
       }
       body.innerHTML = students.map((student) => {
-        const studentSubmission = submissions[student.id];
+        const studentSubmission = remoteDataLoaded ? remoteResponsesToSubmission(student.id) : submissions[student.id];
         const stats = remoteDataLoaded ? remoteStats(student.id, 1) : lessonStats(studentSubmission);
         return `
           <tr>
@@ -853,55 +894,43 @@
       }).join("");
     }
 
-    function renderTeachers() {
-      if (remoteDataLoaded) {
-        document.getElementById("teacher-list").innerHTML = `<p class="empty-panel">Teacher account management is available through Add Teacher.</p>`;
-        return;
-      }
-      const teachers = getAccounts().filter((account) => account.role === "teacher");
-      const list = document.getElementById("teacher-list");
-      if (!teachers.length) {
-        list.innerHTML = `<p class="empty-panel">No teacher accounts yet.</p>`;
-        return;
-      }
-      list.innerHTML = teachers.map((teacher) => `
-        <div class="teacher-account">
-          <strong>${teacher.name}</strong>
-          <p>${teacher.login}</p>
-          <button class="btn btn-secondary btn-small" type="button" data-reset-password="${teacher.id}">Reset Password</button>
-        </div>
-      `).join("");
-    }
+    function renderTeachers() {}
 
     function renderInsights() {
-      if (remoteTrendRows && remoteTrendRows.length) {
-        document.getElementById("ai-insights").innerHTML = `
-          ${remoteTrendRows.slice(0, 3).map((trend) => `
-            <div class="queue-item">
-              <strong>${trend.section_title || "Lesson 1"} Trend</strong>
-              <p>${trend.needs_support} response${Number(trend.needs_support) === 1 ? "" : "s"} need support on: ${trend.prompt}</p>
-              <a class="btn btn-secondary btn-small" href="preview.html?lesson=01">Preview Lesson 1</a>
-            </div>
-          `).join("")}
-          <div class="queue-item">
-            <strong>Small Group Suggestion</strong>
-            <p>Use the top missed concept to create a short review group and assign a scaffolded retry.</p>
-          </div>
-        `;
-        return;
-      }
-
       if (remoteDataLoaded) {
         const flagged = (remoteGradebookRows || []).filter((row) => row.needs_teacher_review);
-        document.getElementById("ai-insights").innerHTML = flagged.length
-          ? flagged.slice(0, 4).map((row) => `
-              <div class="queue-item">
-                <strong>${escapeHtml(row.full_name || "Student")} - Lesson ${Number(row.lesson_number || 1)}</strong>
-                <p>Exit check or AI-scored work needs teacher review. Open the work sample to see the exact questions and feedback.</p>
-                <a class="btn btn-primary btn-small" href="teacher-student.html?student=${encodeURIComponent(row.student_id)}&lesson=${String(row.lesson_number || 1).padStart(2, "0")}">Review Work</a>
-              </div>
-            `).join("")
-          : `<p class="empty-panel">No flagged Lesson 1 responses right now.</p>`;
+        const trends = (remoteTrendRows || [])
+          .filter((trend) => Number(trend.needs_support || 0) > 0)
+          .slice(0, 3);
+        document.getElementById("ai-insights").innerHTML = `
+          <p class="insight-intro">This panel answers two teacher questions: who needs follow-up, and what is the class struggling with? It uses saved Lesson 1 responses and exit-check flags.</p>
+          <h4 class="insight-group-title">Students Needing Follow-Up</h4>
+          ${flagged.length
+            ? flagged.slice(0, 5).map((row) => {
+                const stats = remoteStats(row.student_id, row.lesson_number || 1);
+                const reason = stats.exitNeedsReview
+                  ? "Exit check was below 70%, so this student should get a quick teacher follow-up."
+                  : "AI-scored work or a saved response was flagged for review.";
+                return `
+                  <div class="queue-item">
+                    <strong>${escapeHtml(row.full_name || "Student")} - Lesson ${Number(row.lesson_number || 1)} (${Math.round(Number(row.percent || 0))}%)</strong>
+                    <p>${reason}</p>
+                    <a class="btn btn-primary btn-small" href="teacher-student.html?student=${encodeURIComponent(row.student_id)}&lesson=${String(row.lesson_number || 1).padStart(2, "0")}">Review Work</a>
+                  </div>
+                `;
+              }).join("")
+            : `<p class="empty-panel">No students are flagged for follow-up right now.</p>`}
+          <h4 class="insight-group-title">Early Class Patterns</h4>
+          ${trends.length
+            ? trends.map((trend) => `
+                <div class="queue-item">
+                  <strong>${escapeHtml(trend.section_title || "Lesson 1")}</strong>
+                  <p>${Number(trend.needs_support)} response${Number(trend.needs_support) === 1 ? "" : "s"} need support on: ${escapeHtml(trend.prompt)}</p>
+                  <a class="btn btn-secondary btn-small" href="preview.html?lesson=01">Open Lesson 1</a>
+                </div>
+              `).join("")
+            : `<p class="empty-panel">Patterns will appear after more students submit responses.</p>`}
+        `;
         return;
       }
 
@@ -927,6 +956,8 @@
       const topTrend = Object.values(byQuestion).sort((a, b) => b.count - a.count)[0];
 
       panel.innerHTML = `
+        <p class="insight-intro">This panel answers two teacher questions: who needs follow-up, and what is the class struggling with?</p>
+        <h4 class="insight-group-title">Students Needing Follow-Up</h4>
         ${flagged.slice(0, 3).map((response) => `
           <div class="queue-item">
             <strong>${response.studentName} - ${response.sectionTitle || "Lesson 1"}</strong>
@@ -934,17 +965,14 @@
             <a class="btn btn-primary btn-small" href="teacher-student.html?student=pilot-student&lesson=01">Review Work</a>
           </div>
         `).join("") || `<p class="empty-panel">No flagged responses right now.</p>`}
+        <h4 class="insight-group-title">Early Class Patterns</h4>
         ${topTrend ? `
           <div class="queue-item">
-            <strong>Class Trend</strong>
+            <strong>Top Missed Question</strong>
             <p>${topTrend.count} response${topTrend.count === 1 ? "" : "s"} need support on: ${topTrend.prompt}</p>
-            <a class="btn btn-secondary btn-small" href="preview.html?lesson=01">Preview Lesson 1</a>
+            <a class="btn btn-secondary btn-small" href="preview.html?lesson=01">Open Lesson 1</a>
           </div>
-          <div class="queue-item">
-            <strong>Small Group Suggestion</strong>
-            <p>Review inverse operations, then give a second equation with different numbers before students retry.</p>
-          </div>
-        ` : ""}
+        ` : `<p class="empty-panel">Patterns will appear after more students submit responses.</p>`}
       `;
     }
 
@@ -1112,10 +1140,12 @@ If you have trouble signing in, contact your teacher.`;
       const gradebook = await window.CourseData.loadGradebook();
       const trends = await window.CourseData.loadTrends();
       const courseStudents = await window.CourseData.loadCourseStudents();
+      const lessonResponses = await window.CourseData.loadLessonResponses(1);
       remoteDataLoaded = Array.isArray(gradebook) || Array.isArray(courseStudents);
       remoteGradebookRows = Array.isArray(gradebook) ? gradebook : [];
       remoteTrendRows = Array.isArray(trends) && trends.length ? trends : null;
       remoteCourseStudents = Array.isArray(courseStudents) ? courseStudents : [];
+      remoteLessonOneResponses = Array.isArray(lessonResponses) ? lessonResponses : [];
     }
 
     async function renderAll() {

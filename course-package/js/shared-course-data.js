@@ -11,6 +11,22 @@
     return data?.session || null;
   }
 
+  async function getProfile(userId) {
+    if (!hasSupabase() || !userId) return null;
+    const { data, error } = await window.supabase
+      .from("profiles")
+      .select("id,role,full_name,username,email")
+      .eq("id", userId)
+      .single();
+    if (error) return null;
+    return data;
+  }
+
+  async function isStudentSession(session) {
+    const profile = await getProfile(session?.user?.id);
+    return profile?.role === "student";
+  }
+
   function lessonNumberFromId(lessonId) {
     return Number(String(lessonId || "1").replace(/^0+/, "")) || 1;
   }
@@ -28,6 +44,9 @@
   async function saveQuestionResponse(payload) {
     const session = await getSession();
     if (!session) return { mode: "local", saved: false };
+    if (!(await isStudentSession(session))) {
+      return { mode: "supabase", saved: false, skipped: "not_student" };
+    }
 
     const question = payload.question || {};
     const result = payload.result || {};
@@ -164,6 +183,9 @@
   async function submitLessonAttempt(lessonId) {
     const session = await getSession();
     if (!session) return { mode: "local", saved: false };
+    if (!(await isStudentSession(session))) {
+      return { mode: "supabase", saved: false, skipped: "not_student" };
+    }
     const lessonNumber = lessonNumberFromId(lessonId);
     await updateLessonAttempt(session.user.id, lessonNumber, "submitted");
     return { mode: "supabase", saved: true };
@@ -191,6 +213,20 @@
       .eq("course_id", COURSE_ID)
       .eq("student_id", studentId)
       .eq("lesson_number", lessonNumber)
+      .order("section_id");
+    if (error) return null;
+    return data || [];
+  }
+
+  async function loadLessonResponses(lessonNumber) {
+    const session = await getSession();
+    if (!session) return null;
+    const { data, error } = await window.supabase
+      .from("course_question_responses")
+      .select("*")
+      .eq("course_id", COURSE_ID)
+      .eq("lesson_number", lessonNumber)
+      .order("student_id")
       .order("section_id");
     if (error) return null;
     return data || [];
@@ -247,6 +283,7 @@
     submitLessonAttempt,
     loadGradebook,
     loadStudentResponses,
+    loadLessonResponses,
     updateQuestionResponse,
     loadTrends
   };

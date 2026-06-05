@@ -81,6 +81,8 @@
     .btn-accent { background: var(--gold); color: var(--white); }
     .btn-secondary { background: var(--white); color: var(--text); border: 1px solid var(--line); }
     .btn-danger { background: var(--red); color: var(--white); }
+    .btn-save { background: var(--green); color: var(--white); }
+    .btn-regrade { background: var(--blue); color: var(--white); }
     .btn-small { min-height: 30px; padding: 5px 9px; font-size: 0.82rem; }
 
     main.page-wrapper {
@@ -114,6 +116,32 @@
     .student-meta {
       color: var(--muted);
       font-size: 0.92rem;
+    }
+
+    .work-sample-title {
+      display: grid;
+      gap: 3px;
+    }
+
+    .work-sample-kicker {
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .grade-line {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .grade-line strong {
+      font-size: 1.25rem;
     }
 
     .actions {
@@ -305,6 +333,7 @@
     const lessonNumber = Number(params.get("lesson") || "1") || 1;
     let lessonData = null;
     let remoteResponses = null;
+    let remoteGradebookRows = null;
 
     const escapeHtml = (value) => String(value ?? "")
       .replaceAll("&", "&amp;")
@@ -350,7 +379,25 @@
       const score = items.reduce((sum, item) => sum + Number(item.score || 0), 0);
       const maxScore = items.reduce((sum, item) => sum + Number(item.maxScore ?? 1), 0);
       const percent = maxScore ? Math.round((score / maxScore) * 100) : null;
-      return { items, score, maxScore, percent };
+      const exitItems = items.filter((item) => item.sectionId === "check");
+      const exitScore = exitItems.reduce((sum, item) => sum + Number(item.score || 0), 0);
+      const exitMaxScore = exitItems.reduce((sum, item) => sum + Number(item.maxScore ?? 1), 0);
+      const exitPercent = exitMaxScore ? exitScore / exitMaxScore : 1;
+      const exitNeedsReview = exitItems.length >= 5 && exitPercent < 0.7;
+      const needsTeacherReview = items.some((item) => item.needsTeacherReview) || exitNeedsReview;
+      return { items, score, maxScore, percent, needsTeacherReview, exitNeedsReview };
+    }
+
+    function gradeStatus(stats) {
+      if (stats.percent === null) return "Not Started";
+      if (stats.needsTeacherReview) return "Needs Follow-Up";
+      if (stats.percent >= 70) return "Passing";
+      return "Needs Support";
+    }
+
+    function gradeLine(stats) {
+      if (!stats.maxScore) return "Not started";
+      return `${stats.score}/${stats.maxScore} - ${stats.percent}% - ${gradeStatus(stats)}`;
     }
 
     function formatScore(response, fallbackMax) {
@@ -369,30 +416,35 @@
       if (window.CourseData && studentId !== "pilot-student") {
         const rows = await window.CourseData.loadStudentResponses(studentId, lessonNumber);
         remoteResponses = Array.isArray(rows) && rows.length ? rows : null;
+        const gradebookRows = await window.CourseData.loadGradebook();
+        remoteGradebookRows = Array.isArray(gradebookRows) ? gradebookRows : null;
       }
       render();
     }
 
     function render() {
+      const remoteGradebookRow = (remoteGradebookRows || []).find((row) => row.student_id === studentId);
       const account = getAccounts().find((item) => item.id === studentId) || {
         id: studentId,
         role: "student",
-        name: remoteResponses?.[0]?.full_name || "Student",
-        login: ""
+        name: remoteGradebookRow?.full_name || "Student",
+        login: remoteGradebookRow?.username || remoteGradebookRow?.email || ""
       };
       const submission = remoteResponses
         ? { responses: remoteResponsesToMap(remoteResponses), updatedAt: latestRemoteUpdate(remoteResponses) }
         : getSubmissions()[studentId]?.lessons?.["01"] || { responses: {}, updatedAt: "" };
       const stats = lessonStats(submission.responses);
       document.title = `${account.name} - CAASPP Math Work Sample`;
-      document.getElementById("page-title").textContent = account.name;
+      document.getElementById("page-title").textContent = "CAASPP Math Work Sample";
 
       const root = document.getElementById("root");
       root.innerHTML = `
         <section class="student-info-bar">
-          <div>
-            <h2>Lesson 01: ${escapeHtml(lessonData.title)}</h2>
-            <div class="student-meta">${escapeHtml(account.login || "")}${submission.updatedAt ? ` - Last activity ${new Date(submission.updatedAt).toLocaleString()}` : ""}</div>
+          <div class="work-sample-title">
+            <div class="work-sample-kicker">CAASPP Math Success Academy</div>
+            <h2>${escapeHtml(account.name)}</h2>
+            <div class="student-meta">Lesson ${String(lessonNumber).padStart(2, "0")}: ${escapeHtml(lessonData.title)}${account.login ? ` - ${escapeHtml(account.login)}` : ""}${submission.updatedAt ? ` - Last activity ${new Date(submission.updatedAt).toLocaleString()}` : ""}</div>
+            <div class="grade-line"><strong>${escapeHtml(gradeLine(stats))}</strong></div>
           </div>
           <div class="actions">
             <button class="btn-primary" type="button" onclick="window.print()">Print Work Sample</button>
@@ -407,7 +459,8 @@
           </div>
           <div class="response-card-body">
             <p><strong>Answered:</strong> ${Math.min(stats.items.length, flattenQuestions(lessonData).length)} of ${flattenQuestions(lessonData).length} graded questions</p>
-            <p><strong>Score:</strong> ${stats.maxScore ? `${stats.score} / ${stats.maxScore}` : "-"}</p>
+            <p><strong>Grade:</strong> ${escapeHtml(gradeLine(stats))}</p>
+            ${stats.exitNeedsReview ? `<p><strong>Teacher follow-up:</strong> Exit check was below 70%, even if the total lesson score is passing.</p>` : ""}
           </div>
         </section>
 
@@ -509,8 +562,8 @@
             <textarea id="feedback-${escapeHtml(question.id)}">${escapeHtml(feedback)}</textarea>
           </div>
           <div class="actions" style="margin-top:10px;">
-            <button class="btn-secondary btn-small" type="button" data-save-feedback="${escapeHtml(question.id)}">Save Override</button>
-            ${canRegrade ? `<button class="btn-secondary btn-small" type="button" data-regrade-ai="${escapeHtml(question.id)}">Regrade AI</button>` : ""}
+            <button class="btn-save btn-small" type="button" data-save-feedback="${escapeHtml(question.id)}">Save Override</button>
+            ${canRegrade ? `<button class="btn-regrade btn-small" type="button" data-regrade-ai="${escapeHtml(question.id)}">Regrade AI</button>` : ""}
           </div>
         </div>
       `;

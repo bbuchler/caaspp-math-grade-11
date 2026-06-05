@@ -4,17 +4,19 @@
 
 - Course title: CAASPP Mathematics Success Academy - Grade 11
 - Pilot module: Week 1 - Linear Equations, Inequalities, and Functions
-- Total pilot lessons: 5
+- Total course shape: 4 modules / 20 lessons
+- Current pilot: Lesson 1 is fully built and submitted by a test student. Lessons 2-20 are visible as the future course shape.
+- Default lesson length: 60 minutes unless Baptiste asks otherwise.
 
 ## Week 1 Sequence
 
 | Lesson | Title | Time | Objective | Gate |
 | --- | --- | ---: | --- | --- |
-| 01 | Undo the Equation | 35-45 min | Solve one-step and two-step equations and explain inverse operations. | 80% on exit check or targeted retry. |
-| 02 | Inequalities Are Ranges | 35-45 min | Solve and graph inequalities; interpret open/closed points and direction. | 80% on exit check plus one correct graph interpretation. |
-| 03 | Lines Tell Stories | 35-45 min | Build and interpret linear equations from tables, graphs, and situations. | 80% on exit check or review table-to-graph strategy. |
-| 04 | Slope, Intercepts, and Meaning | 35-45 min | Interpret slope/rate of change and intercepts in context. | 80% on exit check plus explanation rubric score 2/3. |
-| 05 | Function Notation and Mini Performance Task | 45-60 min | Evaluate functions and complete a short modeling task using multiple representations. | 80% objective score and rubric score 8/10 or teacher review. |
+| 01 | Undo the Equation | 60 min | Solve one-step and two-step equations and explain inverse operations. | Practice can update; exit check locks and flags review if weak. |
+| 02 | Inequalities Are Ranges | 60 min | Solve and graph inequalities; interpret open/closed points and direction. | Build after Lesson 1 pattern is approved. |
+| 03 | Lines Tell Stories | 60 min | Build and interpret linear equations from tables, graphs, and situations. | Build after Lesson 1 pattern is approved. |
+| 04 | Slope, Intercepts, and Meaning | 60 min | Interpret slope/rate of change and intercepts in context. | Build after Lesson 1 pattern is approved. |
+| 05 | Function Notation and Mini Performance Task | 60 min | Evaluate functions and complete a short modeling task using multiple representations. | Build after Lesson 1 pattern is approved. |
 
 ## Objective Map
 
@@ -55,4 +57,3 @@
 | Linear functions | Compare two plans and decide when one becomes cheaper. |
 | Slope/intercepts | Use Desmos to graph a cost model and interpret the y-intercept. |
 | Modeling | Revise the event-budget model after changing attendance. |
-
