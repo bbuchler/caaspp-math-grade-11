@@ -32,8 +32,13 @@
     const question = payload.question || {};
     const result = payload.result || {};
     const lessonNumber = lessonNumberFromId(payload.lessonId);
-    const maxScore = Number(result.maxScore || 1);
+    const maxScore = Number(result.maxScore ?? 1);
     const score = Number(result.score || 0);
+    const gradingMethod = question.grading === "ai_rubric"
+      ? "ai_rubric"
+      : question.grading === "teacher_override"
+        ? "teacher_override"
+        : "deterministic";
 
     const row = {
       course_id: COURSE_ID,
@@ -48,7 +53,7 @@
       score,
       max_score: maxScore,
       feedback: result.feedback || "",
-      grading_method: question.grading === "ai_rubric" ? "ai_rubric" : "deterministic",
+      grading_method: gradingMethod,
       ai_confidence: result.confidence ?? null,
       needs_teacher_review: Boolean(result.needsTeacherReview),
       concept_tags: conceptTags(question),
@@ -115,7 +120,7 @@
     return { saved: !error, error };
   }
 
-  async function updateLessonAttempt(studentId, lessonNumber) {
+  async function updateLessonAttempt(studentId, lessonNumber, statusOverride = null) {
     const { data, error } = await window.supabase
       .from("course_question_responses")
       .select("score,max_score,needs_teacher_review")
@@ -129,21 +134,34 @@
     const maxScore = data.reduce((sum, item) => sum + Number(item.max_score || 0), 0);
     const percent = maxScore ? Math.round((score / maxScore) * 10000) / 100 : 0;
     const needsTeacherReview = data.some((item) => item.needs_teacher_review);
-    const status = data.length ? "in_progress" : "not_started";
+    const status = statusOverride || (data.length ? "in_progress" : "not_started");
+    const submittedAt = status === "submitted" ? new Date().toISOString() : null;
+
+    const attempt = {
+      course_id: COURSE_ID,
+      student_id: studentId,
+      lesson_number: lessonNumber,
+      status,
+      score,
+      max_score: maxScore,
+      percent,
+      needs_teacher_review: needsTeacherReview,
+      started_at: new Date().toISOString()
+    };
+
+    if (submittedAt) attempt.submitted_at = submittedAt;
 
     await window.supabase
       .from("course_lesson_attempts")
-      .upsert({
-        course_id: COURSE_ID,
-        student_id: studentId,
-        lesson_number: lessonNumber,
-        status,
-        score,
-        max_score: maxScore,
-        percent,
-        needs_teacher_review: needsTeacherReview,
-        started_at: new Date().toISOString()
-      }, { onConflict: "course_id,student_id,lesson_number" });
+      .upsert(attempt, { onConflict: "course_id,student_id,lesson_number" });
+  }
+
+  async function submitLessonAttempt(lessonId) {
+    const session = await getSession();
+    if (!session) return { mode: "local", saved: false };
+    const lessonNumber = lessonNumberFromId(lessonId);
+    await updateLessonAttempt(session.user.id, lessonNumber, "submitted");
+    return { mode: "supabase", saved: true };
   }
 
   async function loadGradebook() {
@@ -173,6 +191,34 @@
     return data || [];
   }
 
+  async function updateQuestionResponse(payload) {
+    const session = await getSession();
+    if (!session || !payload?.studentId || !payload?.questionId) return { saved: false };
+    const lessonNumber = Number(payload.lessonNumber || 1);
+    const score = Number(payload.score || 0);
+    const maxScore = Number(payload.maxScore ?? 1);
+
+    const { error } = await window.supabase
+      .from("course_question_responses")
+      .update({
+        score,
+        max_score: maxScore,
+        feedback: payload.feedback || "",
+        grading_method: payload.gradingMethod || "teacher_override",
+        ai_confidence: payload.confidence ?? null,
+        needs_teacher_review: Boolean(payload.needsTeacherReview),
+        updated_at: new Date().toISOString()
+      })
+      .eq("course_id", COURSE_ID)
+      .eq("student_id", payload.studentId)
+      .eq("lesson_number", lessonNumber)
+      .eq("question_id", payload.questionId);
+
+    if (error) return { saved: false, error };
+    await updateLessonAttempt(payload.studentId, lessonNumber);
+    return { saved: true };
+  }
+
   async function loadTrends() {
     const session = await getSession();
     if (!session) return null;
@@ -193,8 +239,10 @@
     loadCourseStudents,
     enrollUser,
     saveQuestionResponse,
+    submitLessonAttempt,
     loadGradebook,
     loadStudentResponses,
+    updateQuestionResponse,
     loadTrends
   };
 })();

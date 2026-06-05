@@ -584,6 +584,44 @@
       margin-top: 12px;
     }
 
+    .submit-box {
+      margin-top: 14px;
+      border: 1px solid #bfd3e8;
+      border-radius: 8px;
+      background: #f6fbff;
+      padding: 12px;
+    }
+
+    .submit-box p {
+      margin-bottom: 10px;
+      color: #24476b;
+    }
+
+    .submit-status {
+      margin-top: 10px;
+      font-weight: 750;
+      color: var(--green);
+      display: none;
+    }
+
+    .submit-status.show {
+      display: block;
+    }
+
+    button.submit-lesson {
+      border: 0;
+      border-radius: 6px;
+      background: var(--green);
+      color: #fff;
+      padding: 10px 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    button.submit-lesson:hover {
+      background: #0a6130;
+    }
+
     .study-buddy-btn {
       position: fixed;
       bottom: 24px;
@@ -891,6 +929,7 @@
   <script src="js/auth.js"></script>
   <script>
     const lessonIds = ["01", "02", "03", "04", "05"];
+    const COURSE_ASSET_VERSION = "2026-06-05-a1587b3";
     const courseHome = {
       title: "CAASPP Math Success Academy",
       subtitle: "Build confidence with the math moves that show up again and again on CAASPP.",
@@ -919,7 +958,7 @@
     async function loadLessons() {
       const loaded = [];
       for (const id of lessonIds) {
-        const response = await fetch(`lessons/lesson-${id}.json`);
+        const response = await fetch(`lessons/lesson-${id}.json?v=${COURSE_ASSET_VERSION}`);
         loaded.push(await response.json());
       }
       state.lessons = loaded;
@@ -1229,7 +1268,12 @@
             </div>
             <div class="challenge-box">
               <p><strong>Extra Challenge:</strong> ${escapeHtml(next.challenge)}</p>
-              <textarea placeholder="Write your challenge answer here."></textarea>
+              <textarea id="finish-challenge-answer" placeholder="Write your challenge answer here."></textarea>
+            </div>
+            <div class="submit-box">
+              <p>When you are done, click Submit Lesson. Your checked answers are saved as you go, and this saves your final challenge response for your teacher.</p>
+              <button class="submit-lesson" type="button">Submit Lesson</button>
+              <div class="submit-status" id="submit-status"></div>
             </div>
           </div>
         </section>
@@ -1237,6 +1281,11 @@
     }
 
     document.addEventListener("click", (event) => {
+      if (event.target.matches("button.submit-lesson")) {
+        submitLesson();
+        return;
+      }
+
       if (!event.target.matches("button.check")) return;
       const card = event.target.closest(".question");
       const question = JSON.parse(card.dataset.question);
@@ -1268,7 +1317,15 @@
           })
           .catch(() => {
             feedback.className = "feedback review show";
-            feedback.textContent = `I couldn't check this automatically right now. ${feedback.dataset.review}`;
+            feedback.textContent = "AI feedback could not run from this link right now. Your answer is saved for teacher review.";
+            savePilotSubmission(question, answer, {
+              score: 0,
+              maxScore: Number(question.maxPoints || 3),
+              feedback: feedback.textContent,
+              correct: false,
+              confidence: 0,
+              needsTeacherReview: true
+            });
           });
         return;
       }
@@ -1366,7 +1423,7 @@
         grading: question.grading,
         answer,
         score: Number(result.score) || 0,
-        maxScore: Number(result.maxScore) || 1,
+        maxScore: Number.isFinite(Number(result.maxScore)) ? Number(result.maxScore) : 1,
         feedback: result.feedback || "",
         correct: Boolean(result.correct),
         confidence: Number(result.confidence ?? 1),
@@ -1384,6 +1441,62 @@
           result
         }).catch(() => {});
       }
+    }
+
+    async function submitLesson() {
+      const lesson = state.lessons[state.active];
+      const status = document.getElementById("submit-status");
+      const button = document.querySelector("button.submit-lesson");
+      const answer = document.getElementById("finish-challenge-answer")?.value.trim() || "";
+
+      if (!lesson || !status || !button) return;
+      if (!answer) {
+        status.className = "submit-status show";
+        status.style.color = "var(--red)";
+        status.textContent = "Write a challenge response first, then submit the lesson.";
+        return;
+      }
+
+      button.disabled = true;
+      status.className = "submit-status show";
+      status.style.color = "#24476b";
+      status.textContent = "Saving your lesson...";
+
+      const challengeQuestion = {
+        id: `l${lesson.lessonId}-finish-challenge`,
+        type: "short_answer",
+        prompt: lessonNextSteps(lesson).challenge,
+        grading: "teacher_override",
+        sectionId: "finish_line",
+        sectionTitle: "Finish Line"
+      };
+
+      savePilotSubmission(challengeQuestion, answer, {
+        score: 0,
+        maxScore: 0,
+        feedback: "Submitted for teacher review.",
+        correct: true,
+        confidence: 1,
+        needsTeacherReview: true
+      });
+
+      const key = "caasppMathPilotSubmissions";
+      const existing = JSON.parse(localStorage.getItem(key) || "{}");
+      const studentId = "pilot-student";
+      const lessonId = lesson.lessonId || "01";
+      existing[studentId] = existing[studentId] || { studentId, studentName: "Test Student", lessons: {} };
+      existing[studentId].lessons[lessonId] = existing[studentId].lessons[lessonId] || { lessonId, responses: {} };
+      existing[studentId].lessons[lessonId].status = "submitted";
+      existing[studentId].lessons[lessonId].submittedAt = new Date().toISOString();
+      localStorage.setItem(key, JSON.stringify(existing));
+
+      if (window.CourseData) {
+        await window.CourseData.submitLessonAttempt(lessonId).catch(() => null);
+      }
+
+      status.style.color = "var(--green)";
+      status.textContent = "Lesson submitted. Your teacher can now review your work sample.";
+      button.textContent = "Submitted";
     }
 
     function ensurePilotAccount() {
@@ -1470,7 +1583,10 @@
           maxPoints: question.maxPoints || 3
         })
       });
-      if (!response.ok) throw new Error("AI grading unavailable");
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "AI grading unavailable");
+      }
       return response.json();
     }
 

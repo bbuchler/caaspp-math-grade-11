@@ -8,6 +8,7 @@ module.exports = async function handler(req, res) {
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return res.status(500).json({ error: "Gemini API key not configured" });
+  const model = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
 
   const {
     question,
@@ -83,7 +84,7 @@ Respond in exactly this JSON shape, with no markdown:
     const timeout = setTimeout(() => controller.abort(), 8000);
 
     const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -104,6 +105,9 @@ Respond in exactly this JSON shape, with no markdown:
     if (!geminiRes.ok) {
       const errText = await geminiRes.text();
       console.error("Gemini API error:", geminiRes.status, errText.slice(0, 500));
+      if (geminiRes.status === 429) {
+        return res.status(429).json({ error: "AI grading quota was reached. Try again in a minute, or ask your teacher to review this response." });
+      }
       return res.status(502).json({ error: "AI grading is temporarily unavailable." });
     }
 

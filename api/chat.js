@@ -8,6 +8,7 @@ module.exports = async function handler(req, res) {
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return res.status(500).json({ error: "Gemini API key not configured" });
+  const model = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
 
   const { messages, lessonContext } = req.body || {};
   if (!Array.isArray(messages) || messages.length === 0) {
@@ -46,7 +47,7 @@ TONE:
 
   try {
     const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -65,6 +66,9 @@ TONE:
     if (!geminiRes.ok) {
       const errText = await geminiRes.text();
       console.error("Gemini API error:", geminiRes.status, errText.slice(0, 500));
+      if (geminiRes.status === 429) {
+        return res.status(429).json({ error: "Study Buddy quota was reached. Try again in a minute." });
+      }
       return res.status(502).json({ error: "Study Buddy is temporarily unavailable." });
     }
 

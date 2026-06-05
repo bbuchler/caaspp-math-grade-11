@@ -299,6 +299,7 @@
   <script>
     const ACCOUNT_KEY = "caasppMathPilotAccounts";
     const SUBMISSION_KEY = "caasppMathPilotSubmissions";
+    const COURSE_ASSET_VERSION = "2026-06-05-a1587b3";
     const params = new URLSearchParams(window.location.search);
     const studentId = params.get("student") || "pilot-student";
     const lessonNumber = Number(params.get("lesson") || "1") || 1;
@@ -347,7 +348,7 @@
     function lessonStats(responses) {
       const items = Object.values(responses || {});
       const score = items.reduce((sum, item) => sum + Number(item.score || 0), 0);
-      const maxScore = items.reduce((sum, item) => sum + Number(item.maxScore || 1), 0);
+      const maxScore = items.reduce((sum, item) => sum + Number(item.maxScore ?? 1), 0);
       const percent = maxScore ? Math.round((score / maxScore) * 100) : null;
       return { items, score, maxScore, percent };
     }
@@ -363,7 +364,7 @@
     }
 
     async function load() {
-      const lessonResponse = await fetch("lessons/lesson-01.json");
+      const lessonResponse = await fetch(`lessons/lesson-01.json?v=${COURSE_ASSET_VERSION}`);
       lessonData = await lessonResponse.json();
       if (window.CourseData && studentId !== "pilot-student") {
         const rows = await window.CourseData.loadStudentResponses(studentId, lessonNumber);
@@ -395,7 +396,6 @@
           </div>
           <div class="actions">
             <button class="btn-primary" type="button" onclick="window.print()">Print Work Sample</button>
-            <button class="btn-secondary" type="button" id="btn-regrade">Regrade AI Responses</button>
             <button class="btn-danger" type="button" id="btn-reset">Reset Lesson</button>
           </div>
         </section>
@@ -406,18 +406,21 @@
             <span class="score-pill ${scoreClass(stats.percent)}">${stats.percent === null ? "Not Started" : `${stats.percent}%`}</span>
           </div>
           <div class="response-card-body">
-            <p><strong>Answered:</strong> ${stats.items.length} of ${flattenQuestions(lessonData).length} questions</p>
+            <p><strong>Answered:</strong> ${Math.min(stats.items.length, flattenQuestions(lessonData).length)} of ${flattenQuestions(lessonData).length} graded questions</p>
             <p><strong>Score:</strong> ${stats.maxScore ? `${stats.score} / ${stats.maxScore}` : "-"}</p>
           </div>
         </section>
 
         ${lessonData.sections.map((section) => renderSection(section, submission.responses)).join("")}
+        ${renderExtraResponses(submission.responses)}
       `;
 
       document.getElementById("btn-reset").addEventListener("click", resetLesson);
-      document.getElementById("btn-regrade").addEventListener("click", regradeAiResponses);
       document.querySelectorAll("[data-save-feedback]").forEach((button) => {
         button.addEventListener("click", () => saveFeedback(button.dataset.saveFeedback));
+      });
+      document.querySelectorAll("[data-regrade-ai]").forEach((button) => {
+        button.addEventListener("click", () => regradeSingleAiResponse(button.dataset.regradeAi));
       });
     }
 
@@ -432,9 +435,9 @@
           grading: row.grading_method,
           answer: row.answer || "",
           score: Number(row.score || 0),
-          maxScore: Number(row.max_score || 1),
+          maxScore: Number(row.max_score ?? 1),
           feedback: row.feedback || "",
-          correct: Number(row.score || 0) >= Number(row.max_score || 1),
+          correct: Number(row.score || 0) >= Number(row.max_score ?? 1),
           confidence: row.ai_confidence,
           needsTeacherReview: row.needs_teacher_review,
           updatedAt: row.updated_at || row.created_at || ""
@@ -465,8 +468,32 @@
       `;
     }
 
+    function renderExtraResponses(responses) {
+      const knownIds = new Set(flattenQuestions(lessonData).map((question) => question.id));
+      const extras = Object.values(responses || {}).filter((response) => !knownIds.has(response.questionId));
+      if (!extras.length) return "";
+      return `
+        <section class="response-card">
+          <div class="response-card-header">
+            <h3>Finish Line</h3>
+            <span class="status-pill score-mid">${extras.length} submitted</span>
+          </div>
+          <div class="response-card-body">
+            ${extras.map((response) => renderQuestion({
+              id: response.questionId,
+              prompt: response.prompt,
+              type: response.type,
+              grading: response.grading,
+              maxPoints: response.maxScore
+            }, response)).join("")}
+          </div>
+        </section>
+      `;
+    }
+
     function renderQuestion(question, response) {
       const feedback = response?.feedback || "";
+      const canRegrade = question.grading === "ai_rubric" && response?.answer;
       return `
         <div class="question-block">
           <h4>${question.promptHtml || escapeHtml(question.prompt)}</h4>
@@ -475,28 +502,56 @@
           <div class="teacher-feedback"><strong>Feedback:</strong> ${escapeHtml(feedback || "No feedback yet.")}</div>
           <div class="edit-row">
             <label for="score-${escapeHtml(question.id)}">Score</label>
-            <input id="score-${escapeHtml(question.id)}" type="text" value="${escapeHtml(formatScore(response, question.maxPoints || (question.grading === "ai_rubric" ? 3 : 1)))}">
+            <input id="score-${escapeHtml(question.id)}" type="text" value="${escapeHtml(formatScore(response, question.maxPoints ?? (question.grading === "ai_rubric" ? 3 : 1)))}">
           </div>
           <div class="edit-row">
             <label for="feedback-${escapeHtml(question.id)}">Teacher Note</label>
             <textarea id="feedback-${escapeHtml(question.id)}">${escapeHtml(feedback)}</textarea>
           </div>
           <div class="actions" style="margin-top:10px;">
-            <button class="btn-secondary btn-small" type="button" data-save-feedback="${escapeHtml(question.id)}">Save Feedback</button>
+            <button class="btn-secondary btn-small" type="button" data-save-feedback="${escapeHtml(question.id)}">Save Override</button>
+            ${canRegrade ? `<button class="btn-secondary btn-small" type="button" data-regrade-ai="${escapeHtml(question.id)}">Regrade AI</button>` : ""}
           </div>
         </div>
       `;
     }
 
-    function saveFeedback(questionId) {
+    async function saveFeedback(questionId) {
       const submissions = getSubmissions();
       const lesson = submissions[studentId]?.lessons?.["01"];
-      if (!lesson?.responses?.[questionId]) return;
+      const response = remoteResponses
+        ? remoteResponsesToMap(remoteResponses)[questionId]
+        : lesson?.responses?.[questionId];
+      if (!response) return;
+
       const scoreValue = document.getElementById(`score-${questionId}`).value;
       const [scoreRaw, maxRaw] = scoreValue.split("/").map((part) => Number(String(part || "").trim()));
-      lesson.responses[questionId].score = Number.isFinite(scoreRaw) ? scoreRaw : lesson.responses[questionId].score;
-      lesson.responses[questionId].maxScore = Number.isFinite(maxRaw) ? maxRaw : lesson.responses[questionId].maxScore;
-      lesson.responses[questionId].feedback = document.getElementById(`feedback-${questionId}`).value.trim();
+      const nextScore = Number.isFinite(scoreRaw) ? scoreRaw : response.score;
+      const nextMaxScore = Number.isFinite(maxRaw) ? maxRaw : response.maxScore;
+      const nextFeedback = document.getElementById(`feedback-${questionId}`).value.trim();
+
+      if (remoteResponses && window.CourseData) {
+        await window.CourseData.updateQuestionResponse({
+          studentId,
+          lessonNumber,
+          questionId,
+          score: nextScore,
+          maxScore: nextMaxScore,
+          feedback: nextFeedback,
+          gradingMethod: "teacher_override",
+          confidence: response.confidence,
+          needsTeacherReview: false
+        });
+        await load();
+        return;
+      }
+
+      if (!lesson?.responses?.[questionId]) return;
+      lesson.responses[questionId].score = nextScore;
+      lesson.responses[questionId].maxScore = nextMaxScore;
+      lesson.responses[questionId].feedback = nextFeedback;
+      lesson.responses[questionId].grading = "teacher_override";
+      lesson.responses[questionId].needsTeacherReview = false;
       lesson.updatedAt = new Date().toISOString();
       saveSubmissions(submissions);
       render();
@@ -509,34 +564,66 @@
       render();
     }
 
-    async function regradeAiResponses() {
+    async function regradeSingleAiResponse(questionId) {
       const submissions = getSubmissions();
       const lesson = submissions[studentId]?.lessons?.["01"];
-      if (!lesson) return;
-      const questions = flattenQuestions(lessonData).filter((question) => question.grading === "ai_rubric" && lesson.responses[question.id]?.answer);
-      for (const question of questions) {
-        const response = lesson.responses[question.id];
-        try {
-          const gradeResponse = await fetch("/api/grade", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              question,
-              questionText: question.prompt,
-              studentAnswer: response.answer,
-              rubricId: question.rubricId,
-              lessonContext: { lessonId: "01", lessonTitle: lessonData.title, learningTarget: lessonData.learningTarget },
-              maxPoints: question.maxPoints || 3
-            })
+      const question = flattenQuestions(lessonData).find((item) => item.id === questionId);
+      const response = remoteResponses
+        ? remoteResponsesToMap(remoteResponses)[questionId]
+        : lesson?.responses?.[questionId];
+      const button = document.querySelector(`[data-regrade-ai="${CSS.escape(questionId)}"]`);
+      if (!question || !response?.answer || !button) return;
+
+      button.disabled = true;
+      button.textContent = "Regrading...";
+
+      try {
+        const gradeResponse = await fetch("/api/grade", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            question,
+            questionText: question.prompt,
+            studentAnswer: response.answer,
+            rubricId: question.rubricId,
+            lessonContext: { lessonId: "01", lessonTitle: lessonData.title, learningTarget: lessonData.learningTarget },
+            maxPoints: question.maxPoints || 3
+          })
+        });
+        if (!gradeResponse.ok) {
+          const errorData = await gradeResponse.json().catch(() => ({}));
+          throw new Error(errorData.error || "AI grading is unavailable.");
+        }
+        const result = await gradeResponse.json();
+
+        if (remoteResponses && window.CourseData) {
+          await window.CourseData.updateQuestionResponse({
+            studentId,
+            lessonNumber,
+            questionId,
+            score: result.score,
+            maxScore: result.maxScore,
+            feedback: result.feedback,
+            gradingMethod: "ai_rubric",
+            confidence: result.confidence,
+            needsTeacherReview: result.needsTeacherReview
           });
-          if (!gradeResponse.ok) continue;
-          const result = await gradeResponse.json();
-          lesson.responses[question.id] = { ...response, ...result, updatedAt: new Date().toISOString() };
-        } catch {}
+          await load();
+          return;
+        }
+
+        if (!lesson?.responses?.[questionId]) return;
+        lesson.responses[questionId] = { ...response, ...result, grading: "ai_rubric", updatedAt: new Date().toISOString() };
+        lesson.updatedAt = new Date().toISOString();
+        saveSubmissions(submissions);
+        render();
+      } catch (error) {
+        button.textContent = "AI Unavailable";
+        button.disabled = false;
+        const feedbackBox = document.getElementById(`feedback-${questionId}`);
+        if (feedbackBox) feedbackBox.value = error.message || "AI regrade is unavailable from this link. Use the local/Vercel course link with the grading API enabled.";
+        return;
       }
-      lesson.updatedAt = new Date().toISOString();
-      saveSubmissions(submissions);
-      render();
     }
 
     load().catch((error) => {
