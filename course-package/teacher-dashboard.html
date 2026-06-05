@@ -138,6 +138,34 @@
       margin-bottom: 14px;
     }
 
+    .gradebook-filters {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .gradebook-search {
+      display: grid;
+      gap: 5px;
+      min-width: min(340px, 100%);
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .gradebook-search input {
+      margin-bottom: 0;
+      background: var(--white);
+    }
+
+    .filter-note {
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin: 0;
+    }
+
     .module-tab {
       border: 1px solid var(--line);
       border-radius: 6px;
@@ -419,7 +447,8 @@
 
       .teacher-controls,
       .header-right,
-      .row-actions {
+      .row-actions,
+      .gradebook-filters {
         width: 100%;
       }
 
@@ -468,6 +497,14 @@
       <button class="module-tab" type="button" data-module-filter="3">Module 3: Lessons 11-15</button>
       <button class="module-tab" type="button" data-module-filter="4">Module 4: Lessons 16-20</button>
     </nav>
+
+    <div class="gradebook-filters">
+      <label class="gradebook-search" for="student-search">
+        Search students
+        <input id="student-search" type="search" placeholder="Type a student name or username" autocomplete="off">
+      </label>
+      <p class="filter-note">Teacher/class filters will come after students are assigned to real class sections.</p>
+    </div>
 
     <div class="gradebook-table-wrapper">
       <table class="gradebook-table">
@@ -617,6 +654,7 @@
     let remoteDataLoaded = false;
     let activeModuleFilter = "all";
     let activeDetailLessonNumber = 1;
+    let studentSearchQuery = "";
 
     const lessonOneSections = [
       { id: "overview", label: "Overview", questionIds: ["l1-overview-reflection"] },
@@ -824,6 +862,19 @@
       return Object.values(byId);
     }
 
+    function matchesStudentSearch(student) {
+      const query = studentSearchQuery.trim().toLowerCase();
+      if (!query) return true;
+      const text = `${student.name || ""} ${student.login || ""} ${student.email || ""}`.toLowerCase();
+      return text.includes(query);
+    }
+
+    function visibleStudents(accounts) {
+      return accounts
+        .filter((account) => account.role === "student")
+        .filter(matchesStudentSearch);
+    }
+
     function remoteStats(studentId, lessonNumber) {
       const row = (remoteGradebookRows || []).find((item) =>
         item.student_id === studentId && Number(item.lesson_number) === Number(lessonNumber)
@@ -850,7 +901,7 @@
     function renderGradebook() {
       const accounts = remoteDataLoaded ? remoteAccounts() : getAccounts();
       const submissions = getSubmissions();
-      const students = accounts.filter((account) => account.role === "student");
+      const students = visibleStudents(accounts);
       const head = document.getElementById("gradebook-head-row");
       const body = document.getElementById("gradebook-body");
       const lessons = visibleLessons();
@@ -872,7 +923,7 @@
         body.innerHTML = `
           <tr>
             <td colspan="${lessons.length + 3}">
-              <span class="score-empty">No CAASPP Math students enrolled yet. Add a test student to begin.</span>
+              <span class="score-empty">${studentSearchQuery ? "No students match that search." : "No CAASPP Math students enrolled yet. Add a test student to begin."}</span>
             </td>
           </tr>
         `;
@@ -927,10 +978,10 @@
       }
       const accounts = remoteDataLoaded ? remoteAccounts() : getAccounts();
       const submissions = getSubmissions();
-      const students = accounts.filter((account) => account.role === "student");
+      const students = visibleStudents(accounts);
       const body = document.getElementById("lesson-one-body");
       if (!students.length) {
-        body.innerHTML = `<tr><td colspan="8"><span class="score-empty">No CAASPP Math students enrolled yet.</span></td></tr>`;
+        body.innerHTML = `<tr><td colspan="8"><span class="score-empty">${studentSearchQuery ? "No students match that search." : "No CAASPP Math students enrolled yet."}</span></td></tr>`;
         return;
       }
       body.innerHTML = students.map((student) => {
@@ -1266,6 +1317,11 @@ If you have trouble signing in, contact your teacher.`;
 
     document.getElementById("btn-create-account").addEventListener("click", createAccount);
     document.getElementById("account-role").addEventListener("change", updateAccountFields);
+    document.getElementById("student-search").addEventListener("input", (event) => {
+      studentSearchQuery = event.target.value;
+      renderGradebook();
+      renderLessonOneBreakdown();
+    });
     document.getElementById("active-lesson-select").addEventListener("change", async (event) => {
       activeDetailLessonNumber = Number(event.target.value) || 1;
       await renderAll();
