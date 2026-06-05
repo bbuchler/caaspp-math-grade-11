@@ -748,6 +748,11 @@
             </div>
             <button class="btn btn-secondary btn-small" type="button" id="btn-copy-subject">Copy</button>
           </div>
+          <div class="form-row" id="welcome-password-row">
+            <label for="welcome-password">Temporary password for this email <span class="muted">(optional)</span></label>
+            <input id="welcome-password" type="text" placeholder="Type the password if you know it, or reset it first">
+            <small class="field-note">Passwords cannot be retrieved after account creation. If this is blank, the email will tell the user to ask the teacher.</small>
+          </div>
           <div class="welcome-preview" id="welcome-email-preview"></div>
           <div class="row-actions">
             <button class="btn btn-secondary btn-small" type="button" id="btn-copy-welcome-plain">Copy Plain Text</button>
@@ -1709,17 +1714,31 @@
       return `Hi ${escapeHtml(firstName)},<br><br>Welcome to <b>CAASPP Math Success Academy</b>. This course is designed to help you practice the math moves that show up again and again on CAASPP, especially solving equations, reading relationships, and explaining your reasoning.<br><br><b>Your Login</b><ul style="padding-left:22px;margin-top:4px;margin-bottom:4px;"><li><b>Website:</b> ${escapeHtml(siteUrl)}</li><li><b>Username:</b> ${escapeHtml(login || "ask your teacher")}</li>${loginPasswordLine(password)}</ul><br><b>How the Course Works</b><ul style="padding-left:22px;margin-top:4px;margin-bottom:4px;"><li>Start with <b>Lesson 1: Undo the Equation</b>.</li><li>You will watch a short overview, answer video questions, practice the math, complete a real-world problem, and finish with an exit check.</li><li>Practice questions can be updated as you learn, so use the feedback to improve your answer.</li><li>Your teacher can see your progress and help if you get stuck.</li></ul><br>If you have trouble signing in or are not sure what to do next, ask your teacher. Hope you enjoy!`;
     }
 
-    function showWelcomeEmail({ role, name, login, password, contactEmail }) {
+    function renderWelcomeEmailPreview() {
+      const preview = document.getElementById("welcome-email-preview");
+      const role = preview.dataset.role || document.getElementById("account-role").value || "student";
+      const name = preview.dataset.name || "Student";
+      const login = preview.dataset.login || "";
+      const password = document.getElementById("welcome-password").value.trim();
       const emailHtml = buildWelcomeEmailHtml({ role, name, login, password });
       const emailText = htmlToPlain(emailHtml);
       const subject = welcomeSubject(role);
+      document.getElementById("welcome-subject-text").textContent = subject;
+      preview.innerHTML = emailHtml;
+      preview.dataset.copyHtml = emailHtml;
+      preview.dataset.copyText = emailText;
+      preview.dataset.subject = subject;
+    }
+
+    function showWelcomeEmail({ role, name, login, password, contactEmail }) {
+      const preview = document.getElementById("welcome-email-preview");
+      preview.dataset.role = role;
+      preview.dataset.name = name;
+      preview.dataset.login = login || "";
+      document.getElementById("welcome-password").value = password || "";
       document.getElementById("account-success-title").textContent = `${role === "teacher" ? "Teacher" : "Student"} account created`;
       document.getElementById("account-success-login").textContent = `Login: ${login}${contactEmail ? ` | Contact: ${contactEmail}` : ""}`;
-      document.getElementById("welcome-subject-text").textContent = subject;
-      document.getElementById("welcome-email-preview").innerHTML = emailHtml;
-      document.getElementById("welcome-email-preview").dataset.copyHtml = emailHtml;
-      document.getElementById("welcome-email-preview").dataset.copyText = emailText;
-      document.getElementById("welcome-email-preview").dataset.subject = subject;
+      renderWelcomeEmailPreview();
       document.getElementById("modal-add-account").classList.add("success-mode");
       document.getElementById("account-success-panel").classList.add("open");
     }
@@ -1897,6 +1916,7 @@
     document.getElementById("btn-copy-welcome").addEventListener("click", (event) => copyWelcomeHtml(event.currentTarget));
     document.getElementById("btn-copy-welcome-plain").addEventListener("click", (event) => copyWelcomePlain(event.currentTarget));
     document.getElementById("btn-copy-subject").addEventListener("click", (event) => copyWelcomeSubject(event.currentTarget));
+    document.getElementById("welcome-password").addEventListener("input", renderWelcomeEmailPreview);
     document.getElementById("btn-reset-password").addEventListener("click", resetPassword);
     document.getElementById("btn-confirm-toggle-status").addEventListener("click", toggleCourseAccountStatus);
     document.getElementById("btn-update-teacher-password").addEventListener("click", async () => {
