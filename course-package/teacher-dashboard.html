@@ -336,6 +336,41 @@
       margin-bottom: 5px;
     }
 
+    .form-row {
+      margin-bottom: 12px;
+    }
+
+    .field-note {
+      display: block;
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin: -6px 0 10px;
+    }
+
+    .welcome-panel {
+      display: none;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--soft);
+      padding: 12px;
+      margin-top: 12px;
+    }
+
+    .welcome-panel.open {
+      display: block;
+    }
+
+    .welcome-preview {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 12px;
+      margin: 10px 0;
+      max-height: 260px;
+      overflow: auto;
+      font-size: 0.92rem;
+    }
+
     input,
     select {
       width: 100%;
@@ -428,8 +463,10 @@
               <thead>
                 <tr>
                   <th>Student</th>
+                  <th>Overview</th>
                   <th>Quick Start</th>
                   <th>Video Questions</th>
+                  <th>Real World</th>
                   <th>Practice</th>
                   <th>Exit Check</th>
                   <th>Last Activity</th>
@@ -466,16 +503,37 @@
       </div>
       <div class="modal-body">
         <label for="account-role">Role</label>
-        <select id="account-role">
+        <select id="account-role" autocomplete="off">
           <option value="student">Student</option>
           <option value="teacher">Teacher</option>
         </select>
-        <label for="account-name">Full name</label>
-        <input id="account-name" type="text" placeholder="Student or teacher name">
-        <label for="account-login">Username or email</label>
-        <input id="account-login" type="text" placeholder="test.student">
-        <label for="account-password">Temporary password</label>
-        <input id="account-password" type="text" placeholder="At least 6 characters">
+        <div class="form-row">
+          <label for="account-name">Full name</label>
+          <input id="account-name" type="text" placeholder="Student or teacher name" autocomplete="off">
+        </div>
+        <div class="form-row" id="account-username-row">
+          <label for="account-username" id="account-username-label">Username</label>
+          <input id="account-username" type="text" placeholder="caaspp.test" autocomplete="off" autocapitalize="none" spellcheck="false">
+          <small class="field-note" id="account-username-note">This username plus the temporary password is used to sign in.</small>
+        </div>
+        <div class="form-row" id="contact-email-row">
+          <label for="account-contact-email" id="account-contact-label">Contact email <span class="muted">(optional)</span></label>
+          <input id="account-contact-email" type="email" placeholder="student-or-parent@school.edu" autocomplete="off">
+          <small class="field-note" id="account-contact-note">Optional contact/welcome email. This is not the login.</small>
+        </div>
+        <div class="form-row">
+          <label for="account-password">Temporary password</label>
+          <input id="account-password" type="text" placeholder="At least 6 characters" autocomplete="new-password">
+        </div>
+        <div class="welcome-panel" id="account-success-panel">
+          <strong id="account-success-title">Account created</strong>
+          <p class="field-note" id="account-success-login"></p>
+          <div class="welcome-preview" id="welcome-email-preview"></div>
+          <div class="row-actions">
+            <button class="btn btn-secondary btn-small" type="button" id="btn-copy-welcome">Copy Welcome Email</button>
+            <button class="btn btn-secondary btn-small" type="button" id="btn-add-another-account">Add Another</button>
+          </div>
+        </div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" type="button" data-close-modal>Cancel</button>
@@ -536,8 +594,10 @@
     let activeModuleFilter = "all";
 
     const lessonOneSections = [
+      { id: "overview", label: "Overview", questionIds: ["l1-overview-reflection"] },
       { id: "launch", label: "Quick Start", questionIds: ["l1-launch-1"] },
       { id: "video", label: "Video Questions", questionIds: ["l1-vq1", "l1-vq2", "l1-vq3", "l1-vq4"] },
+      { id: "real_world", label: "Real World", questionIds: ["l1-rw1", "l1-rw2", "l1-rw3"] },
       { id: "practice", label: "Practice", questionIds: ["l1-p1", "l1-p2", "l1-p3"] },
       { id: "check", label: "Exit Check", questionIds: ["w1-l1-q1", "w1-l1-q2", "w1-l1-q3"] }
     ];
@@ -645,6 +705,14 @@
     function formatDate(value) {
       if (!value) return `<span class="score-empty">-</span>`;
       return new Date(value).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
     }
 
     function remoteAccounts() {
@@ -774,6 +842,8 @@
             <td>${formatSection(studentSubmission, lessonOneSections[1])}</td>
             <td>${formatSection(studentSubmission, lessonOneSections[2])}</td>
             <td>${formatSection(studentSubmission, lessonOneSections[3])}</td>
+            <td>${formatSection(studentSubmission, lessonOneSections[4])}</td>
+            <td>${formatSection(studentSubmission, lessonOneSections[5])}</td>
             <td>${formatDate(stats.updatedAt)}</td>
           </tr>
         `;
@@ -870,7 +940,9 @@
     async function createAccount() {
       const role = document.getElementById("account-role").value;
       const name = document.getElementById("account-name").value.trim();
-      const login = document.getElementById("account-login").value.trim();
+      const username = document.getElementById("account-username").value.trim().toLowerCase();
+      const contactEmail = document.getElementById("account-contact-email").value.trim();
+      const login = username;
       const password = document.getElementById("account-password").value.trim();
       if (!name || !login || password.length < 6) return;
 
@@ -886,8 +958,8 @@
             role,
             name,
             password,
-            username: role === "student" ? login : undefined,
-            email: role === "teacher" ? login : undefined
+            username,
+            contactEmail
           })
         });
         const result = await response.json().catch(() => ({}));
@@ -895,10 +967,7 @@
           alert(result.error || "Could not create account.");
           return;
         }
-        document.getElementById("account-name").value = "";
-        document.getElementById("account-login").value = "";
-        document.getElementById("account-password").value = "";
-        closeModals();
+        showWelcomeEmail({ role, name, login: result.username || login, password, contactEmail });
         await renderAll();
         return;
       }
@@ -913,10 +982,7 @@
         createdAt: new Date().toISOString()
       });
       saveAccounts(accounts);
-      document.getElementById("account-name").value = "";
-      document.getElementById("account-login").value = "";
-      document.getElementById("account-password").value = "";
-      closeModals();
+      showWelcomeEmail({ role, name, login, password, contactEmail });
       renderAll();
     }
 
@@ -970,6 +1036,60 @@
       document.querySelectorAll(".modal-overlay").forEach((modal) => modal.classList.remove("open"));
     }
 
+    function resetAccountForm() {
+      document.getElementById("account-name").value = "";
+      document.getElementById("account-username").value = "";
+      document.getElementById("account-contact-email").value = "";
+      document.getElementById("account-password").value = "";
+      document.getElementById("account-success-panel").classList.remove("open");
+      document.getElementById("welcome-email-preview").innerHTML = "";
+      document.getElementById("account-success-login").textContent = "";
+    }
+
+    function updateAccountFields() {
+      const role = document.getElementById("account-role").value;
+      const isStudent = role === "student";
+      document.getElementById("account-username-label").textContent = isStudent ? "Student username" : "Teacher username";
+      document.getElementById("account-username-note").textContent = isStudent
+        ? "Students use this username plus the temporary password to sign in. No email is required for login."
+        : "Teachers can use this username plus the temporary password to sign in.";
+      document.getElementById("account-contact-label").innerHTML = isStudent
+        ? 'Student or parent email <span class="muted">(optional)</span>'
+        : 'Teacher email <span class="muted">(optional)</span>';
+      document.getElementById("account-contact-note").textContent = isStudent
+        ? "Optional contact/welcome email. This is linked to the student, but is not the login."
+        : "Optional contact email. This is linked to the teacher, but is not the login.";
+    }
+
+    function buildWelcomeEmail({ role, name, login, password }) {
+      const firstName = name.split(" ")[0] || name;
+      const audience = role === "teacher" ? "teacher" : "student";
+      return `Hi ${firstName},
+
+Welcome to CAASPP Math Success Academy.
+
+Your login:
+Website: ${window.location.origin}/course-package/index.html
+Username: ${login}
+Temporary password: ${password}
+
+Start with Lesson 1: Undo the Equation. You will watch the overview, answer video questions, practice solving equations, and complete the exit check.
+
+If you have trouble signing in, contact your teacher.`;
+    }
+
+    function showWelcomeEmail({ role, name, login, password, contactEmail }) {
+      const emailText = buildWelcomeEmail({ role, name, login, password });
+      document.getElementById("account-success-title").textContent = `${role === "teacher" ? "Teacher" : "Student"} account created`;
+      document.getElementById("account-success-login").textContent = `Login: ${login}${contactEmail ? ` | Contact: ${contactEmail}` : ""}`;
+      document.getElementById("welcome-email-preview").innerHTML = emailText
+        .split("\n")
+        .map((line) => line.trim() ? `<p>${escapeHtml(line)}</p>` : "<br>")
+        .join("");
+      document.getElementById("welcome-email-preview").dataset.copyText = emailText;
+      document.getElementById("account-success-panel").classList.add("open");
+    }
+
     async function loadRemoteData() {
       if (!window.CourseData) return;
       const gradebook = await window.CourseData.loadGradebook();
@@ -994,6 +1114,8 @@
       if (opener) {
         const preferredRole = opener.dataset.role;
         if (preferredRole) document.getElementById("account-role").value = preferredRole;
+        resetAccountForm();
+        updateAccountFields();
         openModal(opener.dataset.openModal);
       }
 
@@ -1029,6 +1151,17 @@
     });
 
     document.getElementById("btn-create-account").addEventListener("click", createAccount);
+    document.getElementById("account-role").addEventListener("change", updateAccountFields);
+    document.getElementById("btn-add-another-account").addEventListener("click", resetAccountForm);
+    document.getElementById("btn-copy-welcome").addEventListener("click", async () => {
+      const text = document.getElementById("welcome-email-preview").dataset.copyText || "";
+      if (!text) return;
+      await navigator.clipboard.writeText(text);
+      document.getElementById("btn-copy-welcome").textContent = "Copied";
+      setTimeout(() => {
+        document.getElementById("btn-copy-welcome").textContent = "Copy Welcome Email";
+      }, 1400);
+    });
     document.getElementById("btn-reset-password").addEventListener("click", resetPassword);
     document.getElementById("btn-update-teacher-password").addEventListener("click", async () => {
       const password = document.getElementById("teacher-password").value;
@@ -1041,7 +1174,7 @@
       closeModals();
     });
     document.getElementById("btn-export").addEventListener("click", () => {
-      const rows = [["Student", "Login", "Status", "Quick Start", "Video Questions", "Practice", "Exit Check", "Lesson Score", "Last Activity"]];
+      const rows = [["Student", "Login", "Status", "Overview", "Quick Start", "Video Questions", "Real World", "Practice", "Exit Check", "Lesson Score", "Last Activity"]];
       const submissions = getSubmissions();
       getAccounts().filter((account) => account.role === "student").forEach((student) => {
         const studentSubmission = submissions[student.id];
@@ -1054,6 +1187,8 @@
           lessonOneSections.map((section) => formatSection(studentSubmission, section).replace(/<[^>]*>/g, ""))[1],
           lessonOneSections.map((section) => formatSection(studentSubmission, section).replace(/<[^>]*>/g, ""))[2],
           lessonOneSections.map((section) => formatSection(studentSubmission, section).replace(/<[^>]*>/g, ""))[3],
+          lessonOneSections.map((section) => formatSection(studentSubmission, section).replace(/<[^>]*>/g, ""))[4],
+          lessonOneSections.map((section) => formatSection(studentSubmission, section).replace(/<[^>]*>/g, ""))[5],
           stats.percent === null ? "" : `${stats.percent}%`,
           stats.updatedAt
         ]);

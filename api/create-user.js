@@ -14,13 +14,9 @@ module.exports = async function handler(req, res) {
   if (!name || !password) return res.status(400).json({ error: "Name and password are required." });
   if (password.length < 6) return res.status(400).json({ error: "Password must be at least 6 characters." });
 
-  if (userRole === "student") {
-    if (!username) return res.status(400).json({ error: "Username is required for students." });
-    if (!/^[a-zA-Z0-9._-]+$/.test(username)) {
-      return res.status(400).json({ error: "Username can only contain letters, numbers, dots, hyphens, and underscores." });
-    }
-  } else if (!email) {
-    return res.status(400).json({ error: "Email is required for teachers." });
+  if (!username) return res.status(400).json({ error: "Username is required." });
+  if (!/^[a-zA-Z0-9._-]+$/.test(username)) {
+    return res.status(400).json({ error: "Username can only contain letters, numbers, dots, hyphens, and underscores." });
   }
 
   const SUPABASE_URL = process.env.SUPABASE_URL || "https://vulzhiifgxrimpquhsvg.supabase.co";
@@ -51,15 +47,14 @@ module.exports = async function handler(req, res) {
       return res.status(403).json({ error: "Only teachers and admins can create accounts." });
     }
 
-    const authEmail = userRole === "student"
-      ? `${username.toLowerCase()}@altus-caaspp-math.local`
-      : email.toLowerCase();
+    const normalizedUsername = username.toLowerCase();
+    const authEmail = `${normalizedUsername}@altus-caaspp-math.local`;
 
     const userMetadata = {
       full_name: name,
       role: userRole,
-      username: userRole === "student" ? username.toLowerCase() : null,
-      contact_email: userRole === "student" ? (contactEmail || null) : null,
+      username: normalizedUsername,
+      contact_email: contactEmail || email || null,
       created_by: callerUser.id
     };
 
@@ -87,8 +82,8 @@ module.exports = async function handler(req, res) {
       full_name: name,
       email: authEmail,
       role: userRole,
-      username: userRole === "student" ? username.toLowerCase() : null,
-      contact_email: userRole === "student" ? (contactEmail || null) : null,
+      username: normalizedUsername,
+      contact_email: contactEmail || email || null,
       created_by: callerUser.id,
       is_active: true
     };
@@ -131,8 +126,9 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({
       success: true,
       userId: newUser.id,
-      username: userRole === "student" ? username.toLowerCase() : null,
+      username: normalizedUsername,
       email: authEmail,
+      contactEmail: contactEmail || email || null,
       role: userRole
     });
   } catch (err) {

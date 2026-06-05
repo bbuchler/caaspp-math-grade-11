@@ -438,7 +438,7 @@
           <div class="teacher-feedback"><strong>Feedback:</strong> ${escapeHtml(feedback || "No feedback yet.")}</div>
           <div class="edit-row">
             <label for="score-${escapeHtml(question.id)}">Score</label>
-            <input id="score-${escapeHtml(question.id)}" type="text" value="${escapeHtml(formatScore(response, question.grading === "ai_rubric" ? 3 : 1))}">
+            <input id="score-${escapeHtml(question.id)}" type="text" value="${escapeHtml(formatScore(response, question.maxPoints || (question.grading === "ai_rubric" ? 3 : 1)))}">
           </div>
           <div class="edit-row">
             <label for="feedback-${escapeHtml(question.id)}">Teacher Note</label>
@@ -489,7 +489,7 @@
               studentAnswer: response.answer,
               rubricId: question.rubricId,
               lessonContext: { lessonId: "01", lessonTitle: lessonData.title, learningTarget: lessonData.learningTarget },
-              maxPoints: 3
+              maxPoints: question.maxPoints || 3
             })
           });
           if (!gradeResponse.ok) continue;

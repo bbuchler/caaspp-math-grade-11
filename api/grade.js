@@ -25,6 +25,8 @@ module.exports = async function handler(req, res) {
   const points = Number(maxPoints) || 3;
   const safeQuestion = JSON.stringify(question || {}, null, 2).slice(0, 5000);
   const safeContext = JSON.stringify(lessonContext || {}, null, 2).slice(0, 9000);
+  const expectedElements = Array.isArray(question?.expectedElements) ? question.expectedElements : [];
+  const commonMisconceptions = Array.isArray(question?.commonMisconceptions) ? question.commonMisconceptions : [];
 
   const prompt = `You are grading an 11th grade CAASPP math short response.
 
@@ -43,9 +45,18 @@ ${studentAnswer}
 RUBRIC ID:
 ${rubricId || "math-explanation-3"}
 
+EXPECTED ELEMENTS:
+${expectedElements.length ? expectedElements.map((item) => `- ${item}`).join("\n") : "- No separate expected elements provided."}
+
+COMMON MISCONCEPTIONS TO WATCH FOR:
+${commonMisconceptions.length ? commonMisconceptions.map((item) => `- ${item}`).join("\n") : "- No separate misconceptions provided."}
+
 GRADING RULES:
 - Grade math reasoning, not spelling or polished writing.
 - Full credit (${points}/${points}): student gives a correct mathematical idea and enough explanation to show why it works.
+- For factual-short-2, full credit means the student communicates the expected idea in any reasonable wording; do not require the exact answer key phrase.
+- For factual-short-2, partial credit means the student has an important correct piece but misses a meaningful detail such as a negative sign, unit, or vocabulary connection.
+- Do not give credit merely because the response contains keywords. The sentence has to mean the correct thing.
 - Partial credit: student is on the right track but misses a key step, uses weak vocabulary, or gives an incomplete explanation.
 - Low credit: student attempts the prompt but shows a major misconception.
 - Zero: blank, off-topic, or no meaningful math reasoning.

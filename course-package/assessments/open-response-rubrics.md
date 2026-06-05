@@ -1,5 +1,17 @@
 # Open Response Rubrics
 
+## factual-short-2
+
+Use for short answers where the student can phrase the idea in multiple correct ways and partial credit is useful.
+
+| Score | Description |
+| ---: | --- |
+| 2 | The answer communicates the required mathematical idea, even if wording is informal. |
+| 1 | The answer has an important correct piece but misses a meaningful detail, sign, unit, or vocabulary connection. |
+| 0 | The answer is blank, off-topic, or shows a misconception about the required idea. |
+
+Teacher review if the answer is hard to interpret or appears to use the right keywords with the wrong meaning.
+
 ## math-explanation-3
 
 Use for short explanations of a math idea.
@@ -49,4 +61,3 @@ Use for mini performance task explanations.
 | 0 | Blank, off-topic, or no mathematical reasoning. |
 
 Teacher review if AI confidence is low, if rounding is the main issue, or if the answer is borderline between 3 and 4.
-

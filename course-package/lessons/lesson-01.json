@@ -8,6 +8,24 @@
   "whyItMatters": "CAASPP questions often hide simple equation solving inside a word problem, table, or graph. If you can undo an equation cleanly, you can keep the rest of the problem from turning into noise.",
   "sections": [
     {
+      "id": "overview",
+      "type": "reflection",
+      "title": "Overview Reflection",
+      "studentText": "After watching the overview, explain the main point in your own words.",
+      "questions": [
+        {
+          "id": "l1-overview-reflection",
+          "type": "short_answer",
+          "prompt": "In your own words, explain the main idea of the video. How is deconstructing an equation similar to untying a knot?",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "expectedElements": ["undo operations", "one step at a time", "keep both sides balanced", "isolate the variable"],
+          "commonMisconceptions": ["only change one side", "guessing is the main strategy", "the variable is always 4"],
+          "feedback": "A strong response explains that solving means undoing operations step by step while keeping both sides balanced until the variable is isolated."
+        }
+      ]
+    },
+    {
       "id": "launch",
       "type": "launch",
       "title": "Quick Start",
@@ -47,7 +65,11 @@
           "type": "short_answer",
           "prompt": "In the video, what does 5x mean?",
           "answer": "5 times x",
-          "grading": "deterministic",
+          "grading": "ai_rubric",
+          "rubricId": "factual-short-2",
+          "maxPoints": 2,
+          "expectedElements": ["5 is multiplied by x", "5 times the value of x"],
+          "commonMisconceptions": ["5 plus x", "5 is the answer", "x is automatically 5"],
           "feedback": "The video explains that a number written next to a variable means multiplication, so 5x means 5 times x."
         },
         {
@@ -69,7 +91,11 @@
           "type": "short_answer",
           "prompt": "The video says the coefficient is the number being multiplied by x. In -5/6x = 7/8, what is the coefficient?",
           "answer": "-5/6",
-          "grading": "deterministic",
+          "grading": "ai_rubric",
+          "rubricId": "factual-short-2",
+          "maxPoints": 2,
+          "expectedElements": ["the coefficient is -5/6", "negative five sixths is multiplying x"],
+          "commonMisconceptions": ["7/8 is the coefficient", "x is the coefficient", "5/6 without the negative sign"],
           "feedback": "The coefficient is -5/6 because that is the number multiplying x."
         },
         {
@@ -96,6 +122,43 @@
         ],
         "commonMistake": "A common mistake is subtracting 7 from only one side. That changes the equation instead of solving it."
       }
+    },
+    {
+      "id": "real_world",
+      "type": "practice",
+      "title": "Real-World Equation: Club Merch Drop",
+      "studentText": "A school club is selling two kinds of merch at lunch. Stickers are $3 each, buttons are $2 each, and the club already has $7 in the cash box. If they sell the same number of stickers and buttons and end with $47, you can model the situation with 3x + 2x + 7 = 47.",
+      "questions": [
+        {
+          "id": "l1-rw1",
+          "type": "short_answer",
+          "prompt": "Before solving, combine the variable terms in 3x + 2x + 7 = 47. What does 3x + 2x become, and why?",
+          "grading": "ai_rubric",
+          "rubricId": "factual-short-2",
+          "maxPoints": 2,
+          "expectedElements": ["3x + 2x becomes 5x", "both terms have x", "same number of sticker/button sets"],
+          "commonMisconceptions": ["3x + 2x = 5", "3x + 2x = 6x", "cannot combine because the prices are different"],
+          "feedback": "Because both terms have x, 3x + 2x combines to 5x."
+        },
+        {
+          "id": "l1-rw2",
+          "type": "numeric",
+          "prompt": "Solve the simplified equation 5x + 7 = 47. What is x?",
+          "answer": 8,
+          "grading": "deterministic",
+          "feedback": "Subtract 7 to get 5x = 40, then divide by 5. x = 8."
+        },
+        {
+          "id": "l1-rw3",
+          "type": "short_answer",
+          "prompt": "Explain what x = 8 means in the merch situation.",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "expectedElements": ["8 stickers and 8 buttons", "8 of each item", "same number of stickers and buttons"],
+          "commonMisconceptions": ["8 dollars", "8 total items"],
+          "feedback": "x represents the number of each item, so the club sold 8 stickers and 8 buttons."
+        }
+      ]
     },
     {
       "id": "practice",
@@ -132,7 +195,7 @@
       "id": "check",
       "type": "check",
       "title": "Exit Check",
-      "masteryThreshold": 0.8,
+      "masteryThreshold": 0.7,
       "questions": [
         {
           "id": "w1-l1-q1",
@@ -169,7 +232,7 @@
   ],
   "gate": {
     "completion": "Student attempts the video questions, practice, and exit check.",
-    "mastery": "At least 80% on objective items and rubric score 2/3 or better on explanation.",
+    "mastery": "At least 70% on the exit check, with practice available for revision until the skill is solid.",
     "remediation": "Review inverse operations and retry two equations with new numbers.",
     "enrichment": "Write a believable wrong solution and explain the exact mistake."
   },

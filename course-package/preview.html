@@ -956,7 +956,7 @@
       ];
       if (questions.length) {
         body += questions
-          .map((question) => renderQuestion({ ...question, sectionId: section.id, sectionTitle: section.title }))
+          .map((question) => renderQuestion({ ...question, sectionId: section.id, sectionType: section.type, sectionTitle: section.title }))
           .join("");
       }
 
@@ -1037,7 +1037,7 @@
         <div class="question" data-question='${escapeHtml(JSON.stringify(question))}'>
           <p>${escapeHtml(question.prompt)}</p>
           ${input}
-          <div class="actions"><button class="check" type="button">Check Preview</button></div>
+          <div class="actions"><button class="check" type="button">Check Answer</button></div>
           <div class="feedback" data-review="${escapeHtml(reviewText)}"></div>
         </div>
       `;
@@ -1047,16 +1047,16 @@
       const defaults = {
         "01": {
           done: [
-            "Answer the video questions.",
-            "Complete the three practice problems.",
-            "Finish the exit check."
+            "Explain what a coefficient means in an equation like 5x = 20.",
+            "Solve a two-step equation by undoing operations in the right order.",
+            "Check your solution by substituting it back into the original equation."
           ],
           retry: [
-            "Redo this equation: x + 9 = 17.",
-            "Redo this equation: 3x - 4 = 20.",
-            "For each one, write the operation you used first."
+            "Try x + 9 = 17. Write the inverse operation you used.",
+            "Try 3x - 4 = 20. Write the inverse operation you used first.",
+            "Check one answer by substituting it back into the original equation."
           ],
-          challenge: "A student solves 3x + 7 = 31 and writes: 3x = 38, so x = 12.7. Explain the mistake, then solve it correctly."
+          challenge: "A club has $12 saved and earns $3 for each snack box sold. They need $30 total. Write an equation, solve it, and explain what your answer means in the situation."
         },
         "02": {
           done: ["Solve the inequality.", "Choose the correct open or closed point.", "Explain which direction the graph should go."],
@@ -1088,14 +1088,14 @@
         <section class="section-card">
           <header><h3>Finish Line</h3></header>
           <div class="section-body">
-            <p>Before moving on, make sure you can do these three things:</p>
+            <p>Before moving on, make sure you understand the core Lesson ${escapeHtml(lesson.lessonId)} skill:</p>
             <ol class="steps">${next.done.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ol>
             <div class="gate">
-              <div><strong>If you feel ready</strong>Open the next lesson and keep going.</div>
-              <div><strong>If this still feels shaky</strong>${next.retry.map((item) => escapeHtml(item)).join(" ")}</div>
+              <div><strong>Ready</strong>Score 70% or higher on the exit check and explain your steps clearly.</div>
+              <div><strong>Need More Practice</strong>${next.retry.map((item) => escapeHtml(item)).join(" ")}</div>
             </div>
             <div class="challenge-box">
-              <p><strong>Challenge:</strong> ${escapeHtml(next.challenge)}</p>
+              <p><strong>Extra Challenge:</strong> ${escapeHtml(next.challenge)}</p>
               <textarea placeholder="Write your challenge answer here."></textarea>
             </div>
           </div>
@@ -1147,9 +1147,14 @@
       if (textInput) answer = textInput.value.trim();
 
       const expected = Array.isArray(question.answer) ? question.answer.join(", ") : String(question.answer ?? "");
-      const correct = String(answer).toLowerCase() === expected.toLowerCase();
+      const correct = isDeterministicAnswerCorrect(question, answer);
+      const isPractice = question.sectionType === "practice";
       feedback.className = `feedback ${correct ? "correct" : "incorrect"} show`;
-      feedback.textContent = correct ? question.feedback : `Check this answer: ${expected}. ${question.feedback || ""}`;
+      feedback.textContent = correct
+        ? question.feedback
+        : isPractice
+          ? practiceRetryFeedback(question)
+          : `Check this answer: ${expected}. ${question.feedback || ""}`;
       savePilotSubmission(question, answer, {
         score: correct ? 1 : 0,
         maxScore: 1,
@@ -1159,6 +1164,57 @@
         needsTeacherReview: false
       });
     });
+
+    function practiceRetryFeedback(question) {
+      const hints = {
+        "l1-p1": "Not yet. Undo +14 by subtracting 14 from both sides, then check your value.",
+        "l1-p2": "Not yet. Undo the -6 first, then divide by the coefficient of x.",
+        "l1-p3": "Not yet. Look closely at what should happen to +9 when you move it away from 2x."
+      };
+      return hints[question.id] || "Not yet. Use the worked example, revise your answer, and check again.";
+    }
+
+    function normalizeMathText(value) {
+      return String(value ?? "")
+        .toLowerCase()
+        .replace(/[.,;:!?()[\]{}]/g, " ")
+        .replace(/\b(one|two|three|four|five|six|seven|eight|nine|ten)\b/g, (match) => ({
+          one: "1",
+          two: "2",
+          three: "3",
+          four: "4",
+          five: "5",
+          six: "6",
+          seven: "7",
+          eight: "8",
+          nine: "9",
+          ten: "10"
+        })[match])
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function isDeterministicAnswerCorrect(question, answer) {
+      if (question.options) return String(answer).toLowerCase() === String(question.answer).toLowerCase();
+      if (question.type === "numeric") return Number(answer) === Number(question.answer);
+
+      const normalizedAnswer = normalizeMathText(answer);
+      const normalizedExpected = normalizeMathText(question.answer);
+
+      if (question.id === "l1-vq1") {
+        const mentionsFive = /\b5\b/.test(normalizedAnswer);
+        const mentionsX = /\bx\b/.test(normalizedAnswer);
+        const meansMultiply = /(times|multipl|product|groups of|value of x|whatever.*x|x.*value)/.test(normalizedAnswer);
+        return mentionsFive && mentionsX && meansMultiply;
+      }
+
+      if (question.id === "l1-vq3") {
+        const compact = normalizedAnswer.replace(/\s+/g, "");
+        return compact.includes("-5/6") || compact.includes("negative5/6") || compact.includes("minus5/6");
+      }
+
+      return normalizedAnswer === normalizedExpected;
+    }
 
     function savePilotSubmission(question, answer, result) {
       const key = "caasppMathPilotSubmissions";
@@ -1278,7 +1334,7 @@
           studentAnswer,
           rubricId: question.rubricId,
           lessonContext: currentLessonContext(),
-          maxPoints: 3
+          maxPoints: question.maxPoints || 3
         })
       });
       if (!response.ok) throw new Error("AI grading unavailable");
