@@ -341,6 +341,86 @@
       background: #0f263f;
     }
 
+    .vocab-box {
+      border: 1px solid #bfd3e8;
+      border-left: 5px solid var(--teal);
+      border-radius: 8px;
+      background: #f6fbff;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .vocab-box summary {
+      cursor: pointer;
+      padding: 14px 18px;
+      font-weight: 800;
+      color: #102a44;
+      list-style-position: inside;
+    }
+
+    .vocab-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      padding: 0 18px 18px;
+    }
+
+    .vocab-term {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .vocab-term strong {
+      display: block;
+      color: #153d72;
+      margin-bottom: 3px;
+    }
+
+    .vocab-term span {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .math-expression {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    .math-negative {
+      font-weight: 800;
+      margin-right: 1px;
+    }
+
+    .fraction {
+      display: inline-grid;
+      grid-template-rows: auto auto;
+      align-items: center;
+      justify-items: center;
+      min-width: 1.15em;
+      margin: 0 1px;
+      vertical-align: middle;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+
+    .fraction span:first-child {
+      border-bottom: 2px solid currentColor;
+      line-height: 1;
+      width: 100%;
+      text-align: center;
+      padding: 0 2px 2px;
+    }
+
+    .fraction span:last-child {
+      line-height: 1;
+      padding-top: 2px;
+    }
+
     .video-box a {
       color: var(--blue);
       font-weight: 700;
@@ -349,6 +429,27 @@
     .watch-for {
       margin: 10px 0 0;
       color: #24476b;
+    }
+
+    .lesson-image {
+      margin: 14px 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #f7fbff;
+    }
+
+    .lesson-image img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+    }
+
+    .lesson-image figcaption {
+      padding: 9px 12px;
+      color: #24476b;
+      font-size: 0.9rem;
     }
 
     .question {
@@ -709,6 +810,10 @@
       .module-grid {
         grid-template-columns: 1fr;
       }
+
+      .vocab-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 480px) {
@@ -936,6 +1041,7 @@
           <div class="target">${escapeHtml(lesson.learningTarget)}</div>
         </section>
         ${lesson.lessonId === "01" ? renderOverviewVideo() : ""}
+        ${renderVocabulary(lesson)}
         ${lesson.sections.map(renderSection).join("")}
         ${renderNextSteps(lesson)}
       `;
@@ -945,6 +1051,7 @@
     function renderSection(section) {
       let body = "";
       if (section.studentText) body += `<p>${escapeHtml(section.studentText)}</p>`;
+      if (section.image) body += renderLessonImage(section.image);
       if (section.video) body += renderVideo(section);
       if (section.workedExample) body += renderWorkedExample(section.workedExample);
       if (section.type === "teaching") body += renderInfographic(state.lessons[state.active].lessonId);
@@ -965,6 +1072,32 @@
           <header><h3>${escapeHtml(section.title)}</h3></header>
           <div class="section-body">${body}</div>
         </section>
+      `;
+    }
+
+    function renderVocabulary(lesson) {
+      if (!lesson.vocabulary?.length) return "";
+      return `
+        <details class="vocab-box" open>
+          <summary>Lesson Vocabulary</summary>
+          <div class="vocab-grid">
+            ${lesson.vocabulary.map((item) => `
+              <div class="vocab-term">
+                <strong>${escapeHtml(item.term)}</strong>
+                <span>${escapeHtml(item.definition)}</span>
+              </div>
+            `).join("")}
+          </div>
+        </details>
+      `;
+    }
+
+    function renderLessonImage(image) {
+      return `
+        <figure class="lesson-image">
+          <img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt || "")}">
+          ${image.caption ? `<figcaption>${escapeHtml(image.caption)}</figcaption>` : ""}
+        </figure>
       `;
     }
 
@@ -1035,7 +1168,7 @@
 
       return `
         <div class="question" data-question='${escapeHtml(JSON.stringify(question))}'>
-          <p>${escapeHtml(question.prompt)}</p>
+          <p>${question.promptHtml || escapeHtml(question.prompt)}</p>
           ${input}
           <div class="actions"><button class="check" type="button">Check Answer</button></div>
           <div class="feedback" data-review="${escapeHtml(reviewText)}"></div>

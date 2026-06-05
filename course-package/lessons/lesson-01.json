@@ -6,6 +6,32 @@
   "sourceRefs": ["S1", "S2", "S3", "V1"],
   "learningTarget": "I can solve one-step and two-step equations and explain the inverse operation I used.",
   "whyItMatters": "CAASPP questions often hide simple equation solving inside a word problem, table, or graph. If you can undo an equation cleanly, you can keep the rest of the problem from turning into noise.",
+  "vocabulary": [
+    {
+      "term": "Equation",
+      "definition": "A math sentence that says two expressions are equal."
+    },
+    {
+      "term": "Variable",
+      "definition": "A letter that stands for an unknown number."
+    },
+    {
+      "term": "Coefficient",
+      "definition": "The number multiplying a variable. In 5x, the coefficient is 5."
+    },
+    {
+      "term": "Inverse operation",
+      "definition": "An operation that undoes another operation, like subtraction undoing addition."
+    },
+    {
+      "term": "Isolate the variable",
+      "definition": "Get the variable by itself on one side of the equation."
+    },
+    {
+      "term": "Check your solution",
+      "definition": "Put your answer back into the original equation to see if it makes the equation true."
+    }
+  ],
   "sections": [
     {
       "id": "overview",
@@ -90,6 +116,7 @@
           "id": "l1-vq3",
           "type": "short_answer",
           "prompt": "The video says the coefficient is the number being multiplied by x. In -5/6x = 7/8, what is the coefficient?",
+          "promptHtml": "The video says the coefficient is the number being multiplied by <em>x</em>. In <span class=\"math-expression\"><span class=\"math-negative\">-</span><span class=\"fraction\"><span>5</span><span>6</span></span><em>x</em> = <span class=\"fraction\"><span>7</span><span>8</span></span></span>, what is the coefficient?",
           "answer": "-5/6",
           "grading": "ai_rubric",
           "rubricId": "factual-short-2",
@@ -127,7 +154,12 @@
       "id": "real_world",
       "type": "practice",
       "title": "Real-World Equation: Club Merch Drop",
-      "studentText": "A school club is selling two kinds of merch at lunch. Stickers are $3 each, buttons are $2 each, and the club already has $7 in the cash box. If they sell the same number of stickers and buttons and end with $47, you can model the situation with 3x + 2x + 7 = 47.",
+      "studentText": "This is a step up from the warm-up. A school club is selling two kinds of merch at lunch. Stickers are $3 each, buttons are $2 each, and the club already has $7 in the cash box. If they sell the same number of stickers and buttons and end with $47, you can model the situation with 3x + 2x + 7 = 47.",
+      "image": {
+        "src": "media/images/lesson-01-club-merch-real-world.jpg",
+        "alt": "Student selling sticker packs and button packs at a school lunch table with a 3x + 2x + 7 = 47 equation on a board.",
+        "caption": "The picture shows the same situation as the equation: sticker packs, button packs, $7 already in the cash box, and a $47 total."
+      },
       "questions": [
         {
           "id": "l1-rw1",

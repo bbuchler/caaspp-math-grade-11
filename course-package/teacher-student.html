@@ -169,6 +169,43 @@
       color: #344255;
     }
 
+    .math-expression {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    .math-negative {
+      font-weight: 800;
+      margin-right: 1px;
+    }
+
+    .fraction {
+      display: inline-grid;
+      grid-template-rows: auto auto;
+      align-items: center;
+      justify-items: center;
+      min-width: 1.15em;
+      margin: 0 1px;
+      vertical-align: middle;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+
+    .fraction span:first-child {
+      border-bottom: 2px solid currentColor;
+      line-height: 1;
+      width: 100%;
+      text-align: center;
+      padding: 0 2px 2px;
+    }
+
+    .fraction span:last-child {
+      line-height: 1;
+      padding-top: 2px;
+    }
+
     .student-answer {
       background: var(--soft);
       border-left: 4px solid var(--blue);
@@ -432,7 +469,7 @@
       const feedback = response?.feedback || "";
       return `
         <div class="question-block">
-          <h4>${escapeHtml(question.prompt)}</h4>
+          <h4>${question.promptHtml || escapeHtml(question.prompt)}</h4>
           <div class="student-answer">${escapeHtml(formatAnswer(response))}</div>
           ${question.answer !== undefined ? `<div class="teacher-feedback"><strong>Answer key:</strong> ${escapeHtml(question.answer)}</div>` : ""}
           <div class="teacher-feedback"><strong>Feedback:</strong> ${escapeHtml(feedback || "No feedback yet.")}</div>

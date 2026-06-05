@@ -62,6 +62,7 @@ Graphic status values:
 | --- | --- | --- |
 | INF-01 | replaced | Functional placeholder replaced in preview by INF-01A. |
 | INF-01A | approved for draft | Full-size visual inspection completed. Core math is correct: `4x + 18 = 46`, `4x = 28`, `x = 7`. Minor final-copy caveats: "packs earned $28" should mean sticker-pack sales earned $28, and the quick-reference table appears cropped at the bottom. Use near overview video for draft; revise before final classroom approval if source editing is possible. |
+| RW-01 | approved for draft | Generated real-world club merch image inserted in Lesson 01. Visual check completed in the local preview: image loads, supports the `3x + 2x + 7 = 47` context, and exact math remains as page text for reliability. |
 | INF-02 | needs revision | Functional placeholder. Replace with real-world lunch/budget imagery plus number-line overlay. |
 | INF-03 | needs revision | Functional placeholder. Replace with rideshare route imagery plus table/equation overlay. |
 | INF-04 | needs revision | Functional placeholder. Replace with spirit shirt fundraiser imagery plus slope/intercept overlay. |
