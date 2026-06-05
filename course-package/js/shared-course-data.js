@@ -107,21 +107,40 @@
     const session = await getSession();
     if (!session) return null;
     const { data, error } = await window.supabase
-      .from("course_lesson_score_summary")
-      .select("student_id, full_name, username, email")
+      .from("course_enrollments")
+      .select("user_id,role,status,profiles:user_id(id,full_name,username,email)")
       .eq("course_id", COURSE_ID)
-      .order("full_name");
+      .eq("role", "student")
+      .eq("status", "active");
     if (error) return null;
-    const byId = {};
-    for (const row of data || []) {
-      byId[row.student_id] = {
-        id: row.student_id,
-        full_name: row.full_name,
-        username: row.username,
-        email: row.email
-      };
-    }
-    return Object.values(byId);
+    return (data || []).map((row) => ({
+      id: row.user_id,
+      full_name: row.profiles?.full_name || "",
+      username: row.profiles?.username || "",
+      email: row.profiles?.email || "",
+      status: row.status
+    })).sort((a, b) => a.full_name.localeCompare(b.full_name));
+  }
+
+  async function loadCourseTeachers() {
+    const session = await getSession();
+    if (!session) return null;
+    const { data, error } = await window.supabase
+      .from("course_enrollments")
+      .select("user_id,role,status,profiles:user_id(id,full_name,username,email,role)")
+      .eq("course_id", COURSE_ID)
+      .in("role", ["teacher", "staff", "admin"])
+      .order("role");
+    if (error) return null;
+    return (data || []).map((row) => ({
+      id: row.user_id,
+      courseRole: row.role,
+      status: row.status,
+      full_name: row.profiles?.full_name || "",
+      username: row.profiles?.username || "",
+      email: row.profiles?.email || "",
+      role: row.profiles?.role || row.role
+    }));
   }
 
   async function enrollUser(userId, role = "student") {
@@ -311,6 +330,7 @@
     getSession,
     ensureEnrollment,
     loadCourseStudents,
+    loadCourseTeachers,
     enrollUser,
     saveQuestionResponse,
     submitLessonAttempt,

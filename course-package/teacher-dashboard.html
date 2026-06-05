@@ -367,10 +367,13 @@
 
     .modal {
       width: min(540px, 100%);
+      max-height: calc(100vh - 36px);
       background: var(--white);
       border-radius: var(--radius);
       box-shadow: 0 18px 48px rgba(23, 32, 42, 0.28);
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
 
     .modal-header,
@@ -392,6 +395,8 @@
 
     .modal-body {
       padding: 16px;
+      overflow-y: auto;
+      min-height: 0;
     }
 
     label {
@@ -430,9 +435,111 @@
       border-radius: 6px;
       padding: 12px;
       margin: 10px 0;
-      max-height: 260px;
-      overflow: auto;
+      max-height: min(48vh, 430px);
+      overflow-y: auto;
+      overflow-x: hidden;
       font-size: 0.92rem;
+      overflow-wrap: anywhere;
+    }
+
+    .welcome-preview p {
+      margin: 0 0 10px;
+    }
+
+    .welcome-preview h4 {
+      margin: 14px 0 6px;
+      color: var(--primary);
+    }
+
+    .welcome-preview ul {
+      margin: 0 0 10px;
+      padding-left: 20px;
+    }
+
+    .welcome-preview li {
+      margin-bottom: 5px;
+    }
+
+    .subject-row {
+      margin-bottom: 10px;
+      padding: 8px 10px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .subject-row span:first-child {
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .subject-row strong {
+      color: var(--primary);
+    }
+
+    .account-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .account-list-row {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--white);
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .account-list-row p {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .teacher-section-shell {
+      margin-top: 22px;
+    }
+
+    .teacher-section-toggle {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      margin-bottom: 10px;
+      user-select: none;
+    }
+
+    .inactive-row {
+      opacity: 0.58;
+    }
+
+    .inactive-badge,
+    .admin-badge {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 2px 7px;
+      margin-left: 6px;
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+
+    .inactive-badge { background: #eef3f7; color: var(--muted); }
+    .admin-badge { background: #fff8e6; color: var(--orange); }
+
+    #modal-add-account.success-mode #account-form-fields,
+    #modal-add-account.success-mode .modal-footer {
+      display: none;
     }
 
     input,
@@ -571,7 +678,28 @@
         <div class="panel-body" id="ai-insights"></div>
       </section>
     </div>
+
+    <section class="teacher-section-shell">
+      <h2 class="teacher-section-toggle" id="teacher-section-toggle">Teacher Accounts <span id="teacher-toggle-arrow">&#9660;</span></h2>
+      <div id="teacher-accounts-wrapper"></div>
+    </section>
   </main>
+
+  <div class="modal-overlay" id="modal-toggle-status">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="toggle-status-title">Remove Account</h3>
+        <button class="btn btn-secondary btn-small" type="button" data-close-modal>Close</button>
+      </div>
+      <div class="modal-body">
+        <p id="toggle-status-message"></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-close-modal>Cancel</button>
+        <button class="btn btn-danger" type="button" id="btn-confirm-toggle-status">Remove</button>
+      </div>
+    </div>
+  </div>
 
   <div class="modal-overlay" id="modal-add-account">
     <div class="modal">
@@ -580,6 +708,7 @@
         <button class="btn btn-secondary btn-small" type="button" data-close-modal>Close</button>
       </div>
       <div class="modal-body">
+        <div id="account-form-fields">
         <label for="account-role">Role</label>
         <select id="account-role" autocomplete="off">
           <option value="student">Student</option>
@@ -608,13 +737,23 @@
           <select id="account-class-section"></select>
           <small class="field-note">Assign this account to a class section. Teachers assigned to a class can view that roster.</small>
         </div>
+        </div>
         <div class="welcome-panel" id="account-success-panel">
           <strong id="account-success-title">Account created</strong>
           <p class="field-note" id="account-success-login"></p>
+          <div class="subject-row" id="welcome-subject-row">
+            <div>
+              <span>Subject line:</span>
+              <strong id="welcome-subject-text"></strong>
+            </div>
+            <button class="btn btn-secondary btn-small" type="button" id="btn-copy-subject">Copy</button>
+          </div>
           <div class="welcome-preview" id="welcome-email-preview"></div>
           <div class="row-actions">
-            <button class="btn btn-secondary btn-small" type="button" id="btn-copy-welcome">Copy Welcome Email</button>
+            <button class="btn btn-secondary btn-small" type="button" id="btn-copy-welcome-plain">Copy Plain Text</button>
+            <button class="btn btn-accent btn-small" type="button" id="btn-copy-welcome">Copy Rich Text</button>
             <button class="btn btn-secondary btn-small" type="button" id="btn-add-another-account">Add Another</button>
+            <button class="btn btn-secondary btn-small" type="button" data-close-modal>Close</button>
           </div>
         </div>
       </div>
@@ -692,7 +831,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="js/supabase-config.js"></script>
-  <script src="js/shared-course-data.js?v=class-sections-1"></script>
+  <script src="js/shared-course-data.js?v=welcome-email-1"></script>
   <script src="js/auth.js"></script>
   <script>
     const ACCOUNT_KEY = "caasppMathPilotAccounts";
@@ -701,6 +840,7 @@
     let remoteGradebookRows = null;
     let remoteTrendRows = null;
     let remoteCourseStudents = null;
+    let remoteCourseTeachers = null;
     let remoteLessonOneResponses = [];
     let remoteClassArchitecture = null;
     let remoteDataLoaded = false;
@@ -710,6 +850,7 @@
     let activeClassFilter = "all";
     let activeTeacherFilter = "all";
     let currentProfile = null;
+    let pendingStatusToggle = null;
 
     const lessonOneSections = [
       { id: "overview", label: "Overview", questionIds: ["l1-overview-reflection"] },
@@ -959,16 +1100,8 @@
 
     function remoteAccounts() {
       const byId = {};
-      for (const row of remoteGradebookRows || []) {
-        byId[row.student_id] = {
-          id: row.student_id,
-          role: "student",
-          name: row.full_name,
-          login: row.username || ""
-        };
-      }
-      for (const student of remoteCourseStudents || []) {
-        if (!byId[student.id]) {
+      if (Array.isArray(remoteCourseStudents)) {
+        for (const student of remoteCourseStudents) {
           byId[student.id] = {
             id: student.id,
             role: "student",
@@ -976,8 +1109,62 @@
             login: student.username || student.email || ""
           };
         }
+      } else {
+        for (const row of remoteGradebookRows || []) {
+          byId[row.student_id] = {
+            id: row.student_id,
+            role: "student",
+            name: row.full_name,
+            login: row.username || ""
+          };
+        }
       }
       return Object.values(byId);
+    }
+
+    function remoteTeacherAccounts() {
+      const byId = {};
+      for (const teacher of remoteCourseTeachers || []) {
+        byId[teacher.id] = {
+          id: teacher.id,
+          role: "teacher",
+          name: teacher.full_name || teacher.username || teacher.email || "Teacher",
+          login: teacher.username || teacher.email || "",
+          email: teacher.email || "",
+          courseRole: teacher.courseRole || teacher.role || "teacher",
+          status: teacher.status || "active"
+        };
+      }
+      for (const row of remoteClassArchitecture?.teachers || []) {
+        byId[row.teacher_id] = {
+          ...(byId[row.teacher_id] || {}),
+          id: row.teacher_id,
+          role: "teacher",
+          name: row.full_name || row.username || row.email || "Teacher",
+          login: row.username || row.email || "",
+          email: row.email || "",
+          courseRole: row.role || "teacher",
+          status: row.status || byId[row.teacher_id]?.status || "active"
+        };
+      }
+      if (currentProfile?.id) {
+        byId[currentProfile.id] = {
+          id: currentProfile.id,
+          role: "teacher",
+          name: currentProfile.full_name || currentProfile.username || currentProfile.email || "Teacher",
+          login: currentProfile.username || currentProfile.email || "",
+          email: currentProfile.email || "",
+          courseRole: currentProfile.role || "teacher",
+          status: "active"
+        };
+      }
+      return Object.values(byId).sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    function findAccountById(id) {
+      const remote = [...remoteAccounts(), ...remoteTeacherAccounts()].find((account) => account.id === id);
+      if (remote) return remote;
+      return getAccounts().find((account) => account.id === id);
     }
 
     function matchesStudentSearch(student) {
@@ -1099,8 +1286,10 @@
                 ${remoteMode && !enrolled
                   ? `<button class="btn btn-primary btn-small" type="button" data-enroll-student="${student.id}">Enroll</button>`
                   : `<a class="btn btn-primary btn-small" href="teacher-student.html?student=${encodeURIComponent(student.id)}&lesson=01">View Work</a>`}
+                <button class="btn btn-secondary btn-small" type="button" data-welcome-email="${student.id}" title="Welcome Email">Email</button>
                 <button class="btn btn-secondary btn-small" type="button" data-reset-password="${student.id}">Reset Password</button>
                 <button class="btn btn-danger btn-small" type="button" data-reset-lesson="${student.id}">Reset Lesson</button>
+                <button class="btn btn-danger btn-small" type="button" data-toggle-course-account="${student.id}" data-account-name="${escapeHtml(student.name)}" data-active="false">Remove</button>
               </div>
             </td>
           </tr>
@@ -1150,7 +1339,50 @@
       }).join("");
     }
 
-    function renderTeachers() {}
+    function renderTeachers() {
+      const panel = document.getElementById("teacher-accounts-wrapper");
+      if (!panel) return;
+      const teachers = remoteDataLoaded
+        ? remoteTeacherAccounts()
+        : getAccounts().filter((account) => account.role === "teacher");
+      if (!teachers.length) {
+        panel.innerHTML = `<p class="empty-panel">No teacher accounts listed yet. Use Add Account and choose Teacher.</p>`;
+        return;
+      }
+      panel.innerHTML = `
+        <div class="gradebook-table-wrapper" style="max-width:760px; box-shadow:none;">
+          <table class="gradebook-table" style="min-width:620px;">
+            <thead><tr><th>Name</th><th>Login</th><th>Actions</th></tr></thead>
+            <tbody>
+              ${teachers.map((teacher) => {
+                const isSelf = teacher.id === currentProfile?.id;
+                const isInactive = teacher.status === "inactive";
+                const roleBadge = teacher.courseRole === "admin" || teacher.role === "admin"
+                  ? `<span class="admin-badge">Admin</span>`
+                  : "";
+                const inactiveBadge = isInactive ? `<span class="inactive-badge">Inactive</span>` : "";
+                const selfBadge = isSelf ? `<span class="muted"> (you)</span>` : "";
+                return `
+                  <tr class="${isInactive ? "inactive-row" : ""}">
+                    <td>${escapeHtml(teacher.name)}${selfBadge}${roleBadge}${inactiveBadge}</td>
+                    <td>${escapeHtml(teacher.login || teacher.email || "No login listed")}</td>
+                    <td>
+                      <div class="row-actions">
+                        ${!isSelf ? `<button class="btn btn-secondary btn-small" type="button" data-welcome-email="${teacher.id}" title="Welcome Email">Email</button>` : ""}
+                        ${!isSelf ? `<button class="btn btn-secondary btn-small" type="button" data-reset-password="${teacher.id}">Reset Password</button>` : ""}
+                        ${!isSelf
+                          ? `<button class="btn ${isInactive ? "btn-primary" : "btn-danger"} btn-small" type="button" data-toggle-course-account="${teacher.id}" data-account-name="${escapeHtml(teacher.name)}" data-active="${isInactive ? "true" : "false"}">${isInactive ? "Reactivate" : "Remove"}</button>`
+                          : ""}
+                      </div>
+                    </td>
+                  </tr>
+                `;
+              }).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
 
     function renderInsights() {
       if (remoteDataLoaded) {
@@ -1362,6 +1594,50 @@
       renderAll();
     }
 
+    function openStatusToggle({ userId, name, active }) {
+      pendingStatusToggle = { userId, active };
+      const title = document.getElementById("toggle-status-title");
+      const message = document.getElementById("toggle-status-message");
+      const button = document.getElementById("btn-confirm-toggle-status");
+      if (active) {
+        title.textContent = "Reactivate Account";
+        message.textContent = `Reactivate "${name}" for this CAASPP Math course? They will appear in the course roster again.`;
+        button.textContent = "Reactivate";
+        button.className = "btn btn-primary";
+      } else {
+        title.textContent = "Remove Account";
+        message.textContent = `Remove "${name}" from this CAASPP Math course? Their work will be preserved, but they will no longer appear in this course roster.`;
+        button.textContent = "Remove";
+        button.className = "btn btn-danger";
+      }
+      openModal("modal-toggle-status");
+    }
+
+    async function toggleCourseAccountStatus() {
+      if (!pendingStatusToggle) return;
+      const token = await authToken();
+      if (!token) return;
+      const response = await fetch("/api/toggle-course-account-status", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          userId: pendingStatusToggle.userId,
+          active: pendingStatusToggle.active
+        })
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        alert(result.error || "Could not update account status.");
+        return;
+      }
+      pendingStatusToggle = null;
+      closeModals();
+      await renderAll();
+    }
+
     function resetLesson(studentId) {
       const submissions = getSubmissions();
       if (submissions[studentId]?.lessons?.["01"]) {
@@ -1380,6 +1656,7 @@
     }
 
     function resetAccountForm() {
+      document.getElementById("modal-add-account").classList.remove("success-mode");
       document.getElementById("account-name").value = "";
       document.getElementById("account-username").value = "";
       document.getElementById("account-contact-email").value = "";
@@ -1405,33 +1682,101 @@
         : "Optional contact email. This is linked to the teacher, but is not the login.";
     }
 
-    function buildWelcomeEmail({ role, name, login, password }) {
+    function welcomeSubject(role) {
+      return role === "teacher"
+        ? "Welcome to CAASPP Math Success Academy"
+        : "Welcome to CAASPP Math Success Academy";
+    }
+
+    function htmlToPlain(html) {
+      const div = document.createElement("div");
+      div.innerHTML = html;
+      return div.innerText;
+    }
+
+    function loginPasswordLine(password) {
+      return password
+        ? `<li><b>Temporary password:</b> ${escapeHtml(password)}</li>`
+        : `<li><b>Temporary password:</b> ask your teacher, or have your teacher reset it before sending this email</li>`;
+    }
+
+    function buildWelcomeEmailHtml({ role, name, login, password }) {
       const firstName = name.split(" ")[0] || name;
-      const audience = role === "teacher" ? "teacher" : "student";
-      return `Hi ${firstName},
-
-Welcome to CAASPP Math Success Academy.
-
-Your login:
-Website: ${window.location.origin}/course-package/index.html
-Username: ${login}
-Temporary password: ${password}
-
-Start with Lesson 1: Undo the Equation. You will watch the overview, answer video questions, practice solving equations, and complete the exit check.
-
-If you have trouble signing in, contact your teacher.`;
+      const siteUrl = `${window.location.origin}/course-package/index.html`;
+      if (role === "teacher") {
+        return `Hi ${escapeHtml(firstName)},<br><br>You now have a teacher account for <b>CAASPP Math Success Academy</b>. This is a 20-lesson math prep course built to help 11th grade students review the skills that show up often on CAASPP: equations, inequalities, linear relationships, slope/intercepts, function notation, modeling, and written reasoning.<br><br><b>Your Login</b><ul style="padding-left:22px;margin-top:4px;margin-bottom:4px;"><li><b>Website:</b> ${escapeHtml(siteUrl)}</li><li><b>Username:</b> ${escapeHtml(login || "ask your course admin")}</li>${loginPasswordLine(password)}</ul><br><b>Basic Overview</b><ul style="padding-left:22px;margin-top:4px;margin-bottom:4px;"><li>Students work through lessons with an <b>overview video</b>, vocabulary, practice questions, hands-on/visual supports, a real-world task, and an exit check.</li><li>The dashboard shows the <b>gradebook</b>, work samples, class filters, and teacher follow-up flags.</li><li>Practice questions can be updated as students learn. Exit checks are the final evidence for the lesson.</li><li>Use <b>+ Add Class</b> to organize rosters and <b>+ Add Account</b> to add students or co-teachers.</li></ul><br>This is just a basic overview. If you have questions, use the <b>Teacher Guide</b> inside the course dashboard for the full lesson structure and grading notes.<br><br>Hope you enjoy!`;
+      }
+      return `Hi ${escapeHtml(firstName)},<br><br>Welcome to <b>CAASPP Math Success Academy</b>. This course is designed to help you practice the math moves that show up again and again on CAASPP, especially solving equations, reading relationships, and explaining your reasoning.<br><br><b>Your Login</b><ul style="padding-left:22px;margin-top:4px;margin-bottom:4px;"><li><b>Website:</b> ${escapeHtml(siteUrl)}</li><li><b>Username:</b> ${escapeHtml(login || "ask your teacher")}</li>${loginPasswordLine(password)}</ul><br><b>How the Course Works</b><ul style="padding-left:22px;margin-top:4px;margin-bottom:4px;"><li>Start with <b>Lesson 1: Undo the Equation</b>.</li><li>You will watch a short overview, answer video questions, practice the math, complete a real-world problem, and finish with an exit check.</li><li>Practice questions can be updated as you learn, so use the feedback to improve your answer.</li><li>Your teacher can see your progress and help if you get stuck.</li></ul><br>If you have trouble signing in or are not sure what to do next, ask your teacher. Hope you enjoy!`;
     }
 
     function showWelcomeEmail({ role, name, login, password, contactEmail }) {
-      const emailText = buildWelcomeEmail({ role, name, login, password });
+      const emailHtml = buildWelcomeEmailHtml({ role, name, login, password });
+      const emailText = htmlToPlain(emailHtml);
+      const subject = welcomeSubject(role);
       document.getElementById("account-success-title").textContent = `${role === "teacher" ? "Teacher" : "Student"} account created`;
       document.getElementById("account-success-login").textContent = `Login: ${login}${contactEmail ? ` | Contact: ${contactEmail}` : ""}`;
-      document.getElementById("welcome-email-preview").innerHTML = emailText
-        .split("\n")
-        .map((line) => line.trim() ? `<p>${escapeHtml(line)}</p>` : "<br>")
-        .join("");
+      document.getElementById("welcome-subject-text").textContent = subject;
+      document.getElementById("welcome-email-preview").innerHTML = emailHtml;
+      document.getElementById("welcome-email-preview").dataset.copyHtml = emailHtml;
       document.getElementById("welcome-email-preview").dataset.copyText = emailText;
+      document.getElementById("welcome-email-preview").dataset.subject = subject;
+      document.getElementById("modal-add-account").classList.add("success-mode");
       document.getElementById("account-success-panel").classList.add("open");
+    }
+
+    function openWelcomeEmailForAccount(account) {
+      if (!account) return;
+      document.getElementById("account-role").value = account.role === "teacher" ? "teacher" : "student";
+      updateAccountFields();
+      resetAccountForm();
+      openModal("modal-add-account");
+      showWelcomeEmail({
+        role: account.role === "teacher" ? "teacher" : "student",
+        name: account.name || "Student",
+        login: account.login || account.username || account.email || "",
+        password: "",
+        contactEmail: account.email || ""
+      });
+      document.getElementById("account-success-title").textContent = `${account.role === "teacher" ? "Teacher" : "Student"} welcome email`;
+    }
+
+    async function copyWelcomeHtml(button) {
+      const preview = document.getElementById("welcome-email-preview");
+      const html = preview.dataset.copyHtml || "";
+      const plain = preview.dataset.copyText || htmlToPlain(html);
+      if (!html) return;
+      try {
+        const htmlBlob = new Blob([html], { type: "text/html" });
+        const plainBlob = new Blob([plain], { type: "text/plain" });
+        await navigator.clipboard.write([
+          new ClipboardItem({ "text/html": htmlBlob, "text/plain": plainBlob })
+        ]);
+        const original = button.textContent;
+        button.textContent = "Copied!";
+        setTimeout(() => { button.textContent = original; }, 1600);
+      } catch (error) {
+        await navigator.clipboard.writeText(plain);
+        const original = button.textContent;
+        button.textContent = "Copied Plain Text";
+        setTimeout(() => { button.textContent = original; }, 1600);
+      }
+    }
+
+    async function copyWelcomePlain(button) {
+      const text = document.getElementById("welcome-email-preview").dataset.copyText || "";
+      if (!text) return;
+      await navigator.clipboard.writeText(text);
+      const original = button.textContent;
+      button.textContent = "Copied!";
+      setTimeout(() => { button.textContent = original; }, 1600);
+    }
+
+    async function copyWelcomeSubject(button) {
+      const subject = document.getElementById("welcome-email-preview").dataset.subject || welcomeSubject(document.getElementById("account-role").value);
+      await navigator.clipboard.writeText(subject);
+      const original = button.textContent;
+      button.textContent = "Copied!";
+      setTimeout(() => { button.textContent = original; }, 1600);
     }
 
     async function loadRemoteData() {
@@ -1447,6 +1792,9 @@ If you have trouble signing in, contact your teacher.`;
       remoteGradebookRows = Array.isArray(gradebook) ? gradebook : [];
       remoteTrendRows = Array.isArray(trends) && trends.length ? trends : null;
       remoteCourseStudents = Array.isArray(courseStudents) ? courseStudents : [];
+      remoteCourseTeachers = typeof window.CourseData.loadCourseTeachers === "function"
+        ? (await window.CourseData.loadCourseTeachers()) || []
+        : [];
       remoteLessonOneResponses = Array.isArray(lessonResponses) ? lessonResponses : [];
       remoteClassArchitecture = classArchitecture;
     }
@@ -1473,9 +1821,24 @@ If you have trouble signing in, contact your teacher.`;
       const resetPasswordButton = event.target.closest("[data-reset-password]");
       if (resetPasswordButton) {
         selectedAccountId = resetPasswordButton.dataset.resetPassword;
-        const account = getAccounts().find((item) => item.id === selectedAccountId);
+        const account = findAccountById(selectedAccountId);
         document.getElementById("reset-account-name").textContent = account?.name || "Account";
         openModal("modal-reset-password");
+      }
+
+      const welcomeEmailButton = event.target.closest("[data-welcome-email]");
+      if (welcomeEmailButton) {
+        const account = findAccountById(welcomeEmailButton.dataset.welcomeEmail);
+        openWelcomeEmailForAccount(account);
+      }
+
+      const toggleAccountButton = event.target.closest("[data-toggle-course-account]");
+      if (toggleAccountButton) {
+        openStatusToggle({
+          userId: toggleAccountButton.dataset.toggleCourseAccount,
+          name: toggleAccountButton.dataset.accountName || "Account",
+          active: toggleAccountButton.dataset.active === "true"
+        });
       }
 
       const resetLessonButton = event.target.closest("[data-reset-lesson]");
@@ -1519,21 +1882,23 @@ If you have trouble signing in, contact your teacher.`;
       renderGradebook();
       renderLessonOneBreakdown();
     });
+    document.getElementById("teacher-section-toggle").addEventListener("click", () => {
+      const wrapper = document.getElementById("teacher-accounts-wrapper");
+      const arrow = document.getElementById("teacher-toggle-arrow");
+      const isHidden = wrapper.style.display === "none";
+      wrapper.style.display = isHidden ? "" : "none";
+      arrow.innerHTML = isHidden ? "&#9660;" : "&#9654;";
+    });
     document.getElementById("active-lesson-select").addEventListener("change", async (event) => {
       activeDetailLessonNumber = Number(event.target.value) || 1;
       await renderAll();
     });
     document.getElementById("btn-add-another-account").addEventListener("click", resetAccountForm);
-    document.getElementById("btn-copy-welcome").addEventListener("click", async () => {
-      const text = document.getElementById("welcome-email-preview").dataset.copyText || "";
-      if (!text) return;
-      await navigator.clipboard.writeText(text);
-      document.getElementById("btn-copy-welcome").textContent = "Copied";
-      setTimeout(() => {
-        document.getElementById("btn-copy-welcome").textContent = "Copy Welcome Email";
-      }, 1400);
-    });
+    document.getElementById("btn-copy-welcome").addEventListener("click", (event) => copyWelcomeHtml(event.currentTarget));
+    document.getElementById("btn-copy-welcome-plain").addEventListener("click", (event) => copyWelcomePlain(event.currentTarget));
+    document.getElementById("btn-copy-subject").addEventListener("click", (event) => copyWelcomeSubject(event.currentTarget));
     document.getElementById("btn-reset-password").addEventListener("click", resetPassword);
+    document.getElementById("btn-confirm-toggle-status").addEventListener("click", toggleCourseAccountStatus);
     document.getElementById("btn-update-teacher-password").addEventListener("click", async () => {
       const password = document.getElementById("teacher-password").value;
       const confirm = document.getElementById("teacher-password-confirm").value;
