@@ -4,6 +4,8 @@ Use this pattern for Lesson 1 first, then repeat it for the remaining 19 lessons
 
 ## Student Lesson Flow
 
+Default lesson length: **60 minutes** unless Baptiste asks for a different pacing target.
+
 1. **Lesson Hero**
    - Names the lesson, time estimate, why the skill matters, and the learning target.
 
@@ -52,6 +54,7 @@ Use this pattern for Lesson 1 first, then repeat it for the remaining 19 lessons
 11. **Retryable Practice**
    - Students can try again until they understand.
    - Goal: learning during the lesson, not punishment for the first miss.
+   - Use one button: `Submit Answer` before saving and `Update Answer` after saving. The updated answer overwrites the previous score.
 
 12. **Exit Check**
    - Short final evidence for the lesson.

@@ -97,8 +97,19 @@
       background: rgba(255,255,255,0.18);
     }
 
+    .teacher-nav a.nav-primary {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #102a44;
+    }
+
+    .teacher-nav a.nav-primary:hover {
+      background: #f2b84b;
+      border-color: #f2b84b;
+    }
+
     .nav-user-name {
-      color: #d7e3ef;
+      color: #f4d48b;
       font-weight: 800;
       padding: 8px 4px;
     }
@@ -293,6 +304,37 @@
       background: #e9f3ff;
       color: #153d72;
       font-weight: 650;
+    }
+
+    .standard-strip {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 14px 0 8px;
+    }
+
+    .standard-chip {
+      border: 1px solid #c9d8e8;
+      border-radius: 999px;
+      background: #fbfdff;
+      color: #24476b;
+      padding: 6px 9px;
+      font-size: 0.88rem;
+      font-weight: 750;
+    }
+
+    .standard-chip strong {
+      color: var(--teal);
+      margin-right: 4px;
+    }
+
+    .application-note {
+      margin: 12px 0 0;
+      border-left: 4px solid var(--gold);
+      border-radius: 6px;
+      background: #fffdf5;
+      color: #503b0b;
+      padding: 10px 12px;
     }
 
     .section-card header {
@@ -815,6 +857,52 @@
 
     .undo-token.draggable:active {
       cursor: grabbing;
+    }
+
+    .operation-bank {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin: 0 0 12px;
+      padding: 10px;
+      border: 1px solid #d7e6f4;
+      border-radius: 8px;
+      background: #fbfdff;
+    }
+
+    .operation-bank strong {
+      color: var(--primary);
+      margin-right: 4px;
+    }
+
+    .operation-tile {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--primary);
+      padding: 9px 13px;
+      font-weight: 900;
+      min-width: 52px;
+      text-align: center;
+    }
+
+    .operation-tile.draggable {
+      cursor: grab;
+      background: #e9f3ff;
+      border-color: #b8d2ee;
+      box-shadow: 0 0 0 3px rgba(36, 87, 166, 0.13);
+    }
+
+    .operation-tile.done {
+      background: #e8f7ee;
+      border-color: #a9dfbd;
+      color: var(--green);
+    }
+
+    .operation-tile.locked {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     .undo-drop-zone {
@@ -1391,7 +1479,7 @@
         "Explain slope, intercepts, and function notation in context."
       ]
     };
-    const state = { lessons: [], active: null, profile: null };
+    const state = { lessons: [], active: null, profile: null, savedResponses: {} };
 
     const escapeHtml = (value) => String(value ?? "")
       .replaceAll("&", "&amp;")
@@ -1407,16 +1495,16 @@
       }
       state.lessons = loaded;
       renderList();
-      renderInitialRoute();
+      await renderInitialRoute();
     }
 
-    function renderInitialRoute() {
+    async function renderInitialRoute() {
       const params = new URLSearchParams(window.location.search);
       const lessonParam = params.get("lesson");
       if (lessonParam) {
         const index = state.lessons.findIndex((lesson) => lesson.lessonId === lessonParam.padStart(2, "0"));
         if (index >= 0) {
-          renderLesson(index);
+          await renderLesson(index);
           return;
         }
       }
@@ -1510,8 +1598,20 @@
       `;
     }
 
-    function renderLesson(index) {
+    function renderLessonStandards(lesson) {
+      if (!lesson.standards?.length) return "";
+      return `
+        <div class="standard-strip" aria-label="Lesson standards">
+          ${lesson.standards.map((standard) => `
+            <span class="standard-chip"><strong>${escapeHtml(standard.code)}</strong>${escapeHtml(standard.label)}</span>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    async function renderLesson(index) {
       state.active = index;
+      await hydrateSavedLessonResponses(state.lessons[index]?.lessonId || "01");
       renderList();
       const lesson = state.lessons[index];
       history.replaceState(null, "", `preview.html?lesson=${lesson.lessonId}`);
@@ -1521,6 +1621,8 @@
           <div class="lesson-kicker">Lesson ${lesson.lessonId} &bull; ${lesson.estimatedMinutes} minutes</div>
           <h2>${escapeHtml(lesson.title)}</h2>
           <p>${escapeHtml(lesson.whyItMatters)}</p>
+          ${renderLessonStandards(lesson)}
+          ${lesson.realWorldApplication ? `<p class="application-note"><strong>Real-world application:</strong> ${escapeHtml(lesson.realWorldApplication)}</p>` : ""}
           <div class="target">${escapeHtml(lesson.learningTarget)}</div>
         </section>
         ${lesson.lessonId === "01" ? renderOverviewVideo() : ""}
@@ -1643,7 +1745,8 @@
         <div class="balance-lab undo-lab" data-balance-lab='${escapeHtml(JSON.stringify(lab))}' data-step="0">
           <div class="balance-equation" aria-live="polite">${escapeHtml(lab.startEquation)}</div>
           <div class="undo-board" aria-label="Equation undo board"></div>
-          <div class="undo-drop-zone" role="region" aria-label="Undo box">Drag the highlighted tile here.</div>
+          <div class="operation-bank" aria-label="Operation bank"></div>
+          <div class="undo-drop-zone" role="region" aria-label="Undo box">Drag the inverse operation here.</div>
           <div class="balance-feedback" aria-live="polite">Start by removing the same amount from both sides.</div>
         </div>
       `;
@@ -1658,12 +1761,16 @@
         return {
           equation: lab.startEquation,
           tokens: [
-            { text: "3x", action: "divide" },
-            { text: "+2", action: "subtract" },
+            { text: "3x", action: "" },
+            { text: "+2", action: "" },
             { text: "=", action: "" },
             { text: "11", action: "" }
           ],
-          dropText: "Drag +2 here to undo addition.",
+          actions: [
+            { text: "-2", action: "subtract", state: "current" },
+            { text: "÷3", action: "divide", state: "locked" }
+          ],
+          dropText: "Drag -2 here to undo +2.",
           feedback: "Start by undoing +2. That means subtract 2 from both sides."
         };
       }
@@ -1676,7 +1783,11 @@
             { text: "=", action: "" },
             { text: "9", action: "" }
           ],
-          dropText: "Drag 3 here to divide both sides by 3.",
+          actions: [
+            { text: "-2", action: "subtract", state: "done" },
+            { text: "÷3", action: "divide", state: "current" }
+          ],
+          dropText: "Now drag ÷3 here to undo 3x.",
           feedback: lab.steps[0].explanation
         };
       }
@@ -1686,6 +1797,10 @@
           { text: "x", action: "" },
           { text: "=", action: "" },
           { text: "3", action: "" }
+        ],
+        actions: [
+          { text: "-2", action: "subtract", state: "done" },
+          { text: "÷3", action: "divide", state: "done" }
         ],
         dropText: "Solved",
         feedback: lab.complete
@@ -1702,6 +1817,14 @@
           ${escapeHtml(token.text)}
         </span>
       `).join("");
+      labEl.querySelector(".operation-bank").innerHTML = `
+        <strong>Choose the inverse operation:</strong>
+        ${state.actions.map((action) => `
+          <span class="operation-tile ${action.state === "current" ? "draggable" : escapeHtml(action.state)}" ${action.state === "current" ? `draggable="true" data-undo-action="${escapeHtml(action.action)}"` : ""}>
+            ${escapeHtml(action.text)}
+          </span>
+        `).join("")}
+      `;
       labEl.querySelector(".undo-drop-zone").textContent = state.dropText;
       labEl.querySelector(".balance-feedback").textContent = state.feedback;
     }
@@ -1729,6 +1852,45 @@
       return question.sectionType === "check";
     }
 
+    function localSavedResponses(lessonId) {
+      const key = "caasppMathPilotSubmissions";
+      const existing = JSON.parse(localStorage.getItem(key) || "{}");
+      return existing?.["pilot-student"]?.lessons?.[lessonId]?.responses || {};
+    }
+
+    function responseFromRemoteRow(row) {
+      return {
+        questionId: row.question_id,
+        sectionId: row.section_id || "",
+        sectionTitle: row.section_title || "",
+        prompt: row.prompt || "",
+        type: row.question_type || "",
+        grading: row.grading_method || "",
+        answer: row.answer || "",
+        score: Number(row.score || 0),
+        maxScore: Number(row.max_score || 0),
+        feedback: row.feedback || "",
+        correct: Number(row.max_score || 0) ? Number(row.score || 0) >= Number(row.max_score || 0) * 0.7 : true,
+        confidence: Number(row.ai_confidence ?? 1),
+        needsTeacherReview: Boolean(row.needs_teacher_review),
+        updatedAt: row.updated_at || ""
+      };
+    }
+
+    async function hydrateSavedLessonResponses(lessonId) {
+      state.savedResponses = { ...localSavedResponses(lessonId) };
+      if (!window.CourseData || !state.profile || state.profile.role !== "student") return;
+
+      const session = await CourseData.getSession().catch(() => null);
+      if (!session?.user?.id) return;
+      const rows = await CourseData.loadStudentResponses(session.user.id, Number(lessonId)).catch(() => null);
+      if (!Array.isArray(rows)) return;
+      state.savedResponses = rows.reduce((map, row) => {
+        map[row.question_id] = responseFromRemoteRow(row);
+        return map;
+      }, state.savedResponses);
+    }
+
     function exitQuestionNeedsReview(question, result) {
       if (!isExitCheckQuestion(question)) return Boolean(result.needsTeacherReview);
       const maxScore = Number(result.maxScore || 0);
@@ -1738,11 +1900,8 @@
     }
 
     function getSavedQuestionResponse(questionId) {
-      const key = "caasppMathPilotSubmissions";
-      const studentId = "pilot-student";
       const lessonId = state.lessons[state.active]?.lessonId || "01";
-      const existing = JSON.parse(localStorage.getItem(key) || "{}");
-      return existing?.[studentId]?.lessons?.[lessonId]?.responses?.[questionId] || null;
+      return state.savedResponses[questionId] || localSavedResponses(lessonId)?.[questionId] || null;
     }
 
     function lockExitQuestion(card, result) {
@@ -1765,39 +1924,57 @@
 
     function renderQuestion(question) {
       const id = escapeHtml(question.id);
-      const savedExitResponse = isExitCheckQuestion(question) ? getSavedQuestionResponse(question.id) : null;
-      const disabled = savedExitResponse ? " disabled" : "";
+      const savedResponse = getSavedQuestionResponse(question.id);
+      const isLocked = isExitCheckQuestion(question) && savedResponse;
+      const disabled = isLocked ? " disabled" : "";
       let input = "";
       if (question.options) {
         input = question.options.map(option => `
           <label class="option">
-            <input type="radio" name="${id}" value="${escapeHtml(option.value)}"${savedExitResponse && String(savedExitResponse.answer) === String(option.value) ? " checked" : ""}${disabled}>
+            <input type="radio" name="${id}" value="${escapeHtml(option.value)}"${savedResponse && String(savedResponse.answer) === String(option.value) ? " checked" : ""}${disabled}>
             <strong>${escapeHtml(option.value)}.</strong> ${escapeHtml(option.text)}
           </label>
         `).join("");
       } else if (question.type === "numeric") {
-        input = `<input type="number" data-answer="${escapeHtml(question.answer)}" aria-label="${id} answer" value="${escapeHtml(savedExitResponse?.answer || "")}"${disabled}>`;
+        input = `<input type="number" data-answer="${escapeHtml(question.answer)}" aria-label="${id} answer" value="${escapeHtml(savedResponse?.answer || "")}"${disabled}>`;
       } else if (question.type === "table_fill") {
-        input = `<input type="text" aria-label="${id} answer" placeholder="Example: 4, 7, 10" value="${escapeHtml(savedExitResponse?.answer || "")}"${disabled}>`;
+        input = `<input type="text" aria-label="${id} answer" placeholder="Example: 4, 7, 10" value="${escapeHtml(savedResponse?.answer || "")}"${disabled}>`;
       } else {
-        input = `<textarea aria-label="${id} answer" placeholder="Write your thinking here."${disabled}>${escapeHtml(savedExitResponse?.answer || "")}</textarea>`;
+        input = `<textarea aria-label="${id} answer" placeholder="Write your thinking here."${disabled}>${escapeHtml(savedResponse?.answer || "")}</textarea>`;
       }
 
       const reviewText = question.grading === "ai_rubric"
         ? escapeHtml(question.feedback || "Write a complete answer that explains your reasoning.")
         : escapeHtml(question.feedback || "Answer submitted.");
-      const savedFeedback = savedExitResponse
-        ? `<div class="feedback ${savedExitResponse.correct ? "correct" : "review"} show" data-review="${escapeHtml(reviewText)}">${escapeHtml(`${savedExitResponse.score}/${savedExitResponse.maxScore}: ${savedExitResponse.feedback}`)}</div>`
+      const savedFeedback = savedResponse
+        ? `<div class="feedback ${feedbackClassForResult(question, savedResponse)} show" data-review="${escapeHtml(reviewText)}">${escapeHtml(`${savedResponse.score}/${savedResponse.maxScore}: ${savedResponse.feedback}`)}</div>`
         : `<div class="feedback" data-review="${escapeHtml(reviewText)}"></div>`;
+      const buttonText = isLocked
+        ? "Exit Check Submitted"
+        : savedResponse
+          ? "Update Answer"
+          : isExitCheckQuestion(question) ? "Submit Exit Question" : "Submit Answer";
 
       return `
-        <div class="question ${savedExitResponse ? "locked" : ""}" data-question='${escapeHtml(JSON.stringify(question))}'>
+        <div class="question ${isLocked ? "locked" : ""}" data-question='${escapeHtml(JSON.stringify(question))}'>
           <p>${question.promptHtml || escapeHtml(question.prompt)}</p>
           ${input}
-          <div class="actions"><button class="check" type="button"${disabled}>${savedExitResponse ? "Exit Check Submitted" : "Check Answer"}</button></div>
+          <div class="actions"><button class="check" type="button"${disabled}>${escapeHtml(buttonText)}</button></div>
           ${savedFeedback}
         </div>
       `;
+    }
+
+    function feedbackClassForResult(question, result) {
+      if (result.correct) return "correct";
+      if (question.grading === "ai_rubric" || result.needsTeacherReview || isExitCheckQuestion(question)) return "review";
+      return "incorrect";
+    }
+
+    function updateRetryButton(card, question, result) {
+      if (isExitCheckQuestion(question)) return;
+      const button = card.querySelector("button.check");
+      if (button) button.textContent = "Update Answer";
     }
 
     function lessonNextSteps(lesson) {
@@ -1890,7 +2067,7 @@
     }
 
     document.addEventListener("click", (event) => {
-      if (event.target.matches(".undo-token.draggable")) {
+      if (event.target.matches(".operation-tile.draggable")) {
         const labEl = event.target.closest(".balance-lab");
         applyBalanceMove(labEl, event.target.dataset.undoAction);
         return;
@@ -1933,6 +2110,7 @@
               ...savedResult
             });
             if (isExitCheckQuestion(question)) lockExitQuestion(card, savedResult);
+            else updateRetryButton(card, question, savedResult);
           })
           .catch(() => {
             const savedResult = {
@@ -1947,6 +2125,7 @@
             feedback.textContent = savedResult.feedback;
             savePilotSubmission(question, answer, savedResult);
             if (isExitCheckQuestion(question)) lockExitQuestion(card, savedResult);
+            else updateRetryButton(card, question, savedResult);
           });
         return;
       }
@@ -1976,10 +2155,11 @@
       };
       savePilotSubmission(question, answer, savedResult);
       if (isExitCheckQuestion(question)) lockExitQuestion(card, savedResult);
+      else updateRetryButton(card, question, savedResult);
     });
 
     document.addEventListener("dragstart", (event) => {
-      if (!event.target.matches(".undo-token.draggable")) return;
+      if (!event.target.matches(".operation-tile.draggable")) return;
       event.dataTransfer.setData("text/plain", event.target.dataset.undoAction);
       event.dataTransfer.effectAllowed = "move";
     });
@@ -2074,7 +2254,7 @@
       const lessonId = state.lessons[state.active]?.lessonId || "01";
       existing[studentId] = existing[studentId] || { studentId, studentName: "Test Student", lessons: {} };
       existing[studentId].lessons[lessonId] = existing[studentId].lessons[lessonId] || { lessonId, responses: {}, updatedAt: now };
-      existing[studentId].lessons[lessonId].responses[question.id] = {
+      const savedResponse = {
         questionId: question.id,
         sectionId: question.sectionId || "",
         sectionTitle: question.sectionTitle || "",
@@ -2090,6 +2270,8 @@
         needsTeacherReview: Boolean(result.needsTeacherReview),
         updatedAt: now
       };
+      existing[studentId].lessons[lessonId].responses[question.id] = savedResponse;
+      state.savedResponses[question.id] = savedResponse;
       existing[studentId].lessons[lessonId].updatedAt = now;
       localStorage.setItem(key, JSON.stringify(existing));
       ensurePilotAccount();
@@ -2393,15 +2575,6 @@
       }
     };
 
-    loadLessons().catch((error) => {
-      document.getElementById("lesson-root").innerHTML = `
-        <section class="section-card"><div class="section-body">
-          <strong>Preview failed to load.</strong>
-          <p>${escapeHtml(error.message)}</p>
-          <p>Open this through a local web server so the lesson JSON files can load.</p>
-        </div></section>
-      `;
-    });
     async function setupCourseNav() {
       const nav = document.getElementById("course-nav");
       const profile = window.CAASPPAuth ? await CAASPPAuth.getProfile() : null;
@@ -2410,16 +2583,16 @@
       const displayName = profile.full_name || profile.username || profile.email || "";
       if (profile.role === "student") {
         nav.innerHTML = `
-          <a href="student-dashboard.html">Dashboard</a>
-          <span class="nav-user-name">Signed in as ${escapeHtml(displayName)}</span>
+          <a class="nav-primary" href="student-dashboard.html">Dashboard</a>
+          <span class="nav-user-name">${escapeHtml(displayName)}</span>
           <button id="preview-sign-out" type="button">Sign Out</button>
         `;
       } else {
         nav.innerHTML = `
-          <a href="teacher-dashboard.html">Gradebook</a>
+          <a class="nav-primary" href="teacher-dashboard.html">Gradebook</a>
           <a href="teacher-guide.html">Teacher Guide</a>
           <a href="preview.html">Course Home</a>
-          <span class="nav-user-name">Signed in as ${escapeHtml(displayName)}</span>
+          <span class="nav-user-name">${escapeHtml(displayName)}</span>
           <button id="preview-sign-out" type="button">Sign Out</button>
         `;
       }
@@ -2430,7 +2603,20 @@
       });
     }
 
-    setupCourseNav();
+    async function initCourse() {
+      await setupCourseNav();
+      await loadLessons();
+    }
+
+    initCourse().catch((error) => {
+      document.getElementById("lesson-root").innerHTML = `
+        <section class="section-card"><div class="section-body">
+          <strong>Preview failed to load.</strong>
+          <p>${escapeHtml(error.message)}</p>
+          <p>Open this through a local web server so the lesson JSON files can load.</p>
+        </div></section>
+      `;
+    });
     StudyBuddy.init();
   </script>
 </body>

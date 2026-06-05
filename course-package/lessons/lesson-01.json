@@ -2,10 +2,25 @@
   "lessonId": "01",
   "title": "Undo the Equation",
   "module": "Week 1 - Linear Equations, Inequalities, and Functions",
-  "estimatedMinutes": 45,
+  "estimatedMinutes": 60,
   "sourceRefs": ["S1", "S2", "S3", "V1"],
   "learningTarget": "I can solve one-step and two-step equations and explain the inverse operation I used.",
-  "whyItMatters": "CAASPP questions often hide simple equation solving inside a word problem, table, or graph. If you can undo an equation cleanly, you can keep the rest of the problem from turning into noise.",
+  "whyItMatters": "This lesson is about solving linear equations in one variable. \"Undo the equation\" is our student-friendly way to say that you will use inverse operations to isolate the variable while keeping both sides balanced.",
+  "realWorldApplication": "On CAASPP, equation solving is often hidden inside a word problem, table, graph, or function question. In real life, the same skill helps you work backward from a total to find an unknown amount, like number of tickets sold, items bought, or hours worked.",
+  "standards": [
+    {
+      "code": "HSA.REI.A.1",
+      "label": "Explain why each equation-solving step is valid."
+    },
+    {
+      "code": "HSA.REI.B.3",
+      "label": "Solve linear equations in one variable."
+    },
+    {
+      "code": "HSA.CED.A.1",
+      "label": "Create equations from real situations and use them to solve problems."
+    }
+  ],
   "vocabulary": [
     {
       "term": "Equation",
@@ -154,7 +169,7 @@
       "id": "balance_lab",
       "type": "balance_lab",
       "title": "Balance Lab: Move the Same Way on Both Sides",
-      "studentText": "Use the undo board to solve 3x + 2 = 11. Drag the highlighted part into the undo box, then watch what has to happen to both sides.",
+      "studentText": "Use the undo board to solve 3x + 2 = 11. Drag the operation that undoes the next part of the equation: first undo +2, then undo 3x.",
       "balanceLab": {
         "startEquation": "3x + 2 = 11",
         "steps": [
