@@ -2,7 +2,7 @@
   "lessonId": "01",
   "title": "Undo the Equation",
   "module": "Week 1 - Linear Equations, Inequalities, and Functions",
-  "estimatedMinutes": 40,
+  "estimatedMinutes": 45,
   "sourceRefs": ["S1", "S2", "S3", "V1"],
   "learningTarget": "I can solve one-step and two-step equations and explain the inverse operation I used.",
   "whyItMatters": "CAASPP questions often hide simple equation solving inside a word problem, table, or graph. If you can undo an equation cleanly, you can keep the rest of the problem from turning into noise.",
@@ -148,6 +148,30 @@
           "Check: 3(8) + 7 = 31, so the answer works."
         ],
         "commonMistake": "A common mistake is subtracting 7 from only one side. That changes the equation instead of solving it."
+      }
+    },
+    {
+      "id": "balance_lab",
+      "type": "balance_lab",
+      "title": "Balance Lab: Move the Same Way on Both Sides",
+      "studentText": "Use the balance to solve 3x + 2 = 11. The small 1 tiles show exactly what gets removed from both sides.",
+      "balanceLab": {
+        "startEquation": "3x + 2 = 11",
+        "steps": [
+          {
+            "action": "Remove two 1 tiles from both sides",
+            "left": "3x",
+            "right": "9",
+            "explanation": "The two +1 tiles are gone from the left, and two 1 tiles are removed from the right. That leaves 3x = 9."
+          },
+          {
+            "action": "Split into 3 equal groups",
+            "left": "x",
+            "right": "3",
+            "explanation": "Three x groups share 9 equally, so each x is 3."
+          }
+        ],
+        "complete": "You kept the equation balanced: x = 3."
       }
     },
     {

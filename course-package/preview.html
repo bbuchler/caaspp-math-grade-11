@@ -547,6 +547,181 @@
       color: #503b0b;
     }
 
+    .balance-lab {
+      border: 1px solid #bfd3e8;
+      background: #f6fbff;
+      border-radius: 8px;
+      padding: 14px;
+      margin: 14px 0;
+    }
+
+    .balance-equation {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--primary);
+      font-size: 1.25rem;
+      font-weight: 850;
+      padding: 9px 12px;
+      margin-bottom: 12px;
+    }
+
+    .balance-scale {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      gap: 10px;
+      align-items: stretch;
+      border: 2px dashed #aac0d6;
+      border-radius: 8px;
+      padding: 12px;
+      background: #ffffff;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .balance-drop-label {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      border: 1px dashed #b8d2ee;
+      border-radius: 6px;
+      background: #edf6ff;
+      color: #153d72;
+      font-size: 0.88rem;
+      font-weight: 800;
+      text-align: center;
+      padding: 6px 8px;
+    }
+
+    .balance-scale.drag-over {
+      border-color: var(--blue);
+      background: #edf6ff;
+    }
+
+    .balance-pan {
+      min-height: 112px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfd;
+      padding: 10px;
+      display: flex;
+      align-content: flex-start;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .balance-equals {
+      align-self: center;
+      color: var(--primary);
+      font-size: 1.7rem;
+      font-weight: 900;
+    }
+
+    .math-tile {
+      min-width: 38px;
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--primary);
+      font-weight: 850;
+      padding: 5px 8px;
+    }
+
+    .math-tile.unit {
+      min-width: 28px;
+      min-height: 28px;
+      padding: 3px 6px;
+      background: #fff8e6;
+      color: #6c4a00;
+      border-color: #f3d48a;
+    }
+
+    .math-tile.variable {
+      background: #e9f3ff;
+      color: #153d72;
+      border-color: #b8d2ee;
+    }
+
+    .math-tile.constant {
+      background: #fff8e6;
+      color: #6c4a00;
+      border-color: #f3d48a;
+    }
+
+    .math-tile.answer {
+      background: #e8f7ee;
+      color: var(--green);
+      border-color: #a9dfbd;
+    }
+
+    .balance-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .balance-actions-label {
+      width: 100%;
+      color: var(--primary);
+      font-weight: 850;
+      font-size: 0.9rem;
+    }
+
+    .balance-action {
+      border: 1px solid #b8d2ee;
+      border-radius: 8px;
+      background: #fff;
+      color: #153d72;
+      padding: 10px 12px;
+      font-weight: 800;
+      cursor: grab;
+    }
+
+    .balance-action::before {
+      content: "::::";
+      display: inline-block;
+      color: #6f8baa;
+      font-size: 0.75rem;
+      letter-spacing: -2px;
+      margin-right: 8px;
+      transform: rotate(90deg);
+    }
+
+    .balance-action.current {
+      background: #e9f3ff;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(36, 87, 166, 0.14);
+    }
+
+    .balance-action.done {
+      background: #e8f7ee;
+      color: var(--green);
+      border-color: #a9dfbd;
+      cursor: default;
+    }
+
+    .balance-action.locked {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .balance-feedback {
+      margin-top: 10px;
+      color: #24476b;
+      font-weight: 650;
+    }
+
     .infographic {
       margin: 14px 0;
       border: 1px solid var(--line);
@@ -844,6 +1019,18 @@
         grid-template-columns: 1fr;
       }
 
+      .balance-scale {
+        grid-template-columns: 1fr;
+      }
+
+      .balance-drop-label {
+        grid-column: auto;
+      }
+
+      .balance-equals {
+        text-align: center;
+      }
+
       .home-grid,
       .module-grid {
         grid-template-columns: 1fr;
@@ -929,7 +1116,7 @@
   <script src="js/auth.js"></script>
   <script>
     const lessonIds = ["01", "02", "03", "04", "05"];
-    const COURSE_ASSET_VERSION = "2026-06-05-a1587b3";
+    const COURSE_ASSET_VERSION = "2026-06-05-balance-lab";
     const courseHome = {
       title: "CAASPP Math Success Academy",
       subtitle: "Build confidence with the math moves that show up again and again on CAASPP.",
@@ -1084,6 +1271,7 @@
         ${lesson.sections.map(renderSection).join("")}
         ${renderNextSteps(lesson)}
       `;
+      initBalanceLabs(root);
       root.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
@@ -1093,6 +1281,7 @@
       if (section.image) body += renderLessonImage(section.image);
       if (section.video) body += renderVideo(section);
       if (section.workedExample) body += renderWorkedExample(section.workedExample);
+      if (section.balanceLab) body += renderBalanceLab(section.balanceLab);
       if (section.type === "teaching") body += renderInfographic(state.lessons[state.active].lessonId);
       if (section.scenario) body += `<p><strong>Scenario:</strong> ${escapeHtml(section.scenario)}</p>`;
 
@@ -1181,6 +1370,109 @@
           <p class="common-mistake"><strong>Common mistake:</strong> ${escapeHtml(example.commonMistake)}</p>
         </div>
       `;
+    }
+
+    function renderBalanceLab(lab) {
+      return `
+        <div class="balance-lab" data-balance-lab='${escapeHtml(JSON.stringify(lab))}' data-step="0">
+          <div class="balance-equation" aria-live="polite">${escapeHtml(lab.startEquation)}</div>
+          <div class="balance-scale" role="region" aria-label="Equation balance drop zone">
+            <div class="balance-drop-label">Drop the highlighted move tile here, or tap the tile below.</div>
+            <div class="balance-pan balance-left" aria-label="Left side of the equation"></div>
+            <div class="balance-equals">=</div>
+            <div class="balance-pan balance-right" aria-label="Right side of the equation"></div>
+          </div>
+          <div class="balance-actions">
+            <div class="balance-actions-label">Move Tiles</div>
+            ${lab.steps.map((step, index) => `
+              <button class="balance-action" type="button" draggable="true" data-action-index="${index}">
+                ${escapeHtml(step.action)}
+              </button>
+            `).join("")}
+          </div>
+          <div class="balance-feedback" aria-live="polite">Start by removing the same amount from both sides.</div>
+        </div>
+      `;
+    }
+
+    function initBalanceLabs(root = document) {
+      root.querySelectorAll(".balance-lab").forEach((labEl) => updateBalanceLab(labEl));
+    }
+
+    function balanceTiles(expression) {
+      const value = String(expression || "");
+      if (value === "3x + 2") {
+        return [
+          { text: "x", type: "variable" },
+          { text: "x", type: "variable" },
+          { text: "x", type: "variable" },
+          { text: "+1", type: "unit" },
+          { text: "+1", type: "unit" }
+        ];
+      }
+      if (value === "3x") {
+        return [
+          { text: "x", type: "variable" },
+          { text: "x", type: "variable" },
+          { text: "x", type: "variable" }
+        ];
+      }
+      if (value === "x") return [{ text: "x", type: "variable" }];
+      if (value === "11") return Array.from({ length: 11 }, () => ({ text: "1", type: "unit" }));
+      if (value === "9") return Array.from({ length: 9 }, () => ({ text: "1", type: "unit" }));
+      if (value === "3") return [{ text: "3", type: "answer" }];
+      return [{ text: value, type: "constant" }];
+    }
+
+    function renderBalanceTiles(container, expression) {
+      container.innerHTML = balanceTiles(expression)
+        .map((tile) => `<span class="math-tile ${tile.type}">${escapeHtml(tile.text)}</span>`)
+        .join("");
+    }
+
+    function currentBalanceState(lab, stepIndex) {
+      if (stepIndex <= 0) return { equation: lab.startEquation, left: "3x + 2", right: "11", feedback: "Start by removing the two +1 tiles from the left and two 1 tiles from the right." };
+      const previous = lab.steps[Math.min(stepIndex - 1, lab.steps.length - 1)];
+      return {
+        equation: `${previous.left} = ${previous.right}`,
+        left: previous.left,
+        right: previous.right,
+        feedback: stepIndex >= lab.steps.length ? lab.complete : previous.explanation
+      };
+    }
+
+    function updateBalanceLab(labEl) {
+      const lab = JSON.parse(labEl.dataset.balanceLab);
+      const stepIndex = Number(labEl.dataset.step || 0);
+      const state = currentBalanceState(lab, stepIndex);
+      labEl.querySelector(".balance-equation").textContent = state.equation;
+      renderBalanceTiles(labEl.querySelector(".balance-left"), state.left);
+      renderBalanceTiles(labEl.querySelector(".balance-right"), state.right);
+      labEl.querySelector(".balance-feedback").textContent = state.feedback;
+
+      labEl.querySelectorAll(".balance-action").forEach((button) => {
+        const actionIndex = Number(button.dataset.actionIndex);
+        button.classList.toggle("done", actionIndex < stepIndex);
+        button.classList.toggle("current", actionIndex === stepIndex);
+        button.classList.toggle("locked", actionIndex > stepIndex);
+        button.disabled = actionIndex < stepIndex;
+      });
+    }
+
+    function applyBalanceMove(labEl, actionIndex) {
+      const lab = JSON.parse(labEl.dataset.balanceLab);
+      const stepIndex = Number(labEl.dataset.step || 0);
+      const feedback = labEl.querySelector(".balance-feedback");
+      if (stepIndex >= lab.steps.length) {
+        feedback.textContent = lab.complete;
+        return;
+      }
+      if (actionIndex !== stepIndex) {
+        feedback.textContent = "Try the move that keeps both sides balanced right now.";
+        return;
+      }
+      labEl.dataset.step = String(stepIndex + 1);
+      updateBalanceLab(labEl);
     }
 
     function renderQuestion(question) {
@@ -1281,6 +1573,12 @@
     }
 
     document.addEventListener("click", (event) => {
+      if (event.target.matches(".balance-action")) {
+        const labEl = event.target.closest(".balance-lab");
+        applyBalanceMove(labEl, Number(event.target.dataset.actionIndex));
+        return;
+      }
+
       if (event.target.matches("button.submit-lesson")) {
         submitLesson();
         return;
@@ -1353,6 +1651,34 @@
         confidence: 1,
         needsTeacherReview: false
       });
+    });
+
+    document.addEventListener("dragstart", (event) => {
+      if (!event.target.matches(".balance-action")) return;
+      event.dataTransfer.setData("text/plain", event.target.dataset.actionIndex);
+      event.dataTransfer.effectAllowed = "move";
+    });
+
+    document.addEventListener("dragover", (event) => {
+      const scale = event.target.closest(".balance-scale");
+      if (!scale) return;
+      event.preventDefault();
+      scale.classList.add("drag-over");
+    });
+
+    document.addEventListener("dragleave", (event) => {
+      const scale = event.target.closest(".balance-scale");
+      if (!scale) return;
+      scale.classList.remove("drag-over");
+    });
+
+    document.addEventListener("drop", (event) => {
+      const scale = event.target.closest(".balance-scale");
+      if (!scale) return;
+      event.preventDefault();
+      scale.classList.remove("drag-over");
+      const labEl = scale.closest(".balance-lab");
+      applyBalanceMove(labEl, Number(event.dataTransfer.getData("text/plain")));
     });
 
     function practiceRetryFeedback(question) {
