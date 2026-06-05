@@ -664,6 +664,50 @@
       border-color: #a9dfbd;
     }
 
+    .math-tile.draggable {
+      cursor: grab;
+      box-shadow: 0 0 0 3px rgba(36, 87, 166, 0.11);
+    }
+
+    .math-tile.draggable:active {
+      cursor: grabbing;
+    }
+
+    .remove-zone {
+      margin-top: 12px;
+      border: 2px dashed #f3d48a;
+      border-radius: 8px;
+      background: #fffdf5;
+      padding: 10px;
+      min-height: 82px;
+    }
+
+    .remove-zone.drag-over {
+      border-color: var(--gold);
+      background: #fff8e6;
+    }
+
+    .remove-zone strong {
+      display: block;
+      color: #6c4a00;
+      margin-bottom: 6px;
+    }
+
+    .removed-tiles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      min-height: 32px;
+      align-items: center;
+    }
+
+    .removed-count {
+      display: block;
+      color: var(--muted);
+      font-size: 0.86rem;
+      margin-top: 6px;
+    }
+
     .balance-actions {
       display: flex;
       gap: 8px;
@@ -714,6 +758,76 @@
     .balance-action.locked {
       opacity: 0.55;
       cursor: not-allowed;
+    }
+
+    .divide-card {
+      border: 1px solid #a9dfbd;
+      border-radius: 8px;
+      background: #e8f7ee;
+      color: var(--green);
+      padding: 10px 12px;
+      font-weight: 850;
+      cursor: grab;
+    }
+
+    .divide-card[hidden] {
+      display: none;
+    }
+
+    .undo-board {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .undo-token {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfd;
+      color: var(--primary);
+      padding: 9px 12px;
+      font-weight: 900;
+      min-width: 46px;
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .undo-token.draggable {
+      cursor: grab;
+      background: #e9f3ff;
+      border-color: #b8d2ee;
+      box-shadow: 0 0 0 3px rgba(36, 87, 166, 0.13);
+    }
+
+    .undo-token.draggable:active {
+      cursor: grabbing;
+    }
+
+    .undo-drop-zone {
+      border: 2px dashed #aac0d6;
+      border-radius: 8px;
+      background: #f7fbff;
+      color: #153d72;
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 12px;
+      font-weight: 850;
+    }
+
+    .undo-drop-zone.drag-over {
+      background: #edf6ff;
+      border-color: var(--blue);
     }
 
     .balance-feedback {
@@ -1267,12 +1381,21 @@
           <div class="target">${escapeHtml(lesson.learningTarget)}</div>
         </section>
         ${lesson.lessonId === "01" ? renderOverviewVideo() : ""}
-        ${renderVocabulary(lesson)}
-        ${lesson.sections.map(renderSection).join("")}
+        ${renderLessonSections(lesson)}
         ${renderNextSteps(lesson)}
       `;
       initBalanceLabs(root);
       root.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function renderLessonSections(lesson) {
+      if (!lesson.vocabulary?.length) {
+        return lesson.sections.map(renderSection).join("");
+      }
+      return lesson.sections.map((section, index) => {
+        const rendered = renderSection(section);
+        return index === 0 ? `${rendered}${renderVocabulary(lesson)}` : rendered;
+      }).join("");
     }
 
     function renderSection(section) {
@@ -1374,22 +1497,10 @@
 
     function renderBalanceLab(lab) {
       return `
-        <div class="balance-lab" data-balance-lab='${escapeHtml(JSON.stringify(lab))}' data-step="0">
+        <div class="balance-lab undo-lab" data-balance-lab='${escapeHtml(JSON.stringify(lab))}' data-step="0">
           <div class="balance-equation" aria-live="polite">${escapeHtml(lab.startEquation)}</div>
-          <div class="balance-scale" role="region" aria-label="Equation balance drop zone">
-            <div class="balance-drop-label">Drop the highlighted move tile here, or tap the tile below.</div>
-            <div class="balance-pan balance-left" aria-label="Left side of the equation"></div>
-            <div class="balance-equals">=</div>
-            <div class="balance-pan balance-right" aria-label="Right side of the equation"></div>
-          </div>
-          <div class="balance-actions">
-            <div class="balance-actions-label">Move Tiles</div>
-            ${lab.steps.map((step, index) => `
-              <button class="balance-action" type="button" draggable="true" data-action-index="${index}">
-                ${escapeHtml(step.action)}
-              </button>
-            `).join("")}
-          </div>
+          <div class="undo-board" aria-label="Equation undo board"></div>
+          <div class="undo-drop-zone" role="region" aria-label="Undo box">Drag the highlighted tile here.</div>
           <div class="balance-feedback" aria-live="polite">Start by removing the same amount from both sides.</div>
         </div>
       `;
@@ -1399,45 +1510,42 @@
       root.querySelectorAll(".balance-lab").forEach((labEl) => updateBalanceLab(labEl));
     }
 
-    function balanceTiles(expression) {
-      const value = String(expression || "");
-      if (value === "3x + 2") {
-        return [
-          { text: "x", type: "variable" },
-          { text: "x", type: "variable" },
-          { text: "x", type: "variable" },
-          { text: "+1", type: "unit" },
-          { text: "+1", type: "unit" }
-        ];
-      }
-      if (value === "3x") {
-        return [
-          { text: "x", type: "variable" },
-          { text: "x", type: "variable" },
-          { text: "x", type: "variable" }
-        ];
-      }
-      if (value === "x") return [{ text: "x", type: "variable" }];
-      if (value === "11") return Array.from({ length: 11 }, () => ({ text: "1", type: "unit" }));
-      if (value === "9") return Array.from({ length: 9 }, () => ({ text: "1", type: "unit" }));
-      if (value === "3") return [{ text: "3", type: "answer" }];
-      return [{ text: value, type: "constant" }];
-    }
-
-    function renderBalanceTiles(container, expression) {
-      container.innerHTML = balanceTiles(expression)
-        .map((tile) => `<span class="math-tile ${tile.type}">${escapeHtml(tile.text)}</span>`)
-        .join("");
-    }
-
     function currentBalanceState(lab, stepIndex) {
-      if (stepIndex <= 0) return { equation: lab.startEquation, left: "3x + 2", right: "11", feedback: "Start by removing the two +1 tiles from the left and two 1 tiles from the right." };
-      const previous = lab.steps[Math.min(stepIndex - 1, lab.steps.length - 1)];
+      if (stepIndex <= 0) {
+        return {
+          equation: lab.startEquation,
+          tokens: [
+            { text: "3x", action: "divide" },
+            { text: "+2", action: "subtract" },
+            { text: "=", action: "" },
+            { text: "11", action: "" }
+          ],
+          dropText: "Drag +2 here to undo addition.",
+          feedback: "Start by undoing +2. That means subtract 2 from both sides."
+        };
+      }
+      if (stepIndex === 1) {
+        return {
+          equation: "3x = 9",
+          tokens: [
+            { text: "3", action: "divide" },
+            { text: "x", action: "" },
+            { text: "=", action: "" },
+            { text: "9", action: "" }
+          ],
+          dropText: "Drag 3 here to divide both sides by 3.",
+          feedback: lab.steps[0].explanation
+        };
+      }
       return {
-        equation: `${previous.left} = ${previous.right}`,
-        left: previous.left,
-        right: previous.right,
-        feedback: stepIndex >= lab.steps.length ? lab.complete : previous.explanation
+        equation: "x = 3",
+        tokens: [
+          { text: "x", action: "" },
+          { text: "=", action: "" },
+          { text: "3", action: "" }
+        ],
+        dropText: "Solved",
+        feedback: lab.complete
       };
     }
 
@@ -1446,20 +1554,16 @@
       const stepIndex = Number(labEl.dataset.step || 0);
       const state = currentBalanceState(lab, stepIndex);
       labEl.querySelector(".balance-equation").textContent = state.equation;
-      renderBalanceTiles(labEl.querySelector(".balance-left"), state.left);
-      renderBalanceTiles(labEl.querySelector(".balance-right"), state.right);
+      labEl.querySelector(".undo-board").innerHTML = state.tokens.map((token) => `
+        <span class="undo-token ${token.action ? "draggable" : ""}" ${token.action ? `draggable="true" data-undo-action="${escapeHtml(token.action)}"` : ""}>
+          ${escapeHtml(token.text)}
+        </span>
+      `).join("");
+      labEl.querySelector(".undo-drop-zone").textContent = state.dropText;
       labEl.querySelector(".balance-feedback").textContent = state.feedback;
-
-      labEl.querySelectorAll(".balance-action").forEach((button) => {
-        const actionIndex = Number(button.dataset.actionIndex);
-        button.classList.toggle("done", actionIndex < stepIndex);
-        button.classList.toggle("current", actionIndex === stepIndex);
-        button.classList.toggle("locked", actionIndex > stepIndex);
-        button.disabled = actionIndex < stepIndex;
-      });
     }
 
-    function applyBalanceMove(labEl, actionIndex) {
+    function applyBalanceMove(labEl, action) {
       const lab = JSON.parse(labEl.dataset.balanceLab);
       const stepIndex = Number(labEl.dataset.step || 0);
       const feedback = labEl.querySelector(".balance-feedback");
@@ -1467,8 +1571,11 @@
         feedback.textContent = lab.complete;
         return;
       }
-      if (actionIndex !== stepIndex) {
-        feedback.textContent = "Try the move that keeps both sides balanced right now.";
+      const expectedAction = stepIndex === 0 ? "subtract" : "divide";
+      if (action !== expectedAction) {
+        feedback.textContent = stepIndex === 0
+          ? "Start with +2. Addition is undone with subtraction."
+          : "Now undo the coefficient 3 by dividing both sides by 3.";
         return;
       }
       labEl.dataset.step = String(stepIndex + 1);
@@ -1573,9 +1680,9 @@
     }
 
     document.addEventListener("click", (event) => {
-      if (event.target.matches(".balance-action")) {
+      if (event.target.matches(".undo-token.draggable")) {
         const labEl = event.target.closest(".balance-lab");
-        applyBalanceMove(labEl, Number(event.target.dataset.actionIndex));
+        applyBalanceMove(labEl, event.target.dataset.undoAction);
         return;
       }
 
@@ -1654,31 +1761,31 @@
     });
 
     document.addEventListener("dragstart", (event) => {
-      if (!event.target.matches(".balance-action")) return;
-      event.dataTransfer.setData("text/plain", event.target.dataset.actionIndex);
+      if (!event.target.matches(".undo-token.draggable")) return;
+      event.dataTransfer.setData("text/plain", event.target.dataset.undoAction);
       event.dataTransfer.effectAllowed = "move";
     });
 
     document.addEventListener("dragover", (event) => {
-      const scale = event.target.closest(".balance-scale");
-      if (!scale) return;
+      const dropZone = event.target.closest(".undo-drop-zone");
+      if (!dropZone) return;
       event.preventDefault();
-      scale.classList.add("drag-over");
+      dropZone.classList.add("drag-over");
     });
 
     document.addEventListener("dragleave", (event) => {
-      const scale = event.target.closest(".balance-scale");
-      if (!scale) return;
-      scale.classList.remove("drag-over");
+      const dropZone = event.target.closest(".undo-drop-zone");
+      if (!dropZone) return;
+      dropZone.classList.remove("drag-over");
     });
 
     document.addEventListener("drop", (event) => {
-      const scale = event.target.closest(".balance-scale");
-      if (!scale) return;
+      const dropZone = event.target.closest(".undo-drop-zone");
+      if (!dropZone) return;
       event.preventDefault();
-      scale.classList.remove("drag-over");
-      const labEl = scale.closest(".balance-lab");
-      applyBalanceMove(labEl, Number(event.dataTransfer.getData("text/plain")));
+      dropZone.classList.remove("drag-over");
+      const labEl = dropZone.closest(".balance-lab");
+      applyBalanceMove(labEl, event.dataTransfer.getData("text/plain"));
     });
 
     function practiceRetryFeedback(question) {

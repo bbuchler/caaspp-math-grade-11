@@ -55,21 +55,21 @@
       "id": "launch",
       "type": "launch",
       "title": "Quick Start",
-      "studentText": "A school club sells stickers. The club has $18 after buying supplies and then earns $4 for each sticker pack sold. If the club has $46, what equation could represent the situation?",
+      "studentText": "Before solving, check the main balance rule. An equation only stays true when both sides are treated the same way.",
       "questions": [
         {
           "id": "l1-launch-1",
           "type": "multiple_choice",
-          "prompt": "Which equation matches the sticker situation?",
+          "prompt": "If you subtract 2 from the left side of an equation, what should you do to keep it balanced?",
           "options": [
-            {"value": "A", "text": "18x + 4 = 46"},
-            {"value": "B", "text": "4x + 18 = 46"},
-            {"value": "C", "text": "46x + 4 = 18"},
-            {"value": "D", "text": "4x - 18 = 46"}
+            {"value": "A", "text": "Subtract 2 from the right side too"},
+            {"value": "B", "text": "Add 2 to the right side"},
+            {"value": "C", "text": "Only change the left side"},
+            {"value": "D", "text": "Multiply the right side by 2"}
           ],
-          "answer": "B",
+          "answer": "A",
           "grading": "deterministic",
-          "feedback": "The starting amount is 18, and each pack adds 4 more dollars, so 4x + 18 = 46."
+          "feedback": "Whatever you do to one side, you do to the other side. That keeps the equation balanced."
         }
       ]
     },
@@ -154,7 +154,7 @@
       "id": "balance_lab",
       "type": "balance_lab",
       "title": "Balance Lab: Move the Same Way on Both Sides",
-      "studentText": "Use the balance to solve 3x + 2 = 11. The small 1 tiles show exactly what gets removed from both sides.",
+      "studentText": "Use the undo board to solve 3x + 2 = 11. Drag the highlighted part into the undo box, then watch what has to happen to both sides.",
       "balanceLab": {
         "startEquation": "3x + 2 = 11",
         "steps": [
