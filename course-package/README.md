@@ -16,14 +16,16 @@ This folder is the first pilot package for the reusable Education Course Studio.
 - `teacher-dashboard.html` - teacher gradebook preview with 20 lesson columns and Lesson 1 active
 - `teacher-student.html` - Lesson 1 work sample, grading, reset, and print view
 - `supabase/` - shared Altus Courses database setup files for the live pilot
-- `teacher-notes/` - review notes for Baptiste/teacher use
+- `teacher-notes/` - review notes, lesson design pattern, and teacher email draft
 - `qa-report.md` - readiness report and known risks
 
 ## Current State
 
-Week 1 is drafted as a teacher-review pilot. It is ready to inspect as curriculum, but not yet deployed as a working student app.
+Lesson 1 is the working pilot lesson. Lessons 2-20 are visible in the gradebook as the future course shape, but Lesson 1 is the one to test with students and teacher feedback first.
 
-The preview includes the Altus logo, embedded video frame areas with fallback links, first-pass infographic images, a floating Study Buddy, and local pilot saving for Lesson 1 answers.
+The preview includes embedded/local video areas with fallback links, real-world imagery, rendered math notation, a floating Study Buddy, retryable practice, a locked exit check, teacher work samples, and gradebook review flags.
+
+The repeatable Lesson 1 pattern is saved in `teacher-notes/lesson-design-pattern.md`.
 
 ## One Thing To Understand
 

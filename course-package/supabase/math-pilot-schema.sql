@@ -56,7 +56,7 @@ create table if not exists public.course_lessons (
 
 insert into public.course_lessons (id, module_number, lesson_number, title, status, total_questions, total_points)
 values
-  (1, 1, 1, 'Undo the Equation', 'active', 11, 15),
+  (1, 1, 1, 'Undo the Equation', 'active', 17, 29),
   (2, 1, 2, 'Inequalities Are Ranges', 'upcoming', 0, 0),
   (3, 1, 3, 'Lines Tell Stories', 'upcoming', 0, 0),
   (4, 1, 4, 'Slope, Intercepts, and Meaning', 'upcoming', 0, 0),

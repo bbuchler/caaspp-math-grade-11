@@ -46,15 +46,6 @@
       flex-wrap: wrap;
     }
 
-    .brand-logo {
-      width: 150px;
-      max-width: 42vw;
-      height: auto;
-      background: #fff;
-      border-radius: 6px;
-      padding: 8px;
-    }
-
     .course-header h1 {
       margin: 0;
       font-size: clamp(1.35rem, 3vw, 2.1rem);
@@ -104,6 +95,12 @@
     .teacher-nav a:hover,
     .teacher-nav button:hover {
       background: rgba(255,255,255,0.18);
+    }
+
+    .nav-user-name {
+      color: #d7e3ef;
+      font-weight: 800;
+      padding: 8px 4px;
     }
 
     .shell {
@@ -502,6 +499,10 @@
     .feedback.correct { background: #e8f7ee; color: var(--green); }
     .feedback.review { background: #fff8e6; color: #6c4a00; }
     .feedback.incorrect { background: #fff0ee; color: var(--red); }
+    .question.locked {
+      border-color: #bfd3e8;
+      background: #fbfdff;
+    }
 
     .actions {
       margin-top: 12px;
@@ -521,6 +522,11 @@
     }
 
     button.check:hover { background: #1c4585; }
+    button.check:disabled {
+      cursor: default;
+      opacity: 0.72;
+      background: #627d98;
+    }
 
     button.secondary {
       border: 1px solid var(--line);
@@ -850,40 +856,172 @@
       height: auto;
     }
 
+    .finish-card {
+      border: 1px solid #bfd3e8;
+      border-radius: 10px;
+      background: #f7fbff;
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .finish-card::after {
+      content: "🏁";
+      position: absolute;
+      right: 18px;
+      top: 12px;
+      font-size: 3.25rem;
+      opacity: 0.18;
+      pointer-events: none;
+    }
+
+    .finish-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      background: #e8f7ee;
+      color: var(--green);
+      font-weight: 900;
+      padding: 6px 10px;
+      margin-bottom: 10px;
+    }
+
+    .finish-title {
+      margin: 0 0 6px;
+      color: var(--primary);
+      font-size: 1.35rem;
+    }
+
+    .finish-summary {
+      margin-bottom: 14px;
+      color: #24476b;
+    }
+
+    .learned-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .learned-item {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 9px;
+      align-items: start;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 11px;
+      background: #fff;
+    }
+
+    .learned-check {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #e8f7ee;
+      color: var(--green);
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .learned-item strong {
+      display: block;
+      color: var(--teal);
+      margin-bottom: 3px;
+    }
+
+    .learned-item span {
+      color: #24476b;
+    }
+
+    .readiness-panel {
+      border-top: 1px solid #d7e6f4;
+      padding-top: 14px;
+      margin-top: 4px;
+    }
+
+    .readiness-panel h4 {
+      margin: 0 0 10px;
+      color: var(--primary);
+      font-size: 1rem;
+    }
+
+    .readiness-grid,
     .gate {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 10px;
     }
 
+    .readiness-tile,
     .gate div {
       border: 1px solid var(--line);
       border-radius: 8px;
       padding: 10px;
-      background: #fbfcfd;
+      background: #fff;
     }
 
+    .readiness-tile strong,
     .gate strong {
       display: block;
       color: var(--teal);
       margin-bottom: 3px;
     }
 
+    .readiness-tile.ready {
+      border-color: #b9e3c7;
+      background: #f6fff9;
+    }
+
+    .readiness-tile.practice {
+      border-color: #f3d48a;
+      background: #fffdf5;
+    }
+
+    .readiness-tile.bonus {
+      border-color: #b8d2ee;
+      background: #f7fbff;
+    }
+
     .challenge-box {
-      margin-top: 12px;
+      margin-top: 14px;
+      border: 1px solid #f3d48a;
+      border-radius: 8px;
+      background: #fffdf5;
+      padding: 12px;
+    }
+
+    .challenge-box p {
+      margin-bottom: 10px;
+      color: #503b0b;
+    }
+
+    .challenge-box strong {
+      color: #6c4a00;
     }
 
     .submit-box {
       margin-top: 14px;
-      border: 1px solid #bfd3e8;
+      border: 1px solid #b8d2ee;
       border-radius: 8px;
-      background: #f6fbff;
+      background: #edf6ff;
       padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
     .submit-box p {
-      margin-bottom: 10px;
+      margin: 0;
       color: #24476b;
+      flex: 1 1 260px;
     }
 
     .submit-status {
@@ -1133,6 +1271,11 @@
         grid-template-columns: 1fr;
       }
 
+      .learned-list,
+      .readiness-grid {
+        grid-template-columns: 1fr;
+      }
+
       .balance-scale {
         grid-template-columns: 1fr;
       }
@@ -1174,7 +1317,6 @@
   <header class="course-header">
     <div class="header-shell">
       <div class="brand-row">
-        <img class="brand-logo" src="assets/altus-logo.png" alt="Altus Schools">
         <div>
           <h1>CAASPP Math Success Academy</h1>
           <p>Week 1 preview: equations, inequalities, linear functions, slope/intercepts, and function notation.</p>
@@ -1184,6 +1326,7 @@
         <a href="teacher-dashboard.html">Gradebook</a>
         <a href="teacher-guide.html">Teacher Guide</a>
         <a href="preview.html">Course Home</a>
+        <span class="nav-user-name" id="preview-user-name"></span>
         <button id="preview-sign-out" type="button">Sign Out</button>
       </nav>
     </div>
@@ -1230,7 +1373,7 @@
   <script src="js/auth.js"></script>
   <script>
     const lessonIds = ["01", "02", "03", "04", "05"];
-    const COURSE_ASSET_VERSION = "2026-06-05-balance-lab";
+    const COURSE_ASSET_VERSION = "2026-06-05-exit-check-v2";
     const courseHome = {
       title: "CAASPP Math Success Academy",
       subtitle: "Build confidence with the math moves that show up again and again on CAASPP.",
@@ -1248,7 +1391,7 @@
         "Explain slope, intercepts, and function notation in context."
       ]
     };
-    const state = { lessons: [], active: null };
+    const state = { lessons: [], active: null, profile: null };
 
     const escapeHtml = (value) => String(value ?? "")
       .replaceAll("&", "&amp;")
@@ -1582,34 +1725,77 @@
       updateBalanceLab(labEl);
     }
 
+    function isExitCheckQuestion(question) {
+      return question.sectionType === "check";
+    }
+
+    function exitQuestionNeedsReview(question, result) {
+      if (!isExitCheckQuestion(question)) return Boolean(result.needsTeacherReview);
+      const maxScore = Number(result.maxScore || 0);
+      const score = Number(result.score || 0);
+      if (!maxScore) return Boolean(result.needsTeacherReview);
+      return Boolean(result.needsTeacherReview) || (score / maxScore) < 0.7;
+    }
+
+    function getSavedQuestionResponse(questionId) {
+      const key = "caasppMathPilotSubmissions";
+      const studentId = "pilot-student";
+      const lessonId = state.lessons[state.active]?.lessonId || "01";
+      const existing = JSON.parse(localStorage.getItem(key) || "{}");
+      return existing?.[studentId]?.lessons?.[lessonId]?.responses?.[questionId] || null;
+    }
+
+    function lockExitQuestion(card, result) {
+      if (!card) return;
+      card.classList.add("locked");
+      card.querySelectorAll("input, textarea").forEach((input) => {
+        input.disabled = true;
+      });
+      const button = card.querySelector("button.check");
+      if (button) {
+        button.disabled = true;
+        button.textContent = "Exit Check Submitted";
+      }
+      if (result) {
+        const feedback = card.querySelector(".feedback");
+        feedback.className = `feedback ${result.correct ? "correct" : "review"} show`;
+        feedback.textContent = `${result.score}/${result.maxScore}: ${result.feedback}`;
+      }
+    }
+
     function renderQuestion(question) {
       const id = escapeHtml(question.id);
+      const savedExitResponse = isExitCheckQuestion(question) ? getSavedQuestionResponse(question.id) : null;
+      const disabled = savedExitResponse ? " disabled" : "";
       let input = "";
       if (question.options) {
         input = question.options.map(option => `
           <label class="option">
-            <input type="radio" name="${id}" value="${escapeHtml(option.value)}">
+            <input type="radio" name="${id}" value="${escapeHtml(option.value)}"${savedExitResponse && String(savedExitResponse.answer) === String(option.value) ? " checked" : ""}${disabled}>
             <strong>${escapeHtml(option.value)}.</strong> ${escapeHtml(option.text)}
           </label>
         `).join("");
       } else if (question.type === "numeric") {
-        input = `<input type="number" data-answer="${escapeHtml(question.answer)}" aria-label="${id} answer">`;
+        input = `<input type="number" data-answer="${escapeHtml(question.answer)}" aria-label="${id} answer" value="${escapeHtml(savedExitResponse?.answer || "")}"${disabled}>`;
       } else if (question.type === "table_fill") {
-        input = `<input type="text" aria-label="${id} answer" placeholder="Example: 4, 7, 10">`;
+        input = `<input type="text" aria-label="${id} answer" placeholder="Example: 4, 7, 10" value="${escapeHtml(savedExitResponse?.answer || "")}"${disabled}>`;
       } else {
-        input = `<textarea aria-label="${id} answer" placeholder="Write your thinking here."></textarea>`;
+        input = `<textarea aria-label="${id} answer" placeholder="Write your thinking here."${disabled}>${escapeHtml(savedExitResponse?.answer || "")}</textarea>`;
       }
 
       const reviewText = question.grading === "ai_rubric"
         ? escapeHtml(question.feedback || "Write a complete answer that explains your reasoning.")
         : escapeHtml(question.feedback || "Answer submitted.");
+      const savedFeedback = savedExitResponse
+        ? `<div class="feedback ${savedExitResponse.correct ? "correct" : "review"} show" data-review="${escapeHtml(reviewText)}">${escapeHtml(`${savedExitResponse.score}/${savedExitResponse.maxScore}: ${savedExitResponse.feedback}`)}</div>`
+        : `<div class="feedback" data-review="${escapeHtml(reviewText)}"></div>`;
 
       return `
-        <div class="question" data-question='${escapeHtml(JSON.stringify(question))}'>
+        <div class="question ${savedExitResponse ? "locked" : ""}" data-question='${escapeHtml(JSON.stringify(question))}'>
           <p>${question.promptHtml || escapeHtml(question.prompt)}</p>
           ${input}
-          <div class="actions"><button class="check" type="button">Check Answer</button></div>
-          <div class="feedback" data-review="${escapeHtml(reviewText)}"></div>
+          <div class="actions"><button class="check" type="button"${disabled}>${savedExitResponse ? "Exit Check Submitted" : "Check Answer"}</button></div>
+          ${savedFeedback}
         </div>
       `;
     }
@@ -1618,14 +1804,14 @@
       const defaults = {
         "01": {
           done: [
-            "Explain what a coefficient means in an equation like 5x = 20.",
-            "Solve a two-step equation by undoing operations in the right order.",
-            "Check your solution by substituting it back into the original equation."
+            "Coefficient",
+            "Inverse operation",
+            "Check a solution"
           ],
           retry: [
-            "Try x + 9 = 17. Write the inverse operation you used.",
-            "Try 3x - 4 = 20. Write the inverse operation you used first.",
-            "Check one answer by substituting it back into the original equation."
+            "ask your teacher for a short review problem",
+            "redo the practice section before the exit check",
+            "use Study Buddy to talk through the first undo step"
           ],
           challenge: "A club has $12 saved and earns $3 for each snack box sold. They need $30 total. Write an equation, solve it, and explain what your answer means in the situation."
         },
@@ -1659,24 +1845,48 @@
         <section class="section-card">
           <header><h3>Finish Line</h3></header>
           <div class="section-body">
-            <p>Before moving on, make sure you understand the core Lesson ${escapeHtml(lesson.lessonId)} skill:</p>
-            <ol class="steps">${next.done.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ol>
-            <div class="gate">
-              <div><strong>Ready</strong>Score 70% or higher on the exit check and explain your steps clearly.</div>
-              <div><strong>Need More Practice</strong>${next.retry.map((item) => escapeHtml(item)).join(" ")}</div>
+            <div class="finish-card">
+              <div class="finish-badge">🏁 Lesson ${escapeHtml(lesson.lessonId)} Finish</div>
+              <h3 class="finish-title">Congratulations. You completed Lesson ${escapeHtml(lesson.lessonId)}: ${escapeHtml(lesson.title)}.</h3>
+              <p class="finish-summary">You can now undo an equation one move at a time, keep both sides balanced, and check whether your answer actually works.</p>
+              <div class="learned-list" aria-label="What you learned">
+                ${next.done.map((item) => `
+                  <div class="learned-item">
+                    <span class="learned-check" aria-hidden="true">✓</span>
+                    <div><strong>${escapeHtml(item)}</strong><span>${escapeHtml(masteryDescription(item))}</span></div>
+                  </div>
+                `).join("")}
+              </div>
+              <div class="readiness-panel">
+                <h4>Are you ready for the next lesson?</h4>
+                <div class="readiness-grid">
+                  <div class="readiness-tile ready"><strong>Ready</strong>If you scored 70% or higher on the exit check and your steps make sense, submit your lesson.</div>
+                  <div class="readiness-tile practice"><strong>Need more practice?</strong>If the exit check felt shaky, see your teacher for a quick review or retry the practice questions first.</div>
+                  <div class="readiness-tile bonus"><strong>Want a bonus?</strong>Try the challenge below. It is optional, but it shows you can use the skill in a new situation.</div>
+                </div>
+              </div>
             </div>
             <div class="challenge-box">
-              <p><strong>Extra Challenge:</strong> ${escapeHtml(next.challenge)}</p>
-              <textarea id="finish-challenge-answer" placeholder="Write your challenge answer here."></textarea>
+              <p><strong>Bonus Challenge:</strong> ${escapeHtml(next.challenge)}</p>
+              <textarea id="finish-challenge-answer" placeholder="Example: 12 + 3x = 30, so x = ..."></textarea>
             </div>
             <div class="submit-box">
-              <p>When you are done, click Submit Lesson. Your checked answers are saved as you go, and this saves your final challenge response for your teacher.</p>
+              <p>When you are done, submit the lesson. Your checked answers are saved, and your challenge response will go to your teacher if you wrote one.</p>
               <button class="submit-lesson" type="button">Submit Lesson</button>
               <div class="submit-status" id="submit-status"></div>
             </div>
           </div>
         </section>
       `;
+    }
+
+    function masteryDescription(term) {
+      const descriptions = {
+        "Coefficient": "You know it is the number multiplying the variable.",
+        "Inverse operation": "You can choose the move that undoes the operation.",
+        "Check a solution": "You can plug your answer back in and see if the equation is true."
+      };
+      return descriptions[term] || "You can explain the main idea in your own words.";
     }
 
     document.addEventListener("click", (event) => {
@@ -1709,28 +1919,34 @@
         feedback.textContent = "Checking with AI feedback...";
         gradeWithAi(question, answer)
           .then((result) => {
-          feedback.className = `feedback ${result.correct ? "correct" : "review"} show`;
-          feedback.textContent = `${result.score}/${result.maxScore}: ${result.feedback}`;
-            savePilotSubmission(question, answer, {
+            const savedResult = {
               score: result.score,
               maxScore: result.maxScore,
               feedback: result.feedback,
               correct: result.correct,
               confidence: result.confidence,
-              needsTeacherReview: result.needsTeacherReview
+              needsTeacherReview: exitQuestionNeedsReview(question, result)
+            };
+            feedback.className = `feedback ${result.correct ? "correct" : "review"} show`;
+            feedback.textContent = `${result.score}/${result.maxScore}: ${result.feedback}`;
+            savePilotSubmission(question, answer, {
+              ...savedResult
             });
+            if (isExitCheckQuestion(question)) lockExitQuestion(card, savedResult);
           })
           .catch(() => {
-            feedback.className = "feedback review show";
-            feedback.textContent = "AI feedback could not run from this link right now. Your answer is saved for teacher review.";
-            savePilotSubmission(question, answer, {
+            const savedResult = {
               score: 0,
               maxScore: Number(question.maxPoints || 3),
-              feedback: feedback.textContent,
+              feedback: "AI feedback could not run from this link right now. Your answer is saved for teacher review.",
               correct: false,
               confidence: 0,
               needsTeacherReview: true
-            });
+            };
+            feedback.className = "feedback review show";
+            feedback.textContent = savedResult.feedback;
+            savePilotSubmission(question, answer, savedResult);
+            if (isExitCheckQuestion(question)) lockExitQuestion(card, savedResult);
           });
         return;
       }
@@ -1750,14 +1966,16 @@
         : isPractice
           ? practiceRetryFeedback(question)
           : `Check this answer: ${expected}. ${question.feedback || ""}`;
-      savePilotSubmission(question, answer, {
+      const savedResult = {
         score: correct ? 1 : 0,
         maxScore: 1,
         feedback: feedback.textContent,
         correct,
         confidence: 1,
-        needsTeacherReview: false
-      });
+        needsTeacherReview: isExitCheckQuestion(question) && !correct
+      };
+      savePilotSubmission(question, answer, savedResult);
+      if (isExitCheckQuestion(question)) lockExitQuestion(card, savedResult);
     });
 
     document.addEventListener("dragstart", (event) => {
@@ -1839,7 +2057,16 @@
       return normalizedAnswer === normalizedExpected;
     }
 
+    function isTeacherPreview() {
+      return ["admin", "staff", "teacher"].includes(state.profile?.role);
+    }
+
+    function canSaveStudentWork() {
+      return !isTeacherPreview();
+    }
+
     function savePilotSubmission(question, answer, result) {
+      if (!canSaveStudentWork()) return;
       const key = "caasppMathPilotSubmissions";
       const now = new Date().toISOString();
       const existing = JSON.parse(localStorage.getItem(key) || "{}");
@@ -1883,53 +2110,52 @@
       const answer = document.getElementById("finish-challenge-answer")?.value.trim() || "";
 
       if (!lesson || !status || !button) return;
-      if (!answer) {
-        status.className = "submit-status show";
-        status.style.color = "var(--red)";
-        status.textContent = "Write a challenge response first, then submit the lesson.";
-        return;
-      }
-
       button.disabled = true;
       status.className = "submit-status show";
       status.style.color = "#24476b";
-      status.textContent = "Saving your lesson...";
+      status.textContent = isTeacherPreview() ? "Preview checked. Nothing was saved to the gradebook." : "Saving your lesson...";
 
-      const challengeQuestion = {
-        id: `l${lesson.lessonId}-finish-challenge`,
-        type: "short_answer",
-        prompt: lessonNextSteps(lesson).challenge,
-        grading: "teacher_override",
-        sectionId: "finish_line",
-        sectionTitle: "Finish Line"
-      };
-
-      savePilotSubmission(challengeQuestion, answer, {
-        score: 0,
-        maxScore: 0,
-        feedback: "Submitted for teacher review.",
-        correct: true,
-        confidence: 1,
-        needsTeacherReview: true
-      });
-
-      const key = "caasppMathPilotSubmissions";
-      const existing = JSON.parse(localStorage.getItem(key) || "{}");
       const studentId = "pilot-student";
       const lessonId = lesson.lessonId || "01";
-      existing[studentId] = existing[studentId] || { studentId, studentName: "Test Student", lessons: {} };
-      existing[studentId].lessons[lessonId] = existing[studentId].lessons[lessonId] || { lessonId, responses: {} };
-      existing[studentId].lessons[lessonId].status = "submitted";
-      existing[studentId].lessons[lessonId].submittedAt = new Date().toISOString();
-      localStorage.setItem(key, JSON.stringify(existing));
+      if (canSaveStudentWork()) {
+        if (answer) {
+          const challengeQuestion = {
+            id: `l${lesson.lessonId}-finish-challenge`,
+            type: "short_answer",
+            prompt: lessonNextSteps(lesson).challenge,
+            grading: "teacher_override",
+            sectionId: "finish_line",
+            sectionTitle: "Finish Line"
+          };
 
-      if (window.CourseData) {
-        await window.CourseData.submitLessonAttempt(lessonId).catch(() => null);
+          savePilotSubmission(challengeQuestion, answer, {
+            score: 0,
+            maxScore: 0,
+            feedback: "Submitted for teacher review.",
+            correct: true,
+            confidence: 1,
+            needsTeacherReview: true
+          });
+        }
+
+        const key = "caasppMathPilotSubmissions";
+        const existing = JSON.parse(localStorage.getItem(key) || "{}");
+        existing[studentId] = existing[studentId] || { studentId, studentName: "Test Student", lessons: {} };
+        existing[studentId].lessons[lessonId] = existing[studentId].lessons[lessonId] || { lessonId, responses: {} };
+        existing[studentId].lessons[lessonId].status = "submitted";
+        existing[studentId].lessons[lessonId].submittedAt = new Date().toISOString();
+        localStorage.setItem(key, JSON.stringify(existing));
+
+        if (window.CourseData) {
+          await window.CourseData.submitLessonAttempt(lessonId).catch(() => null);
+        }
       }
 
       status.style.color = "var(--green)";
-      status.textContent = "Lesson submitted. Your teacher can now review your work sample.";
-      button.textContent = "Submitted";
+      status.textContent = isTeacherPreview()
+        ? "Preview complete. Teacher clicks were not saved."
+        : "Lesson submitted. Your teacher can now review your work sample.";
+      button.textContent = isTeacherPreview() ? "Preview Complete" : "Submitted";
     }
 
     function ensurePilotAccount() {
@@ -2179,16 +2405,26 @@
     async function setupCourseNav() {
       const nav = document.getElementById("course-nav");
       const profile = window.CAASPPAuth ? await CAASPPAuth.getProfile() : null;
+      state.profile = profile;
       if (!profile) return;
+      const displayName = profile.full_name || profile.username || profile.email || "";
       if (profile.role === "student") {
         nav.innerHTML = `
-          <a href="student-dashboard.html">Student Dashboard</a>
+          <a href="student-dashboard.html">Dashboard</a>
+          <span class="nav-user-name">Signed in as ${escapeHtml(displayName)}</span>
+          <button id="preview-sign-out" type="button">Sign Out</button>
+        `;
+      } else {
+        nav.innerHTML = `
+          <a href="teacher-dashboard.html">Gradebook</a>
+          <a href="teacher-guide.html">Teacher Guide</a>
           <a href="preview.html">Course Home</a>
+          <span class="nav-user-name">Signed in as ${escapeHtml(displayName)}</span>
           <button id="preview-sign-out" type="button">Sign Out</button>
         `;
       }
       nav.classList.add("visible");
-      document.getElementById("preview-sign-out").addEventListener("click", () => {
+      document.getElementById("preview-sign-out")?.addEventListener("click", () => {
         if (window.CAASPPAuth) CAASPPAuth.signOut();
         else window.location.href = "index.html";
       });

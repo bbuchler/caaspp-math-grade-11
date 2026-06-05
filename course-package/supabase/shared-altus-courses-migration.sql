@@ -93,7 +93,7 @@ on conflict (course_id, concept_tag) do update set
 
 insert into public.course_lessons (course_id, lesson_number, module_number, title, status, total_questions, total_points)
 values
-  ('caaspp-math-11', 1, 1, 'Undo the Equation', 'active', 11, 15),
+  ('caaspp-math-11', 1, 1, 'Undo the Equation', 'active', 17, 29),
   ('caaspp-math-11', 2, 1, 'Inequalities Are Ranges', 'upcoming', 0, 0),
   ('caaspp-math-11', 3, 1, 'Lines Tell Stories', 'upcoming', 0, 0),
   ('caaspp-math-11', 4, 1, 'Slope, Intercepts, and Meaning', 'upcoming', 0, 0),

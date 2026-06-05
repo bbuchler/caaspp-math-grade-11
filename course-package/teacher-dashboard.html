@@ -63,14 +63,6 @@
       gap: 14px;
     }
 
-    .header-logo {
-      width: 128px;
-      max-width: 38vw;
-      background: var(--white);
-      border-radius: 6px;
-      padding: 7px;
-    }
-
     h1, h2, h3, p { margin-top: 0; }
     h1 { margin: 0; font-size: clamp(1.25rem, 3vw, 1.8rem); letter-spacing: 0; }
     h2 { margin-bottom: 4px; color: var(--primary); font-size: 1.45rem; }
@@ -229,6 +221,7 @@
     .status-not-started { background: #eef3f7; color: var(--muted); }
     .status-progress { background: #fff8e6; color: var(--orange); }
     .status-complete { background: #e8f7ee; color: var(--green); }
+    .status-review { background: #fff0ee; color: var(--red); }
     .score-high { color: var(--green); }
     .score-mid { color: var(--orange); }
     .score-low { color: var(--red); }
@@ -407,7 +400,6 @@
   <header class="site-header">
     <div class="page-wrapper">
       <div class="brand">
-        <img src="assets/altus-logo.png" alt="Altus Schools" class="header-logo">
         <div>
           <h1>CAASPP Math - Gradebook</h1>
           <p class="header-subtitle">20-lesson CAASPP Math course gradebook</p>
@@ -599,7 +591,7 @@
       { id: "video", label: "Video Questions", questionIds: ["l1-vq1", "l1-vq2", "l1-vq3", "l1-vq4"] },
       { id: "real_world", label: "Real World", questionIds: ["l1-rw1", "l1-rw2", "l1-rw3"] },
       { id: "practice", label: "Practice", questionIds: ["l1-p1", "l1-p2", "l1-p3"] },
-      { id: "check", label: "Exit Check", questionIds: ["w1-l1-q1", "w1-l1-q2", "w1-l1-q3"] }
+      { id: "check", label: "Exit Check", questionIds: ["w1-l1-q1", "w1-l1-q2", "w1-l1-q3", "w1-l1-q4", "w1-l1-q5"] }
     ];
 
     const courseLessons = Array.from({ length: 20 }, (_, index) => {
@@ -669,18 +661,24 @@
       const answered = items.length;
       const score = items.reduce((sum, item) => sum + Number(item.score || 0), 0);
       const maxScore = items.reduce((sum, item) => sum + Number(item.maxScore || 1), 0);
-      return { answered, expected: section.questionIds.length, score, maxScore };
+      const percent = maxScore ? score / maxScore : 1;
+      const needsTeacherReview = items.some((item) => item.needsTeacherReview);
+      const exitNeedsReview = section.id === "check" && answered >= section.questionIds.length && percent < 0.7;
+      return { answered, expected: section.questionIds.length, score, maxScore, needsTeacherReview, exitNeedsReview };
     }
 
     function lessonStats(studentSubmission) {
       const sections = lessonOneSections.map((section) => sectionStats(studentSubmission, section));
+      const exitSection = sections[lessonOneSections.findIndex((section) => section.id === "check")];
       const answered = sections.reduce((sum, section) => sum + section.answered, 0);
       const expected = sections.reduce((sum, section) => sum + section.expected, 0);
       const score = sections.reduce((sum, section) => sum + section.score, 0);
       const maxScore = sections.reduce((sum, section) => sum + section.maxScore, 0);
       const percent = maxScore ? Math.round((score / maxScore) * 100) : null;
+      const needsTeacherReview = sections.some((section) => section.needsTeacherReview);
+      const exitNeedsReview = Boolean(exitSection?.exitNeedsReview);
       const updatedAt = studentSubmission?.lessons?.["01"]?.updatedAt || "";
-      return { answered, expected, score, maxScore, percent, updatedAt };
+      return { answered, expected, score, maxScore, percent, needsTeacherReview, exitNeedsReview, updatedAt };
     }
 
     function scoreClass(percent) {
@@ -692,6 +690,8 @@
 
     function statusMarkup(stats) {
       if (!stats.answered) return `<span class="status-pill status-not-started">Not Started</span>`;
+      if (stats.exitNeedsReview) return `<span class="status-pill status-review">Exit Review</span>`;
+      if (stats.needsTeacherReview) return `<span class="status-pill status-review">Review</span>`;
       if (stats.answered < stats.expected) return `<span class="status-pill status-progress">In Progress</span>`;
       return `<span class="status-pill status-complete">Complete</span>`;
     }
@@ -743,7 +743,8 @@
         item.student_id === studentId && Number(item.lesson_number) === Number(lessonNumber)
       );
       if (!row || row.attempt_status === "not_started") {
-        return { answered: 0, expected: 11, score: 0, maxScore: 0, percent: null, updatedAt: "" };
+        const expected = lessonOneSections.reduce((sum, section) => sum + section.questionIds.length, 0);
+        return { answered: 0, expected, score: 0, maxScore: 0, percent: null, needsTeacherReview: false, exitNeedsReview: false, updatedAt: "" };
       }
       return {
         answered: Number(row.score || 0) || 1,
@@ -751,6 +752,8 @@
         score: Number(row.score || 0),
         maxScore: Number(row.max_score || 0),
         percent: Math.round(Number(row.percent || 0)),
+        needsTeacherReview: Boolean(row.needs_teacher_review),
+        exitNeedsReview: false,
         updatedAt: row.last_activity || ""
       };
     }
@@ -885,6 +888,20 @@
             <p>Use the top missed concept to create a short review group and assign a scaffolded retry.</p>
           </div>
         `;
+        return;
+      }
+
+      if (remoteDataLoaded) {
+        const flagged = (remoteGradebookRows || []).filter((row) => row.needs_teacher_review);
+        document.getElementById("ai-insights").innerHTML = flagged.length
+          ? flagged.slice(0, 4).map((row) => `
+              <div class="queue-item">
+                <strong>${escapeHtml(row.full_name || "Student")} - Lesson ${Number(row.lesson_number || 1)}</strong>
+                <p>Exit check or AI-scored work needs teacher review. Open the work sample to see the exact questions and feedback.</p>
+                <a class="btn btn-primary btn-small" href="teacher-student.html?student=${encodeURIComponent(row.student_id)}&lesson=${String(row.lesson_number || 1).padStart(2, "0")}">Review Work</a>
+              </div>
+            `).join("")
+          : `<p class="empty-panel">No flagged Lesson 1 responses right now.</p>`;
         return;
       }
 

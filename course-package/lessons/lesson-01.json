@@ -256,32 +256,50 @@
         {
           "id": "w1-l1-q1",
           "type": "numeric",
-          "prompt": "Solve: 4x + 3 = 23",
-          "answer": 5,
+          "prompt": "Solve: x + 6 = 14",
+          "answer": 8,
           "grading": "deterministic",
-          "feedback": "Subtract 3, then divide by 4."
+          "feedback": "Subtract 6 from both sides: x = 8."
         },
         {
           "id": "w1-l1-q2",
           "type": "multiple_choice",
-          "prompt": "Which first step correctly solves 7x - 10 = 39?",
+          "prompt": "Which first step correctly solves 4x + 5 = 21?",
           "options": [
-            {"value": "A", "text": "Subtract 10 from both sides."},
-            {"value": "B", "text": "Add 10 to both sides."},
-            {"value": "C", "text": "Divide both sides by 10."},
-            {"value": "D", "text": "Multiply both sides by 7."}
+            {"value": "A", "text": "Subtract 5 from both sides."},
+            {"value": "B", "text": "Add 5 to both sides."},
+            {"value": "C", "text": "Divide both sides by 5 first."},
+            {"value": "D", "text": "Multiply both sides by 4."}
           ],
-          "answer": "B",
+          "answer": "A",
           "grading": "deterministic",
-          "feedback": "The equation has -10, so add 10 to undo it."
+          "feedback": "Undo the +5 first by subtracting 5 from both sides."
         },
         {
           "id": "w1-l1-q3",
+          "type": "numeric",
+          "prompt": "Solve: 3x = 18",
+          "answer": 6,
+          "grading": "deterministic",
+          "feedback": "Divide both sides by 3: x = 6."
+        },
+        {
+          "id": "w1-l1-q4",
+          "type": "numeric",
+          "prompt": "Solve: 2x + 7 = 19",
+          "answer": 6,
+          "grading": "deterministic",
+          "feedback": "Subtract 7 from both sides to get 2x = 12, then divide by 2."
+        },
+        {
+          "id": "w1-l1-q5",
           "type": "short_answer",
-          "prompt": "Explain why checking your solution is worth the extra ten seconds.",
+          "prompt": "How do you check your solution after solving an equation?",
           "grading": "ai_rubric",
           "rubricId": "math-explanation-3",
-          "feedback": "A strong answer says checking proves the value makes the original equation true."
+          "expectedElements": ["substitute the answer back into the original equation", "simplify both sides", "make sure the equation is true"],
+          "commonMisconceptions": ["only redo the same steps", "check by looking at the answer", "plug the answer into the simplified equation only"],
+          "feedback": "A strong answer says to substitute the value back into the original equation and make sure both sides are equal."
         }
       ]
     }

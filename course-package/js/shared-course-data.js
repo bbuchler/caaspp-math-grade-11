@@ -123,7 +123,7 @@
   async function updateLessonAttempt(studentId, lessonNumber, statusOverride = null) {
     const { data, error } = await window.supabase
       .from("course_question_responses")
-      .select("score,max_score,needs_teacher_review")
+      .select("score,max_score,needs_teacher_review,section_id")
       .eq("course_id", COURSE_ID)
       .eq("student_id", studentId)
       .eq("lesson_number", lessonNumber);
@@ -133,7 +133,12 @@
     const score = data.reduce((sum, item) => sum + Number(item.score || 0), 0);
     const maxScore = data.reduce((sum, item) => sum + Number(item.max_score || 0), 0);
     const percent = maxScore ? Math.round((score / maxScore) * 10000) / 100 : 0;
-    const needsTeacherReview = data.some((item) => item.needs_teacher_review);
+    const exitItems = data.filter((item) => item.section_id === "check");
+    const exitScore = exitItems.reduce((sum, item) => sum + Number(item.score || 0), 0);
+    const exitMaxScore = exitItems.reduce((sum, item) => sum + Number(item.max_score || 0), 0);
+    const exitPercent = exitMaxScore ? exitScore / exitMaxScore : 1;
+    const exitNeedsReview = exitItems.length >= 5 && exitPercent < 0.7;
+    const needsTeacherReview = data.some((item) => item.needs_teacher_review) || exitNeedsReview;
     const status = statusOverride || (data.length ? "in_progress" : "not_started");
     const submittedAt = status === "submitted" ? new Date().toISOString() : null;
 
