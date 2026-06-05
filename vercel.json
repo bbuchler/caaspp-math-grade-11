@@ -1,9 +1,11 @@
 {
+  "redirects": [
+    { "source": "/", "destination": "/course-package/index.html", "permanent": false },
+    { "source": "/login", "destination": "/course-package/index.html", "permanent": false },
+    { "source": "/dashboard", "destination": "/course-package/teacher-dashboard.html", "permanent": false },
+    { "source": "/preview", "destination": "/course-package/preview.html", "permanent": false }
+  ],
   "rewrites": [
-    { "source": "/", "destination": "/course-package/index.html" },
-    { "source": "/login", "destination": "/course-package/index.html" },
-    { "source": "/dashboard", "destination": "/course-package/teacher-dashboard.html" },
-    { "source": "/preview", "destination": "/course-package/preview.html" },
     { "source": "/(.*)", "destination": "/$1" }
   ],
   "headers": [
