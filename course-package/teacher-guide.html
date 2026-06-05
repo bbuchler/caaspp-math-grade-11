@@ -82,6 +82,11 @@
       color: var(--white);
       border: 1px solid rgba(255,255,255,0.24);
     }
+    .header-nav-link.primary-link {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #101820;
+    }
     main.page-wrapper {
       padding-top: 24px;
       padding-bottom: 42px;
@@ -99,12 +104,27 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 14px;
     }
+    .grid-three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
     ul, ol { padding-left: 22px; }
     li { margin-bottom: 7px; }
     .muted { color: var(--muted); }
+    .section-label {
+      margin-bottom: 8px;
+      color: #00756f;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+    }
+    .feature-list strong,
+    .panel p strong {
+      color: var(--primary);
+    }
     @media (max-width: 760px) {
       .site-header { position: static; }
-      .grid { grid-template-columns: 1fr; }
+      .grid,
+      .grid-three { grid-template-columns: 1fr; }
       .header-right, .header-nav-link { width: 100%; }
     }
   </style>
@@ -116,7 +136,7 @@
         <h1>CAASPP Math - Teacher Guide</h1>
       </div>
       <div class="header-right">
-        <a href="teacher-dashboard.html" class="header-nav-link">Gradebook</a>
+        <a href="teacher-dashboard.html" class="header-nav-link primary-link">Gradebook</a>
         <a href="preview.html" class="header-nav-link">Student Course View</a>
         <button class="header-nav-link" type="button" id="btn-logout">Sign Out</button>
       </div>
@@ -125,56 +145,64 @@
 
   <main class="page-wrapper">
     <section class="panel">
-      <h2>How This Pilot Works</h2>
-      <p>Module 1 starts with Lesson 1 fully built so we can test the student experience, grading, work samples, and teacher follow-up before building the other 19 lessons. Lessons 2-20 are visible in the gradebook to show the course shape, but only Lesson 1 is active for this first review.</p>
+      <div class="section-label">Course Overview</div>
+      <h2>What Students Are Working Toward</h2>
+      <p>This course gives 11th grade students targeted practice with the math skills that show up repeatedly on CAASPP: equations, inequalities, linear relationships, slope/intercepts, function notation, modeling, and explaining mathematical reasoning. The course is organized into <strong>20 lessons across four modules</strong>, with each module building from direct skill practice into real-world application.</p>
+      <p><strong>Teacher takeaway:</strong> students are not just clicking through problems. They are watching, explaining, practicing, checking, and applying math in a way that produces work samples teachers can review.</p>
     </section>
 
-    <section class="grid">
+    <section class="grid grid-three">
       <div class="panel">
-        <h2>Lesson Structure</h2>
-        <ol>
-          <li>Overview video and short reflection.</li>
-          <li>Lesson vocabulary for the math terms students will use.</li>
-          <li>Quick start question to check the main idea.</li>
-          <li>Video questions, worked examples, infographic, and hands-on practice.</li>
-          <li>Real-world problem with an image so the math has a concrete setting.</li>
-          <li>Practice questions students can update as they learn.</li>
-          <li>Exit check, finish line, optional bonus, and final lesson submit.</li>
-        </ol>
+        <h2>Student Lesson Flow</h2>
+        <ul class="feature-list">
+          <li><strong>Overview video:</strong> starts the lesson with the big idea.</li>
+          <li><strong>Lesson vocabulary:</strong> previews key math terms before students use them.</li>
+          <li><strong>Quick start:</strong> checks the core concept with a simple, low-pressure question.</li>
+          <li><strong>Video questions:</strong> students answer while watching so the video is active, not passive.</li>
+          <li><strong>Real-world task:</strong> students solve a scenario with supporting imagery.</li>
+        </ul>
       </div>
       <div class="panel">
-        <h2>Grading Rules</h2>
-        <ul>
-          <li>Practice questions save as students go and can be updated.</li>
-          <li>Exit check questions are one attempt because they are the final evidence.</li>
-          <li>A lesson can still pass overall if the total score is 70% or higher.</li>
-          <li>A low exit check should still flag the student for teacher follow-up.</li>
-          <li>Teachers can open the work sample, override individual scores, and regrade individual AI responses.</li>
+        <h2>Visual And Hands-On Supports</h2>
+        <ul class="feature-list">
+          <li><strong>Infographics:</strong> show the main math idea in a visual form students can scan.</li>
+          <li><strong>Kinesthetic practice:</strong> hands-on tasks, such as the balance/undo board, ask students to choose and move the inverse operation instead of only reading steps.</li>
+          <li><strong>Worked examples:</strong> model the process, common mistakes, and how to check an answer.</li>
+          <li><strong>Reading/Lexile support:</strong> explanations should be written accessibly, with room for simpler or more advanced wording when students need the same math at a different reading level.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h2>Practice And Extension</h2>
+        <ul class="feature-list">
+          <li><strong>Retryable practice:</strong> students can update practice answers as they learn.</li>
+          <li><strong>Exit check:</strong> final lesson evidence is one attempt and should show whether the core skill stuck.</li>
+          <li><strong>Finish line:</strong> students see what they learned and whether they are ready to move on.</li>
+          <li><strong>Extension activities:</strong> optional bonus problems push students into a slightly harder or more creative version of the skill.</li>
         </ul>
       </div>
     </section>
 
     <section class="panel">
-      <h2>AI Support</h2>
-      <p>The Study Buddy should use the current lesson, visible page context, student answer, answer key, and rubric so it can help with the exact concept on screen. AI grading should give partial credit and feedback for written math explanations, while objective items still use deterministic checks when possible.</p>
-      <p class="muted">The teacher insight area should come from saved student responses. For now it flags students who need review. Once more students use the course, it can summarize trends, suggest small groups, and point to remediation lessons.</p>
+      <div class="section-label">Grading</div>
+      <h2>How Scores And Work Samples Work</h2>
+      <p><strong>Practice questions save as students go</strong>, so a student can leave midway through a lesson and return later. Practice items can be updated, and the newest answer replaces the previous score.</p>
+      <p><strong>Exit check questions are one attempt</strong> because they are the lesson's final evidence. A student can pass the lesson with an overall score of 70% or higher, but a low exit check still flags the student for teacher follow-up.</p>
+      <p><strong>Teacher work samples</strong> show the student name, course, lesson number/title, last activity, total score, percent, follow-up status, answers, feedback, and teacher override controls. Teachers can override individual scores and regrade individual AI-scored responses when needed.</p>
     </section>
 
     <section class="panel">
-      <h2>Teacher Flow</h2>
-      <ol>
-        <li>Open the gradebook.</li>
-        <li>Add a test student or teacher account.</li>
-        <li>Click Lesson 1 in the gradebook to preview the lesson or open a student's work sample.</li>
-        <li>Have the test student complete Lesson 1.</li>
-        <li>Check the Lesson 1 breakdown, work sample, and AI insights for exit-check follow-up.</li>
-      </ol>
+      <div class="section-label">AI Support</div>
+      <h2>Study Buddy And Teacher Insights</h2>
+      <p><strong>Study Buddy:</strong> the student-facing AI helper should use the current lesson, visible page context, student answer, answer key, and rubric so it can help with the exact math on screen.</p>
+      <p><strong>AI grading:</strong> written explanations receive partial credit and feedback. Objective math items still use deterministic checks when possible, because exact answers should not depend on a language model.</p>
+      <p><strong>Teacher insights:</strong> the dashboard flags students who need follow-up and summarizes class patterns from saved responses. Over time, this can support small groups, remediation lessons, and targeted review before the next module.</p>
     </section>
 
     <section class="panel">
-      <h2>How This Scales</h2>
-      <p>The gradebook is meant to handle a full class by showing one row per student and one column per lesson. With 20 lessons and 30 students, teachers should use the module tabs to narrow the view, then click a lesson score to open that student's work sample.</p>
-      <p>The detailed section breakdown should show only the selected active lesson, not all 20 lessons at once. For this pilot, the active detail panel is Lesson 1. After Lesson 1 is approved, each new lesson should reuse the same data structure so the dashboard can switch the detail panel to Lesson 2, Lesson 3, and so on.</p>
+      <div class="section-label">Teacher Workflow</div>
+      <h2>Using The Gradebook</h2>
+      <p>The gradebook shows <strong>one row per student</strong> and <strong>one column per lesson</strong>. Teachers can filter by module, click a lesson score to open the work sample, reset passwords from student rows, print work samples, and export scores.</p>
+      <p>The detail panel focuses on the selected lesson rather than trying to show every section from all 20 lessons at once. That keeps the dashboard usable for a full class while still making individual lesson evidence easy to inspect.</p>
     </section>
   </main>
 
