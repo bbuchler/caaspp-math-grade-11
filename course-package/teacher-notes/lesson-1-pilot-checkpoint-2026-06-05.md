@@ -81,7 +81,7 @@ Default pacing: **60 minutes** unless Baptiste asks for a different target.
 - Use one `Add Account` button with a role selector. Do not add a separate `Add Teacher` panel unless it has real teacher-management value.
 - For scale, keep the top gradebook as a 20-lesson grid. The detailed section table should be an `Active Lesson Detail` panel for the selected lesson, not a breakdown of every lesson at once.
 - The teacher insight panel should be named/actionable: `Follow-Up And Class Patterns`. It should first show students needing follow-up, then early class patterns from saved responses.
-- Work samples need the student name, course name, lesson number/title, last activity, and a grade line like `24/32 - 75% - Needs Follow-Up`.
+- Work samples need the student name, course name, lesson number/title, last activity, and a clean grade line like `24/32 - 75% - C`. Follow-up flags belong on the dashboard, not in the printable grade line.
 - If a student passes overall but has a weak exit check, keep the lesson score visible and still flag teacher follow-up.
 - Dashboard insights should answer only three teacher questions: who needs follow-up, what pattern is emerging, and what the teacher should do next. Do not show "class trends" from a single student as if that is a real pattern.
 - For multi-teacher or multi-location use, add real class/section scoping before launch. The data model should support class sections, teacher memberships, student memberships, location/site labels, and admin-level aggregation across sections.

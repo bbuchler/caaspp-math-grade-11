@@ -493,6 +493,7 @@
         <p>Click a lesson score to open that student's work sample. Lesson 1 is active; Lessons 2-20 are placeholders until we build them.</p>
       </div>
       <div class="teacher-controls">
+        <button class="btn btn-secondary" type="button" data-open-modal="modal-add-class">+ Add Class</button>
         <button class="btn btn-accent" type="button" data-open-modal="modal-add-account">+ Add Account</button>
         <button class="btn btn-secondary" type="button" id="btn-export">Export CSV</button>
         <button class="btn btn-secondary" type="button" onclick="window.print()">Print</button>
@@ -520,7 +521,7 @@
         Teacher
         <select id="teacher-filter"></select>
       </label>
-      <p class="filter-note" id="class-filter-note">Class filters activate after the class-section SQL is installed and students are assigned.</p>
+      <p class="filter-note" id="class-filter-note">Use classes to separate rosters by teacher, section, or site.</p>
     </div>
 
     <div class="gradebook-table-wrapper">
@@ -605,7 +606,7 @@
         <div class="form-row" id="account-class-row">
           <label for="account-class-section">Class section <span class="muted">(optional)</span></label>
           <select id="account-class-section"></select>
-          <small class="field-note">Assigns the account to a class section when class-section setup is installed.</small>
+          <small class="field-note">Assign this account to a class section. Teachers assigned to a class can view that roster.</small>
         </div>
         <div class="welcome-panel" id="account-success-panel">
           <strong id="account-success-title">Account created</strong>
@@ -620,6 +621,34 @@
       <div class="modal-footer">
         <button class="btn btn-secondary" type="button" data-close-modal>Cancel</button>
         <button class="btn btn-primary" type="button" id="btn-create-account">Create Account</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-add-class">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Class</h3>
+        <button class="btn btn-secondary btn-small" type="button" data-close-modal>Close</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <label for="class-name">Class name</label>
+          <input id="class-name" type="text" placeholder="Example: Period 3 Math Prep" autocomplete="off">
+        </div>
+        <div class="form-row">
+          <label for="class-location">Location <span class="muted">(optional)</span></label>
+          <input id="class-location" type="text" placeholder="Example: San Diego / Room 204" autocomplete="off">
+        </div>
+        <div class="form-row">
+          <label for="class-term">Term <span class="muted">(optional)</span></label>
+          <input id="class-term" type="text" placeholder="Example: Spring 2026" autocomplete="off">
+        </div>
+        <p class="field-note">The teacher who creates the class is assigned to it automatically. Students and co-teachers can be added with Add Account.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-close-modal>Cancel</button>
+        <button class="btn btn-primary" type="button" id="btn-create-class">Create Class</button>
       </div>
     </div>
   </div>
@@ -680,6 +709,7 @@
     let studentSearchQuery = "";
     let activeClassFilter = "all";
     let activeTeacherFilter = "all";
+    let currentProfile = null;
 
     const lessonOneSections = [
       { id: "overview", label: "Overview", questionIds: ["l1-overview-reflection"] },
@@ -736,6 +766,10 @@
       return Object.values(byId).sort((a, b) => a.name.localeCompare(b.name));
     }
 
+    function isCourseAdmin() {
+      return ["admin", "staff"].includes(currentProfile?.role);
+    }
+
     function renderClassFilters() {
       const classSelect = document.getElementById("class-filter");
       const teacherSelect = document.getElementById("teacher-filter");
@@ -745,22 +779,30 @@
       const sections = remoteClassArchitecture?.sections || [];
       const teachers = uniqueTeachers();
       const hasSections = sections.length > 0;
+      if (hasSections && !isCourseAdmin() && currentProfile?.id) {
+        activeTeacherFilter = currentProfile.id;
+      }
 
       classSelect.disabled = !hasSections;
-      teacherSelect.disabled = !hasSections || teachers.length === 0;
+      teacherSelect.disabled = !hasSections || teachers.length === 0 || !isCourseAdmin();
       classSelect.innerHTML = hasSections
         ? `<option value="all">All class sections</option>${sections.map((section) => `
             <option value="${section.id}" ${section.id === activeClassFilter ? "selected" : ""}>${escapeHtml(section.name)}${section.location ? ` - ${escapeHtml(section.location)}` : ""}</option>
           `).join("")}`
         : `<option value="all">All course students</option>`;
-      teacherSelect.innerHTML = hasSections && teachers.length
-        ? `<option value="all">All teachers</option>${teachers.map((teacher) => `
+      const teacherOptions = isCourseAdmin()
+        ? teachers
+        : teachers.filter((teacher) => teacher.id === currentProfile?.id);
+      teacherSelect.innerHTML = hasSections && teacherOptions.length
+        ? `${isCourseAdmin() ? '<option value="all">All teachers</option>' : ""}${teacherOptions.map((teacher) => `
             <option value="${teacher.id}" ${teacher.id === activeTeacherFilter ? "selected" : ""}>${escapeHtml(teacher.name)}</option>
           `).join("")}`
-        : `<option value="all">Teacher filter setup needed</option>`;
+        : `<option value="all">All teachers</option>`;
       note.textContent = hasSections
-        ? "Filters use class-section memberships. Teachers see assigned sections; admins can view all."
-        : "Class filters activate after the class-section SQL is installed and students are assigned.";
+        ? isCourseAdmin()
+          ? "Admins can view all class sections or filter by teacher."
+          : "Showing the class sections assigned to your teacher account."
+        : "No class sections yet. Add a class when you want to separate rosters by teacher, period, or site.";
       renderAccountClassOptions();
     }
 
@@ -773,7 +815,7 @@
         ? `<option value="">No class section</option>${sections.map((section) => `
             <option value="${section.id}">${escapeHtml(section.name)}${section.location ? ` - ${escapeHtml(section.location)}` : ""}</option>
           `).join("")}`
-        : `<option value="">Class-section setup needed</option>`;
+        : `<option value="">No class sections yet</option>`;
     }
 
     function visibleLessons() {
@@ -946,9 +988,10 @@
     }
 
     function teacherClassIds() {
-      if (activeTeacherFilter === "all") return null;
+      const teacherId = isCourseAdmin() ? activeTeacherFilter : currentProfile?.id;
+      if (!teacherId || teacherId === "all") return null;
       return new Set((remoteClassArchitecture?.teachers || [])
-        .filter((row) => row.teacher_id === activeTeacherFilter)
+        .filter((row) => row.teacher_id === teacherId)
         .map((row) => row.class_id));
     }
 
@@ -1253,6 +1296,39 @@
       renderAll();
     }
 
+    async function createClassSection() {
+      const name = document.getElementById("class-name").value.trim();
+      const location = document.getElementById("class-location").value.trim();
+      const term = document.getElementById("class-term").value.trim();
+      if (!name) return;
+
+      const token = await authToken();
+      if (!token) {
+        alert("Sign in as a teacher or admin before creating a class.");
+        return;
+      }
+
+      const response = await fetch("/api/create-class-section", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ name, location, term })
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        alert(result.error || "Could not create class.");
+        return;
+      }
+
+      document.getElementById("class-name").value = "";
+      document.getElementById("class-location").value = "";
+      document.getElementById("class-term").value = "";
+      closeModals();
+      await renderAll();
+    }
+
     async function resetPassword() {
       const password = document.getElementById("new-password").value.trim();
       if (password.length < 6) return;
@@ -1426,6 +1502,7 @@ If you have trouble signing in, contact your teacher.`;
     });
 
     document.getElementById("btn-create-account").addEventListener("click", createAccount);
+    document.getElementById("btn-create-class").addEventListener("click", createClassSection);
     document.getElementById("account-role").addEventListener("change", updateAccountFields);
     document.getElementById("student-search").addEventListener("input", (event) => {
       studentSearchQuery = event.target.value;
@@ -1501,6 +1578,7 @@ If you have trouble signing in, contact your teacher.`;
       if (window.CAASPPAuth) {
         const profile = await CAASPPAuth.requireRole(["admin", "staff", "teacher"]);
         if (!profile) return;
+        currentProfile = profile;
         const name = document.getElementById("user-name");
         if (name) name.textContent = profile.full_name || profile.email || "";
       }

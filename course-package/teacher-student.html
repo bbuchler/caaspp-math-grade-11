@@ -144,6 +144,36 @@
       font-size: 1.25rem;
     }
 
+    .score-summary-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .score-summary-item {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 11px 12px;
+    }
+
+    .score-summary-item span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .score-summary-item strong {
+      display: block;
+      color: var(--primary);
+      font-size: 1rem;
+      margin-top: 3px;
+    }
+
     .actions {
       display: flex;
       gap: 8px;
@@ -244,9 +274,44 @@
     }
 
     .teacher-feedback {
+      background: #f8fbff;
+      border-left: 3px solid #8ab4f8;
+      border-radius: 6px;
       color: #344255;
       font-size: 0.92rem;
+      padding: 9px 10px;
       margin-bottom: 10px;
+    }
+
+    .question-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .question-meta h4 {
+      flex: 1;
+    }
+
+    .section-score {
+      font-size: 0.9rem;
+    }
+
+    .override-panel {
+      border: 1px solid #dce6ef;
+      border-radius: 6px;
+      background: #fbfdff;
+      padding: 8px 10px;
+      margin-top: 10px;
+    }
+
+    .override-panel summary {
+      cursor: pointer;
+      color: var(--blue);
+      font-weight: 800;
+      font-size: 0.9rem;
     }
 
     .edit-row {
@@ -284,12 +349,17 @@
       .edit-row {
         grid-template-columns: 1fr;
       }
+
+      .score-summary-strip {
+        grid-template-columns: 1fr 1fr;
+      }
     }
 
     @media print {
       .site-header,
       .actions,
-      .btn {
+      .btn,
+      .no-print {
         display: none !important;
       }
 
@@ -301,6 +371,14 @@
       .response-card {
         box-shadow: none;
         border-color: #ccc;
+      }
+
+      .score-summary-strip {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .question-block {
+        break-inside: avoid;
       }
     }
   </style>
@@ -388,16 +466,23 @@
       return { items, score, maxScore, percent, needsTeacherReview, exitNeedsReview };
     }
 
-    function gradeStatus(stats) {
+    function letterGrade(percent) {
+      if (percent === null) return "Not Started";
+      if (percent >= 90) return "A";
+      if (percent >= 80) return "B";
+      if (percent >= 70) return "C";
+      if (percent >= 60) return "D";
+      return "F";
+    }
+
+    function completionStatus(stats) {
       if (stats.percent === null) return "Not Started";
-      if (stats.needsTeacherReview) return "Needs Follow-Up";
-      if (stats.percent >= 70) return "Passing";
-      return "Needs Support";
+      return `${stats.items.length} of ${flattenQuestions(lessonData).length}`;
     }
 
     function gradeLine(stats) {
       if (!stats.maxScore) return "Not started";
-      return `${stats.score}/${stats.maxScore} - ${stats.percent}% - ${gradeStatus(stats)}`;
+      return `${stats.score}/${stats.maxScore} - ${stats.percent}% - ${letterGrade(stats.percent)}`;
     }
 
     function formatScore(response, fallbackMax) {
@@ -408,6 +493,17 @@
     function formatAnswer(response) {
       if (!response || response.answer === "") return "(no answer yet)";
       return response.answer;
+    }
+
+    function sectionStats(section, responses) {
+      const questions = sectionQuestions(section);
+      const answered = questions.filter((question) => responses[question.id]).length;
+      const scored = questions.reduce((sum, question) => sum + Number(responses[question.id]?.score || 0), 0);
+      const max = questions.reduce((sum, question) => {
+        const response = responses[question.id];
+        return sum + Number(response?.maxScore ?? question.maxPoints ?? (question.grading === "ai_rubric" ? 3 : 1));
+      }, 0);
+      return { questions, answered, scored, max };
     }
 
     async function load() {
@@ -452,16 +548,11 @@
           </div>
         </section>
 
-        <section class="response-card">
-          <div class="response-card-header">
-            <h3>Lesson Score</h3>
-            <span class="score-pill ${scoreClass(stats.percent)}">${stats.percent === null ? "Not Started" : `${stats.percent}%`}</span>
-          </div>
-          <div class="response-card-body">
-            <p><strong>Answered:</strong> ${Math.min(stats.items.length, flattenQuestions(lessonData).length)} of ${flattenQuestions(lessonData).length} graded questions</p>
-            <p><strong>Grade:</strong> ${escapeHtml(gradeLine(stats))}</p>
-            ${stats.exitNeedsReview ? `<p><strong>Teacher follow-up:</strong> Exit check was below 70%, even if the total lesson score is passing.</p>` : ""}
-          </div>
+        <section class="score-summary-strip">
+          <div class="score-summary-item"><span>Course</span><strong>CAASPP Math</strong></div>
+          <div class="score-summary-item"><span>Lesson</span><strong>${String(lessonNumber).padStart(2, "0")}: ${escapeHtml(lessonData.title)}</strong></div>
+          <div class="score-summary-item"><span>Answered</span><strong>${escapeHtml(completionStatus(stats))}</strong></div>
+          <div class="score-summary-item"><span>Overall Grade</span><strong>${escapeHtml(gradeLine(stats))}</strong></div>
         </section>
 
         ${lessonData.sections.map((section) => renderSection(section, submission.responses)).join("")}
@@ -505,14 +596,13 @@
     }
 
     function renderSection(section, responses) {
-      const questions = sectionQuestions(section);
+      const { questions, answered, scored, max } = sectionStats(section, responses);
       if (!questions.length) return "";
-      const answered = questions.filter((question) => responses[question.id]).length;
       return `
         <section class="response-card">
           <div class="response-card-header">
             <h3>${escapeHtml(section.title)}</h3>
-            <span class="status-pill score-empty">${answered}/${questions.length}</span>
+            <span class="status-pill score-empty section-score">${scored}/${max} points - ${answered}/${questions.length} answered</span>
           </div>
           <div class="response-card-body">
             ${questions.map((question) => renderQuestion(question, responses[question.id])).join("")}
@@ -549,22 +639,28 @@
       const canRegrade = question.grading === "ai_rubric" && response?.answer;
       return `
         <div class="question-block">
-          <h4>${question.promptHtml || escapeHtml(question.prompt)}</h4>
+          <div class="question-meta">
+            <h4>${question.promptHtml || escapeHtml(question.prompt)}</h4>
+            <span class="status-pill score-empty">${escapeHtml(formatScore(response, question.maxPoints ?? (question.grading === "ai_rubric" ? 3 : 1)))}</span>
+          </div>
           <div class="student-answer">${escapeHtml(formatAnswer(response))}</div>
-          ${question.answer !== undefined ? `<div class="teacher-feedback"><strong>Answer key:</strong> ${escapeHtml(question.answer)}</div>` : ""}
           <div class="teacher-feedback"><strong>Feedback:</strong> ${escapeHtml(feedback || "No feedback yet.")}</div>
-          <div class="edit-row">
-            <label for="score-${escapeHtml(question.id)}">Score</label>
-            <input id="score-${escapeHtml(question.id)}" type="text" value="${escapeHtml(formatScore(response, question.maxPoints ?? (question.grading === "ai_rubric" ? 3 : 1)))}">
-          </div>
-          <div class="edit-row">
-            <label for="feedback-${escapeHtml(question.id)}">Teacher Note</label>
-            <textarea id="feedback-${escapeHtml(question.id)}">${escapeHtml(feedback)}</textarea>
-          </div>
-          <div class="actions" style="margin-top:10px;">
-            <button class="btn-save btn-small" type="button" data-save-feedback="${escapeHtml(question.id)}">Save Override</button>
-            ${canRegrade ? `<button class="btn-regrade btn-small" type="button" data-regrade-ai="${escapeHtml(question.id)}">Regrade AI</button>` : ""}
-          </div>
+          <details class="override-panel no-print">
+            <summary>Adjust score or feedback</summary>
+            ${question.answer !== undefined ? `<div class="teacher-feedback" style="margin-top:10px;"><strong>Answer key:</strong> ${escapeHtml(question.answer)}</div>` : ""}
+            <div class="edit-row">
+              <label for="score-${escapeHtml(question.id)}">Score</label>
+              <input id="score-${escapeHtml(question.id)}" type="text" value="${escapeHtml(formatScore(response, question.maxPoints ?? (question.grading === "ai_rubric" ? 3 : 1)))}">
+            </div>
+            <div class="edit-row">
+              <label for="feedback-${escapeHtml(question.id)}">Feedback</label>
+              <textarea id="feedback-${escapeHtml(question.id)}">${escapeHtml(feedback)}</textarea>
+            </div>
+            <div class="actions" style="margin-top:10px;">
+              <button class="btn-save btn-small" type="button" data-save-feedback="${escapeHtml(question.id)}">Save Override</button>
+              ${canRegrade ? `<button class="btn-regrade btn-small" type="button" data-regrade-ai="${escapeHtml(question.id)}">Regrade AI</button>` : ""}
+            </div>
+          </details>
         </div>
       `;
     }
