@@ -8,6 +8,8 @@ Default lesson length: **60 minutes** unless Baptiste asks for a different pacin
 
 1. **Lesson Hero**
    - Names the lesson, time estimate, why the skill matters, and the learning target.
+   - For CAASPP math, show California Common Core Math Standards with California-style identifiers such as `A-REI.1`, not the longer `HSA.REI.A.1` display format.
+   - Put the student-facing `I can...` statement under a small `Lesson Goal` label.
 
 2. **Overview Video**
    - A short big-picture video that frames the skill before students start problem solving.

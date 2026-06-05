@@ -98,18 +98,18 @@
     }
 
     .teacher-nav a.nav-primary {
-      background: var(--gold);
-      border-color: var(--gold);
+      background: #f2b84b;
+      border-color: #f2b84b;
       color: #102a44;
     }
 
     .teacher-nav a.nav-primary:hover {
-      background: #f2b84b;
-      border-color: #f2b84b;
+      background: #ffd36a;
+      border-color: #ffd36a;
     }
 
     .nav-user-name {
-      color: #f4d48b;
+      color: #d7e3ef;
       font-weight: 800;
       padding: 8px 4px;
     }
@@ -166,18 +166,18 @@
 
     .home-button:hover,
     .home-button.active {
-      background: #fce7b2;
+      background: #edf6ff;
     }
 
     .home-button strong {
       display: block;
-      color: #6d4a00;
+      color: #153d72;
       font-size: 0.95rem;
     }
 
     .home-button span {
       display: block;
-      color: #654f1d;
+      color: var(--muted);
       font-size: 0.78rem;
       margin-top: 2px;
     }
@@ -285,6 +285,12 @@
       font-size: 0.88rem;
     }
 
+    .module-card p {
+      margin: 8px 0 0;
+      color: #24476b;
+      font-size: 0.9rem;
+    }
+
     .lesson-mini-list {
       margin: 10px 0 0;
       padding-left: 20px;
@@ -297,20 +303,37 @@
     }
 
     .target {
-      display: inline-block;
+      display: inline-flex;
+      flex-direction: column;
+      gap: 3px;
       margin-top: 10px;
-      padding: 8px 10px;
+      padding: 9px 11px;
       border-radius: 6px;
       background: #e9f3ff;
       color: #153d72;
       font-weight: 650;
     }
 
+    .target-label {
+      color: var(--teal);
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .standards-heading {
+      margin: 14px 0 6px;
+      color: var(--primary);
+      font-size: 0.9rem;
+      font-weight: 900;
+    }
+
     .standard-strip {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
-      margin: 14px 0 8px;
+      margin: 0 0 8px;
     }
 
     .standard-chip {
@@ -1413,7 +1436,7 @@
       <nav id="course-nav" class="teacher-nav" aria-label="Course navigation">
         <a href="teacher-dashboard.html">Gradebook</a>
         <a href="teacher-guide.html">Teacher Guide</a>
-        <a href="preview.html">Course Home</a>
+        <a href="preview.html">Course Overview</a>
         <span class="nav-user-name" id="preview-user-name"></span>
         <button id="preview-sign-out" type="button">Sign Out</button>
       </nav>
@@ -1427,7 +1450,7 @@
         <p>Five daily lessons that move from solving equations to using linear models in context.</p>
       </div>
       <button id="home-button" class="home-button" type="button">
-        <strong>Course Home</strong>
+        <strong>Course Overview</strong>
         <span>See the big picture before opening a lesson.</span>
       </button>
       <div id="lesson-list" class="lesson-list"></div>
@@ -1467,6 +1490,32 @@
       subtitle: "Build confidence with the math moves that show up again and again on CAASPP.",
       currentModule: "Module 1: Linear Foundations",
       currentModuleSummary: "This module starts with equations, then moves into inequalities, tables, graphs, slope, intercepts, and function notation. The goal is to see the same linear relationship in different forms and explain what it means.",
+      modules: [
+        {
+          title: "Module 1: Linear Foundations",
+          range: "Lessons 1-5",
+          status: "Open pilot module",
+          summary: "Equations, inequalities, tables, graphs, slope, intercepts, and function notation."
+        },
+        {
+          title: "Module 2",
+          range: "Lessons 6-10",
+          status: "Planned",
+          summary: "Next CAASPP math focus area after the Lesson 1 pilot pattern is approved."
+        },
+        {
+          title: "Module 3",
+          range: "Lessons 11-15",
+          status: "Planned",
+          summary: "Additional CAASPP practice lessons using the same lesson structure."
+        },
+        {
+          title: "Module 4",
+          range: "Lessons 16-20",
+          status: "Planned",
+          summary: "Review, mixed practice, and performance-task style preparation."
+        }
+      ],
       overviewVideo: {
         title: "Lesson 1 Overview: Deconstructing the Equation",
         src: "media/videos/module-01-overview-deconstructing-the-equation-web.mp4",
@@ -1544,7 +1593,22 @@
           <div class="target">${escapeHtml(courseHome.currentModule)}</div>
         </section>
         <section class="section-card">
-          <header><h3>What You Are Working Toward</h3></header>
+          <header><h3>Course Map</h3></header>
+          <div class="section-body">
+            <p>Each module will hold five lessons. Lesson 1 is the fully built pilot; the rest of the course will follow the same structure once the pilot lesson is approved.</p>
+            <div class="module-grid">
+              ${courseHome.modules.map((module, index) => `
+                <div class="module-card ${index === 0 ? "current" : ""}">
+                  <strong>${escapeHtml(module.title)}</strong>
+                  <span>${escapeHtml(module.range)} • ${escapeHtml(module.status)}</span>
+                  <p>${escapeHtml(module.summary)}</p>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        </section>
+        <section class="section-card">
+          <header><h3>Module 1 Focus</h3></header>
           <div class="section-body">
             <p>${escapeHtml(courseHome.currentModuleSummary)}</p>
             <div class="home-grid">
@@ -1601,6 +1665,7 @@
     function renderLessonStandards(lesson) {
       if (!lesson.standards?.length) return "";
       return `
+        <div class="standards-heading">California Common Core Math Standards</div>
         <div class="standard-strip" aria-label="Lesson standards">
           ${lesson.standards.map((standard) => `
             <span class="standard-chip"><strong>${escapeHtml(standard.code)}</strong>${escapeHtml(standard.label)}</span>
@@ -1623,7 +1688,7 @@
           <p>${escapeHtml(lesson.whyItMatters)}</p>
           ${renderLessonStandards(lesson)}
           ${lesson.realWorldApplication ? `<p class="application-note"><strong>Real-world application:</strong> ${escapeHtml(lesson.realWorldApplication)}</p>` : ""}
-          <div class="target">${escapeHtml(lesson.learningTarget)}</div>
+          <div class="target"><span class="target-label">Lesson Goal</span><span>${escapeHtml(lesson.learningTarget)}</span></div>
         </section>
         ${lesson.lessonId === "01" ? renderOverviewVideo() : ""}
         ${renderLessonSections(lesson)}
@@ -1767,11 +1832,14 @@
             { text: "11", action: "" }
           ],
           actions: [
-            { text: "-2", action: "subtract", state: "current" },
-            { text: "÷3", action: "divide", state: "locked" }
+            { text: "-2", action: "subtract", state: "choice" },
+            { text: "+2", action: "add", state: "choice" },
+            { text: "÷2", action: "divide2", state: "choice" },
+            { text: "×2", action: "multiply2", state: "choice" },
+            { text: "÷3", action: "divide", state: "choice" }
           ],
-          dropText: "Drag -2 here to undo +2.",
-          feedback: "Start by undoing +2. That means subtract 2 from both sides."
+          dropText: "Choose the first inverse operation needed.",
+          feedback: "Look at the equation and choose the operation that should happen first."
         };
       }
       if (stepIndex === 1) {
@@ -1785,9 +1853,12 @@
           ],
           actions: [
             { text: "-2", action: "subtract", state: "done" },
-            { text: "÷3", action: "divide", state: "current" }
+            { text: "-3", action: "subtract3", state: "choice" },
+            { text: "+3", action: "add3", state: "choice" },
+            { text: "÷3", action: "divide", state: "choice" },
+            { text: "×3", action: "multiply3", state: "choice" }
           ],
-          dropText: "Now drag ÷3 here to undo 3x.",
+          dropText: "Choose the next inverse operation needed.",
           feedback: lab.steps[0].explanation
         };
       }
@@ -1820,7 +1891,7 @@
       labEl.querySelector(".operation-bank").innerHTML = `
         <strong>Choose the inverse operation:</strong>
         ${state.actions.map((action) => `
-          <span class="operation-tile ${action.state === "current" ? "draggable" : escapeHtml(action.state)}" ${action.state === "current" ? `draggable="true" data-undo-action="${escapeHtml(action.action)}"` : ""}>
+          <span class="operation-tile ${action.state === "choice" ? "draggable" : escapeHtml(action.state)}" ${action.state === "choice" ? `draggable="true" data-undo-action="${escapeHtml(action.action)}"` : ""}>
             ${escapeHtml(action.text)}
           </span>
         `).join("")}
@@ -1840,8 +1911,8 @@
       const expectedAction = stepIndex === 0 ? "subtract" : "divide";
       if (action !== expectedAction) {
         feedback.textContent = stepIndex === 0
-          ? "Start with +2. Addition is undone with subtraction."
-          : "Now undo the coefficient 3 by dividing both sides by 3.";
+          ? "Not quite. Look for the operation that undoes the constant term on the left."
+          : "Not quite. The variable is being multiplied by a coefficient. Which operation undoes multiplication?";
         return;
       }
       labEl.dataset.step = String(stepIndex + 1);
@@ -2355,7 +2426,7 @@
         return {
           course: "CAASPP Math Success Academy",
           module: courseHome.currentModule,
-          lessonTitle: "Course Home",
+          lessonTitle: "Course Overview",
           learningTarget: "Understand the goals for Module 1.",
           visibleSections: [
             {
@@ -2591,7 +2662,7 @@
         nav.innerHTML = `
           <a class="nav-primary" href="teacher-dashboard.html">Gradebook</a>
           <a href="teacher-guide.html">Teacher Guide</a>
-          <a href="preview.html">Course Home</a>
+          <a href="preview.html">Course Overview</a>
           <span class="nav-user-name">${escapeHtml(displayName)}</span>
           <button id="preview-sign-out" type="button">Sign Out</button>
         `;
