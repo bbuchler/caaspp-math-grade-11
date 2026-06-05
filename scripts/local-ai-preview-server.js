@@ -3,7 +3,9 @@ const fs = require("fs");
 const path = require("path");
 
 const chat = require("../api/chat.js");
+const createUser = require("../api/create-user.js");
 const grade = require("../api/grade.js");
+const resetPassword = require("../api/reset-password.js");
 
 const root = path.resolve(__dirname, "..");
 const port = Number(process.env.PORT || 8766);
@@ -93,7 +95,9 @@ const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
 
   if (url.pathname === "/api/chat") return runApi(chat, req, res);
+  if (url.pathname === "/api/create-user") return runApi(createUser, req, res);
   if (url.pathname === "/api/grade") return runApi(grade, req, res);
+  if (url.pathname === "/api/reset-password") return runApi(resetPassword, req, res);
 
   const requestPath = url.pathname === "/" ? "/course-package/preview.html" : url.pathname;
   const decodedPath = decodeURIComponent(requestPath).replace(/^[/\\]+/, "");

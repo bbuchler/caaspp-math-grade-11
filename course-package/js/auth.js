@@ -1,5 +1,5 @@
 (function () {
-  const STUDENT_DOMAIN = "@altus-drivers-ed.local";
+  const STUDENT_DOMAIN = "@altus-caaspp-math.local";
 
   async function getSession() {
     const { data } = await supabase.auth.getSession();

@@ -79,16 +79,25 @@
       }, { onConflict: "course_id,user_id" });
   }
 
-  async function loadAvailableStudents() {
+  async function loadCourseStudents() {
     const session = await getSession();
     if (!session) return null;
     const { data, error } = await window.supabase
-      .from("profiles")
-      .select("id, full_name, username, email")
-      .eq("role", "student")
+      .from("course_lesson_score_summary")
+      .select("student_id, full_name, username, email")
+      .eq("course_id", COURSE_ID)
       .order("full_name");
     if (error) return null;
-    return data || [];
+    const byId = {};
+    for (const row of data || []) {
+      byId[row.student_id] = {
+        id: row.student_id,
+        full_name: row.full_name,
+        username: row.username,
+        email: row.email
+      };
+    }
+    return Object.values(byId);
   }
 
   async function enrollUser(userId, role = "student") {
@@ -140,7 +149,6 @@
   async function loadGradebook() {
     const session = await getSession();
     if (!session) return null;
-    await ensureEnrollment(session.user.id, "teacher");
     const { data, error } = await window.supabase
       .from("course_lesson_score_summary")
       .select("*")
@@ -182,7 +190,7 @@
     COURSE_ID,
     getSession,
     ensureEnrollment,
-    loadAvailableStudents,
+    loadCourseStudents,
     enrollUser,
     saveQuestionResponse,
     loadGradebook,

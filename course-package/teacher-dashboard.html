@@ -139,35 +139,28 @@
       color: var(--muted);
     }
 
-    .module-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
-      margin-bottom: 16px;
+    .module-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
     }
 
-    .module-card {
-      background: var(--white);
+    .module-tab {
       border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 12px;
-      box-shadow: var(--shadow);
+      border-radius: 6px;
+      background: var(--white);
+      color: var(--text);
+      padding: 8px 11px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
     }
 
-    .module-card.active {
-      border-left: 5px solid var(--blue);
-      background: #edf6ff;
-    }
-
-    .module-card strong {
-      display: block;
-      color: var(--primary);
-      margin-bottom: 4px;
-    }
-
-    .module-card span {
-      color: var(--muted);
-      font-size: 0.86rem;
+    .module-tab.active {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: var(--white);
     }
 
     .gradebook-table-wrapper {
@@ -358,8 +351,7 @@
         position: static;
       }
 
-      .dashboard-grid,
-      .module-grid {
+      .dashboard-grid {
         grid-template-columns: 1fr;
       }
 
@@ -410,24 +402,13 @@
       </div>
     </div>
 
-    <section class="module-grid" aria-label="Course modules">
-      <div class="module-card active">
-        <strong>Module 1</strong>
-        <span>Lesson 1 is active for the pilot.</span>
-      </div>
-      <div class="module-card">
-        <strong>Module 2</strong>
-        <span>Systems and modeling</span>
-      </div>
-      <div class="module-card">
-        <strong>Module 3</strong>
-        <span>Functions and data</span>
-      </div>
-      <div class="module-card">
-        <strong>Module 4</strong>
-        <span>Mixed CAASPP practice</span>
-      </div>
-    </section>
+    <nav class="module-tabs" aria-label="Gradebook module filter">
+      <button class="module-tab active" type="button" data-module-filter="all">All 20 Lessons</button>
+      <button class="module-tab" type="button" data-module-filter="1">Module 1: Lessons 1-5</button>
+      <button class="module-tab" type="button" data-module-filter="2">Module 2: Lessons 6-10</button>
+      <button class="module-tab" type="button" data-module-filter="3">Module 3: Lessons 11-15</button>
+      <button class="module-tab" type="button" data-module-filter="4">Module 4: Lessons 16-20</button>
+    </nav>
 
     <div class="gradebook-table-wrapper">
       <table class="gradebook-table">
@@ -550,7 +531,9 @@
     let selectedAccountId = "pilot-student";
     let remoteGradebookRows = null;
     let remoteTrendRows = null;
-    let availableRemoteStudents = null;
+    let remoteCourseStudents = null;
+    let remoteDataLoaded = false;
+    let activeModuleFilter = "all";
 
     const lessonOneSections = [
       { id: "launch", label: "Quick Start", questionIds: ["l1-launch-1"] },
@@ -571,9 +554,17 @@
           "Function Notation and Mini Performance Task"
         ][index] || `Lesson ${number}`,
         active: number === 1,
-        preview: number <= 5
+        preview: number === 1
       };
     });
+
+    function visibleLessons() {
+      if (activeModuleFilter === "all") return courseLessons;
+      const moduleNumber = Number(activeModuleFilter);
+      const start = (moduleNumber - 1) * 5 + 1;
+      const end = start + 4;
+      return courseLessons.filter((lesson) => lesson.number >= start && lesson.number <= end);
+    }
 
     function defaultAccounts() {
       return [
@@ -666,7 +657,7 @@
           login: row.username || ""
         };
       }
-      for (const student of availableRemoteStudents || []) {
+      for (const student of remoteCourseStudents || []) {
         if (!byId[student.id]) {
           byId[student.id] = {
             id: student.id,
@@ -697,30 +688,42 @@
     }
 
     function renderGradebook() {
-      const accounts = (remoteGradebookRows || availableRemoteStudents) ? remoteAccounts() : getAccounts();
+      const accounts = remoteDataLoaded ? remoteAccounts() : getAccounts();
       const submissions = getSubmissions();
       const students = accounts.filter((account) => account.role === "student");
       const head = document.getElementById("gradebook-head-row");
       const body = document.getElementById("gradebook-body");
+      const lessons = visibleLessons();
 
       head.innerHTML = `
         <th>Student</th>
-        ${courseLessons.map((lesson) => `
+        ${lessons.map((lesson) => `
           <th>
             ${lesson.preview
-              ? `<a href="preview.html?lesson=${String(lesson.number).padStart(2, "0")}" style="color:inherit;text-decoration:none;border-bottom:1px dotted currentColor;" title="${lesson.title}">L${lesson.number}</a>`
-              : `<span title="${lesson.title}">L${lesson.number}</span>`}
+              ? `<a href="preview.html?lesson=${String(lesson.number).padStart(2, "0")}" style="color:inherit;text-decoration:none;border-bottom:1px dotted currentColor;" title="Preview ${lesson.title}">Lesson ${lesson.number}</a>`
+              : `<span title="${lesson.title}">Lesson ${lesson.number}</span>`}
           </th>
         `).join("")}
         <th>Overall</th>
         <th>Actions</th>
       `;
 
+      if (!students.length) {
+        body.innerHTML = `
+          <tr>
+            <td colspan="${lessons.length + 3}">
+              <span class="score-empty">No CAASPP Math students enrolled yet. Add a test student to begin.</span>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
       body.innerHTML = students.map((student) => {
         const studentSubmission = submissions[student.id];
-        const stats = (remoteGradebookRows || availableRemoteStudents) ? remoteStats(student.id, 1) : lessonStats(studentSubmission);
+        const stats = remoteDataLoaded ? remoteStats(student.id, 1) : lessonStats(studentSubmission);
         const score = stats.percent === null ? "-" : `${stats.percent}%`;
-        const remoteMode = Boolean(remoteGradebookRows || availableRemoteStudents);
+        const remoteMode = remoteDataLoaded;
         const enrolled = !remoteMode || (remoteGradebookRows || []).some((row) => row.student_id === student.id);
         return `
           <tr>
@@ -728,8 +731,8 @@
               <a href="teacher-student.html?student=${encodeURIComponent(student.id)}&lesson=01">${student.name}</a>
               <span class="muted">${student.login}</span>
             </td>
-            ${courseLessons.map((lesson) => {
-              const lessonStatsForCell = (remoteGradebookRows || availableRemoteStudents) ? remoteStats(student.id, lesson.number) : stats;
+            ${lessons.map((lesson) => {
+              const lessonStatsForCell = remoteDataLoaded ? remoteStats(student.id, lesson.number) : stats;
               if (lesson.number !== 1 && !remoteGradebookRows) return `<td><span class="score-empty">-</span></td>`;
               const lessonScore = lessonStatsForCell.percent === null ? "-" : `${lessonStatsForCell.percent}%`;
               return `<td><a class="${scoreClass(lessonStatsForCell.percent)}" href="teacher-student.html?student=${encodeURIComponent(student.id)}&lesson=${String(lesson.number).padStart(2, "0")}">${lessonScore}</a></td>`;
@@ -750,13 +753,17 @@
     }
 
     function renderLessonOneBreakdown() {
-      const accounts = (remoteGradebookRows || availableRemoteStudents) ? remoteAccounts() : getAccounts();
+      const accounts = remoteDataLoaded ? remoteAccounts() : getAccounts();
       const submissions = getSubmissions();
       const students = accounts.filter((account) => account.role === "student");
       const body = document.getElementById("lesson-one-body");
+      if (!students.length) {
+        body.innerHTML = `<tr><td colspan="6"><span class="score-empty">No CAASPP Math students enrolled yet.</span></td></tr>`;
+        return;
+      }
       body.innerHTML = students.map((student) => {
         const studentSubmission = submissions[student.id];
-        const stats = (remoteGradebookRows || availableRemoteStudents) ? remoteStats(student.id, 1) : lessonStats(studentSubmission);
+        const stats = remoteDataLoaded ? remoteStats(student.id, 1) : lessonStats(studentSubmission);
         return `
           <tr>
             <td>
@@ -774,6 +781,10 @@
     }
 
     function renderTeachers() {
+      if (remoteDataLoaded) {
+        document.getElementById("teacher-list").innerHTML = `<p class="empty-panel">Teacher account management is available through Add Teacher.</p>`;
+        return;
+      }
       const teachers = getAccounts().filter((account) => account.role === "teacher");
       const list = document.getElementById("teacher-list");
       if (!teachers.length) {
@@ -850,12 +861,47 @@
       `;
     }
 
-    function createAccount() {
+    async function authToken() {
+      if (!window.supabase) return null;
+      const { data } = await window.supabase.auth.getSession();
+      return data?.session?.access_token || null;
+    }
+
+    async function createAccount() {
       const role = document.getElementById("account-role").value;
       const name = document.getElementById("account-name").value.trim();
       const login = document.getElementById("account-login").value.trim();
       const password = document.getElementById("account-password").value.trim();
       if (!name || !login || password.length < 6) return;
+
+      const token = await authToken();
+      if (token) {
+        const response = await fetch("/api/create-user", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            role,
+            name,
+            password,
+            username: role === "student" ? login : undefined,
+            email: role === "teacher" ? login : undefined
+          })
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          alert(result.error || "Could not create account.");
+          return;
+        }
+        document.getElementById("account-name").value = "";
+        document.getElementById("account-login").value = "";
+        document.getElementById("account-password").value = "";
+        closeModals();
+        await renderAll();
+        return;
+      }
 
       const accounts = getAccounts();
       accounts.push({
@@ -874,9 +920,29 @@
       renderAll();
     }
 
-    function resetPassword() {
+    async function resetPassword() {
       const password = document.getElementById("new-password").value.trim();
       if (password.length < 6) return;
+      const token = await authToken();
+      if (token && remoteDataLoaded) {
+        const response = await fetch("/api/reset-password", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ userId: selectedAccountId, newPassword: password })
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          alert(result.error || "Could not reset password.");
+          return;
+        }
+        document.getElementById("new-password").value = "";
+        closeModals();
+        await renderAll();
+        return;
+      }
       const accounts = getAccounts().map((account) => account.id === selectedAccountId
         ? { ...account, passwordUpdatedAt: new Date().toISOString() }
         : account
@@ -908,10 +974,11 @@
       if (!window.CourseData) return;
       const gradebook = await window.CourseData.loadGradebook();
       const trends = await window.CourseData.loadTrends();
-      const availableStudents = await window.CourseData.loadAvailableStudents();
-      remoteGradebookRows = Array.isArray(gradebook) && gradebook.length ? gradebook : null;
+      const courseStudents = await window.CourseData.loadCourseStudents();
+      remoteDataLoaded = Array.isArray(gradebook) || Array.isArray(courseStudents);
+      remoteGradebookRows = Array.isArray(gradebook) ? gradebook : [];
       remoteTrendRows = Array.isArray(trends) && trends.length ? trends : null;
-      availableRemoteStudents = Array.isArray(availableStudents) && availableStudents.length ? availableStudents : null;
+      remoteCourseStudents = Array.isArray(courseStudents) ? courseStudents : [];
     }
 
     async function renderAll() {
@@ -945,6 +1012,15 @@
       if (enrollButton && window.CourseData) {
         window.CourseData.enrollUser(enrollButton.dataset.enrollStudent, "student")
           .then(() => renderAll());
+      }
+
+      const moduleButton = event.target.closest("[data-module-filter]");
+      if (moduleButton) {
+        activeModuleFilter = moduleButton.dataset.moduleFilter;
+        document.querySelectorAll("[data-module-filter]").forEach((button) => {
+          button.classList.toggle("active", button === moduleButton);
+        });
+        renderGradebook();
       }
 
       if (event.target.matches("[data-close-modal]") || event.target.classList.contains("modal-overlay")) {
