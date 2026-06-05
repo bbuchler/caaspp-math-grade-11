@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CAASPP Math - Teacher Guide</title>
+  <style>
+    :root {
+      --primary: #0f263f;
+      --blue: #2457a6;
+      --gold: #b7791f;
+      --white: #ffffff;
+      --soft: #f5f8fb;
+      --line: #d9e1e8;
+      --muted: #5d6b7a;
+      --text: #17202a;
+      --shadow: 0 10px 28px rgba(23, 32, 42, 0.08);
+      --radius: 8px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: #eef3f7;
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .site-header {
+      background: var(--primary);
+      color: var(--white);
+      border-bottom: 5px solid #f2b84b;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    .page-wrapper {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 clamp(14px, 3vw, 32px);
+    }
+    .site-header .page-wrapper {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding-top: 14px;
+      padding-bottom: 14px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .header-logo {
+      width: 128px;
+      max-width: 38vw;
+      background: var(--white);
+      border-radius: 6px;
+      padding: 7px;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin: 0; font-size: clamp(1.25rem, 3vw, 1.8rem); letter-spacing: 0; }
+    h2 { color: var(--primary); margin-bottom: 6px; }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .header-nav-link,
+    .btn {
+      border: 0;
+      border-radius: 6px;
+      padding: 9px 12px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 38px;
+    }
+    .header-nav-link {
+      background: rgba(255,255,255,0.1);
+      color: var(--white);
+      border: 1px solid rgba(255,255,255,0.24);
+    }
+    main.page-wrapper {
+      padding-top: 24px;
+      padding-bottom: 42px;
+    }
+    .panel {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    ul, ol { padding-left: 22px; }
+    li { margin-bottom: 7px; }
+    .muted { color: var(--muted); }
+    @media (max-width: 760px) {
+      .site-header { position: static; }
+      .grid { grid-template-columns: 1fr; }
+      .header-right, .header-nav-link { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="page-wrapper">
+      <div class="brand">
+        <img src="assets/altus-logo.png" alt="Altus Schools" class="header-logo">
+        <h1>CAASPP Math - Teacher Guide</h1>
+      </div>
+      <div class="header-right">
+        <a href="teacher-dashboard.html" class="header-nav-link">Gradebook</a>
+        <a href="preview.html?lesson=01" class="header-nav-link">Preview Lesson 1</a>
+        <a href="preview.html" class="header-nav-link">Course Home</a>
+        <button class="header-nav-link" type="button" id="btn-logout">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-wrapper">
+    <section class="panel">
+      <h2>How This Pilot Works</h2>
+      <p>Module 1 starts with Lesson 1 fully built: overview video, embedded lesson video, contextual questions, practice, exit check, Study Buddy, and gradebook tracking. Lessons 2-20 are visible in the gradebook so the course shape is clear, but only Lesson 1 is active for the first review.</p>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <h2>Teacher Flow</h2>
+        <ol>
+          <li>Open the gradebook.</li>
+          <li>Add or enroll a test student.</li>
+          <li>Preview Lesson 1 from the header or gradebook column.</li>
+          <li>Have the test student answer Lesson 1 questions.</li>
+          <li>Open the student's work sample from the gradebook.</li>
+        </ol>
+      </div>
+      <div class="panel">
+        <h2>What To Check</h2>
+        <ul>
+          <li>Video plays or opens cleanly in a new tab.</li>
+          <li>Students can answer video questions while watching.</li>
+          <li>Objective math items grade immediately.</li>
+          <li>Written explanations are flagged for rubric/AI review.</li>
+          <li>The gradebook shows Lesson 1 progress without hiding the 20-lesson course shape.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Later Enhancements</h2>
+      <p class="muted">Once real student responses exist, the trends area can show missed concepts, small group suggestions, remediation paths, and backup lessons. That should come from saved response data, not static cards.</p>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.getElementById("btn-logout").addEventListener("click", () => CAASPPAuth.signOut());
+  </script>
+</body>
+</html>

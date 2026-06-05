@@ -29,11 +29,14 @@
       line-height: 1.5;
     }
 
-    header {
+    .course-header {
       background: #0f263f;
       color: #fff;
       padding: 22px clamp(16px, 4vw, 44px);
       border-bottom: 5px solid #f2b84b;
+      position: sticky;
+      top: 0;
+      z-index: 50;
     }
 
     .brand-row {
@@ -52,17 +55,55 @@
       padding: 8px;
     }
 
-    header h1 {
+    .course-header h1 {
       margin: 0;
       font-size: clamp(1.35rem, 3vw, 2.1rem);
       letter-spacing: 0;
     }
 
-    header p {
+    .course-header p {
       margin: 6px 0 0;
       max-width: 920px;
       color: #d7e3ef;
       font-size: 0.98rem;
+    }
+
+    .header-shell {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .teacher-nav {
+      display: none;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .teacher-nav.visible {
+      display: flex;
+    }
+
+    .teacher-nav a,
+    .teacher-nav button {
+      border: 1px solid rgba(255,255,255,0.24);
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border-radius: 6px;
+      padding: 8px 11px;
+      font: inherit;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .teacher-nav a:hover,
+    .teacher-nav button:hover {
+      background: rgba(255,255,255,0.18);
     }
 
     .shell {
@@ -637,6 +678,21 @@
     }
 
     @media (max-width: 860px) {
+      .course-header {
+        position: static;
+      }
+
+      .teacher-nav {
+        width: 100%;
+        justify-content: stretch;
+      }
+
+      .teacher-nav a,
+      .teacher-nav button {
+        flex: 1 1 auto;
+        text-align: center;
+      }
+
       .shell {
         grid-template-columns: 1fr;
       }
@@ -671,13 +727,21 @@
   </style>
 </head>
 <body>
-  <header>
-    <div class="brand-row">
-      <img class="brand-logo" src="assets/altus-logo.png" alt="Altus Schools">
-      <div>
-        <h1>CAASPP Math Success Academy</h1>
-        <p>Week 1 preview: equations, inequalities, linear functions, slope/intercepts, and function notation.</p>
+  <header class="course-header">
+    <div class="header-shell">
+      <div class="brand-row">
+        <img class="brand-logo" src="assets/altus-logo.png" alt="Altus Schools">
+        <div>
+          <h1>CAASPP Math Success Academy</h1>
+          <p>Week 1 preview: equations, inequalities, linear functions, slope/intercepts, and function notation.</p>
+        </div>
       </div>
+      <nav id="course-nav" class="teacher-nav" aria-label="Course navigation">
+        <a href="teacher-dashboard.html">Gradebook</a>
+        <a href="teacher-guide.html">Teacher Guide</a>
+        <a href="preview.html">Course Home</a>
+        <button id="preview-sign-out" type="button">Sign Out</button>
+      </nav>
     </div>
   </header>
 
@@ -719,6 +783,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="js/supabase-config.js"></script>
   <script src="js/shared-course-data.js"></script>
+  <script src="js/auth.js"></script>
   <script>
     const lessonIds = ["01", "02", "03", "04", "05"];
     const courseHome = {
@@ -850,6 +915,7 @@
               <video class="overview-video" controls preload="metadata" poster="${escapeHtml(video.poster)}">
                 <source src="${escapeHtml(video.src)}" type="video/mp4">
               </video>
+              <p class="watch-for"><a href="${escapeHtml(video.src)}" target="_blank" rel="noopener">Open the overview video in a new tab</a></p>
             </div>
           </div>
         </section>
@@ -917,7 +983,7 @@
           <strong>Video:</strong> <a href="${escapeHtml(section.video.url)}" target="_blank" rel="noopener">${escapeHtml(section.title)}</a>
           ${frame}
           <p class="watch-for"><strong>Watch for:</strong> ${escapeHtml(section.watchFor)}</p>
-          <p class="watch-for">${src ? "If the embedded player is blocked, use the video link above." : "This source needs a YouTube or Reel embed before it can play inside the page."}</p>
+          <p class="watch-for"><a href="${escapeHtml(section.video.url)}" target="_blank" rel="noopener">Open the video in a new tab</a></p>
         </div>
       `;
     }
@@ -1372,6 +1438,25 @@
         </div></section>
       `;
     });
+    async function setupCourseNav() {
+      const nav = document.getElementById("course-nav");
+      const profile = window.CAASPPAuth ? await CAASPPAuth.getProfile() : null;
+      if (!profile) return;
+      if (profile.role === "student") {
+        nav.innerHTML = `
+          <a href="student-dashboard.html">Student Dashboard</a>
+          <a href="preview.html">Course Home</a>
+          <button id="preview-sign-out" type="button">Sign Out</button>
+        `;
+      }
+      nav.classList.add("visible");
+      document.getElementById("preview-sign-out").addEventListener("click", () => {
+        if (window.CAASPPAuth) CAASPPAuth.signOut();
+        else window.location.href = "index.html";
+      });
+    }
+
+    setupCourseNav();
     StudyBuddy.init();
   </script>
 </body>

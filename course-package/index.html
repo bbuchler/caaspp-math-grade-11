@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CAASPP Math - Sign In</title>
+  <style>
+    :root { --primary:#0f263f; --blue:#2457a6; --gold:#b7791f; --line:#d9e1e8; --soft:#f5f8fb; --text:#17202a; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:"Segoe UI", system-ui, sans-serif; background:#eef3f7; color:var(--text); }
+    header { background:var(--primary); color:#fff; border-bottom:5px solid #f2b84b; padding:18px clamp(16px,4vw,42px); }
+    .brand { max-width:980px; margin:0 auto; display:flex; align-items:center; gap:14px; }
+    .brand img { width:128px; background:#fff; border-radius:6px; padding:7px; }
+    h1 { margin:0; font-size:clamp(1.3rem,3vw,1.9rem); letter-spacing:0; }
+    main { min-height:calc(100vh - 100px); display:grid; place-items:center; padding:24px; }
+    .panel { width:min(440px,100%); background:#fff; border:1px solid var(--line); border-radius:8px; box-shadow:0 10px 28px rgba(23,32,42,.08); padding:22px; }
+    h2 { margin:0 0 8px; color:var(--primary); }
+    p { color:#5d6b7a; margin:0 0 18px; }
+    label { display:block; font-weight:700; margin:12px 0 5px; }
+    input { width:100%; border:1px solid #b9c7d5; border-radius:6px; padding:10px; font:inherit; }
+    button { width:100%; margin-top:16px; border:0; border-radius:6px; background:var(--blue); color:#fff; padding:10px 12px; font:inherit; font-weight:800; cursor:pointer; }
+    .error { color:#b42318; margin-top:12px; min-height:20px; }
+  </style>
+</head>
+<body>
+  <header><div class="brand"><img src="assets/altus-logo.png" alt="Altus Schools"><h1>CAASPP Math Success Academy</h1></div></header>
+  <main>
+    <section class="panel">
+      <h2>Sign In</h2>
+      <p>Use your course username or email.</p>
+      <form id="login-form">
+        <label for="login">Username or email</label>
+        <input id="login" autocomplete="username" required>
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="current-password" required>
+        <button type="submit">Sign In</button>
+        <div class="error" id="error"></div>
+      </form>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.getElementById("login-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const error = document.getElementById("error");
+      error.textContent = "";
+      try {
+        await CAASPPAuth.signIn(document.getElementById("login").value.trim(), document.getElementById("password").value);
+        const profile = await CAASPPAuth.getProfile();
+        window.location.href = CAASPPAuth.routeFor(profile);
+      } catch (err) {
+        error.textContent = err.message || "Could not sign in.";
+      }
+    });
+  </script>
+</body>
+</html>

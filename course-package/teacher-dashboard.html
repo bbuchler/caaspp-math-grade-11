@@ -35,6 +35,9 @@
       background: var(--primary);
       color: var(--white);
       border-bottom: 5px solid #f2b84b;
+      position: sticky;
+      top: 0;
+      z-index: 20;
     }
 
     .page-wrapper {
@@ -351,6 +354,10 @@
     }
 
     @media (max-width: 900px) {
+      .site-header {
+        position: static;
+      }
+
       .dashboard-grid,
       .module-grid {
         grid-template-columns: 1fr;
@@ -381,9 +388,11 @@
       </div>
       <div class="header-right">
         <a href="preview.html?lesson=01" class="header-nav-link">Preview Lesson 1</a>
-        <a href="preview.html" class="header-nav-link">Student Home</a>
+        <a href="teacher-guide.html" class="header-nav-link">Teacher Guide</a>
+        <a href="preview.html" class="header-nav-link">Course Home</a>
+        <span class="user-name" id="user-name"></span>
         <button class="header-nav-link" type="button" data-open-modal="modal-change-password">Change Password</button>
-        <button class="header-nav-link" type="button">Sign Out</button>
+        <button class="header-nav-link" type="button" id="btn-logout">Sign Out</button>
       </div>
     </div>
   </header>
@@ -526,7 +535,7 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" type="button" data-close-modal>Cancel</button>
-        <button class="btn btn-primary" type="button" data-close-modal>Update Password</button>
+        <button class="btn btn-primary" type="button" id="btn-update-teacher-password">Update Password</button>
       </div>
     </div>
   </div>
@@ -534,6 +543,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="js/supabase-config.js"></script>
   <script src="js/shared-course-data.js"></script>
+  <script src="js/auth.js"></script>
   <script>
     const ACCOUNT_KEY = "caasppMathPilotAccounts";
     const SUBMISSION_KEY = "caasppMathPilotSubmissions";
@@ -944,6 +954,16 @@
 
     document.getElementById("btn-create-account").addEventListener("click", createAccount);
     document.getElementById("btn-reset-password").addEventListener("click", resetPassword);
+    document.getElementById("btn-update-teacher-password").addEventListener("click", async () => {
+      const password = document.getElementById("teacher-password").value;
+      const confirm = document.getElementById("teacher-password-confirm").value;
+      if (password.length < 6 || password !== confirm || !window.supabase) return;
+      const { error } = await window.supabase.auth.updateUser({ password });
+      if (error) return;
+      document.getElementById("teacher-password").value = "";
+      document.getElementById("teacher-password-confirm").value = "";
+      closeModals();
+    });
     document.getElementById("btn-export").addEventListener("click", () => {
       const rows = [["Student", "Login", "Status", "Quick Start", "Video Questions", "Practice", "Exit Check", "Lesson Score", "Last Activity"]];
       const submissions = getSubmissions();
@@ -972,7 +992,22 @@
       URL.revokeObjectURL(url);
     });
 
-    renderAll();
+    async function bootDashboard() {
+      if (window.CAASPPAuth) {
+        const profile = await CAASPPAuth.requireRole(["admin", "staff", "teacher"]);
+        if (!profile) return;
+        const name = document.getElementById("user-name");
+        if (name) name.textContent = profile.full_name || profile.email || "";
+      }
+      await renderAll();
+    }
+
+    document.getElementById("btn-logout").addEventListener("click", () => {
+      if (window.CAASPPAuth) CAASPPAuth.signOut();
+      else window.location.href = "index.html";
+    });
+
+    bootDashboard();
   </script>
 </body>
 </html>

@@ -36,7 +36,7 @@
       "video": {
         "provider": "youtube",
         "url": "https://www.youtube.com/watch?v=bAerID24QJ0",
-        "embedUrl": "https://www.youtube.com/embed/bAerID24QJ0",
+        "embedUrl": "https://www.youtube-nocookie.com/embed/bAerID24QJ0?rel=0",
         "sourceRef": "V1",
         "transcriptRequired": true
       },
