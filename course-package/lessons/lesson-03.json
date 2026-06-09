@@ -4,83 +4,280 @@
   "module": "Module 1 - Algebra Fluency",
   "estimatedMinutes": 60,
   "sourceRefs": ["S1", "S3", "V3"],
-  "learningTarget": "I can solve equations where variables appear on both sides.",
-  "whyItMatters": "Some equations compare two expressions that both contain variables. Cleaning up both sides helps you decide whether the equation has one solution, no solution, or infinitely many solutions.",
+  "learningTarget": "I can solve equations where variables appear on both sides and decide whether the equation has one solution, no solution, or infinitely many solutions.",
+  "whyItMatters": "Some equations compare two expressions that both have a variable. The key move is to collect the variable terms on one side, collect the constants on the other side, then read what the equation is telling you.",
+  "realWorldApplication": "On CAASPP, variables-on-both-sides questions often show up as pricing plans, student work, or equations that ask whether there is one answer, no answer, or every answer. In real life, this helps you compare two plans and find when they become equal.",
+  "standards": [
+    {
+      "code": "A-REI.1",
+      "label": "Explain why each equation-solving step is valid."
+    },
+    {
+      "code": "A-REI.3",
+      "label": "Solve linear equations in one variable."
+    },
+    {
+      "code": "A-CED.1",
+      "label": "Create equations from real situations and use them to solve problems."
+    }
+  ],
+  "overviewPrompt": "Create a short overview video for 11th grade students preparing for the CAASPP math test.\n\nLesson title: Variables on Both Sides\n\nMain idea: Some equations have variable terms on both sides. To solve them, move the variable terms to one side and the constant terms to the other side while keeping the equation balanced. Then divide to isolate x.\n\nUse this exact example:\n\nSolve 4x + 7 = 2x + 21.\n\nStep 1: Move the smaller variable term.\nSubtract 2x from both sides:\n2x + 7 = 21\n\nStep 2: Move the constant.\nSubtract 7 from both sides:\n2x = 14\n\nStep 3: Divide.\nDivide both sides by 2:\nx = 7\n\nCheck:\n4(7) + 7 = 2(7) + 21\n28 + 7 = 14 + 21\n35 = 35\n\nThe final answer is x = 7.\n\nAlso briefly explain the three possible outcomes:\nOne solution: x equals one specific number.\nNo solution: variables cancel and leave a false statement, like 10 = 15.\nInfinitely many solutions: variables cancel and leave a true statement, like 10 = 10.\n\nKeep it short, student-friendly, and focused on the idea of balance.",
+  "overviewVideo": {
+    "sectionTitle": "Start Here: Variables on Both Sides",
+    "title": "Lesson 3 Overview: Variables on Both Sides",
+    "description": "Watch this quick overview before you start solving. It shows how to move variable terms, keep both sides balanced, and recognize what kind of solution an equation has.",
+    "src": "media/videos/module-01-lesson-03-variables-both-sides-overview-web.mp4",
+    "poster": "media/videos/module-01-lesson-03-variables-both-sides-overview-poster.png"
+  },
+  "vocabulary": [
+    {
+      "term": "Variable term",
+      "definition": "A term with a variable, such as 4x or 2x."
+    },
+    {
+      "term": "Constant",
+      "definition": "A number without a variable, such as 7 or 21."
+    },
+    {
+      "term": "One solution",
+      "definition": "The equation is true for one specific value of the variable."
+    },
+    {
+      "term": "No solution",
+      "definition": "The variables cancel and leave a false statement, so no value works."
+    },
+    {
+      "term": "Infinitely many solutions",
+      "definition": "The variables cancel and leave a true statement, so every value works."
+    }
+  ],
   "sections": [
+    {
+      "id": "overview",
+      "type": "reflection",
+      "title": "Overview Reflection",
+      "studentText": "After watching the overview, explain the main point in your own words.",
+      "questions": [
+        {
+          "id": "l3-overview-reflection",
+          "type": "short_answer",
+          "prompt": "In your own words, explain why moving variable terms to one side can make an equation easier to solve.",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "expectedElements": ["variable terms", "one side", "constants", "balance", "isolate x"],
+          "commonMisconceptions": ["move only one side", "combine unlike terms", "guess instead of solving"],
+          "feedback": "A strong answer says that collecting variable terms on one side and constants on the other side makes it easier to isolate x while keeping the equation balanced."
+        }
+      ]
+    },
     {
       "id": "launch",
       "type": "launch",
       "title": "Quick Start",
-      "studentText": "A rideshare charges $5 to start and $2 per mile.",
+      "studentText": "Before solving a full equation, decide which terms belong together.",
       "questions": [
         {
           "id": "l3-launch-1",
           "type": "multiple_choice",
-          "prompt": "Which equation models the total cost C for m miles?",
+          "prompt": "In 4x + 7 = 2x + 21, which terms are variable terms?",
           "options": [
-            {"value": "A", "text": "C = 5m + 2"},
-            {"value": "B", "text": "C = 2m + 5"},
-            {"value": "C", "text": "C = 7m"},
-            {"value": "D", "text": "C = 5m - 2"}
+            {"value": "A", "text": "4x and 2x"},
+            {"value": "B", "text": "7 and 21"},
+            {"value": "C", "text": "4x and 7"},
+            {"value": "D", "text": "2x and 21"}
           ],
-          "answer": "B",
+          "answer": "A",
           "grading": "deterministic",
-          "feedback": "$5 is the starting cost, and $2 is added for each mile."
+          "feedback": "Variable terms include the variable. Here, 4x and 2x are the variable terms."
         }
       ]
     },
     {
       "id": "video",
       "type": "video",
-      "title": "Watch: Graphing a linear equation",
+      "title": "Watch: Solving Equations with Variables on Both Sides",
       "video": {
-        "provider": "khanacademy",
-        "url": "https://www.khanacademy.org/video/graphs-of-linear-equations",
+        "provider": "youtube",
+        "url": "https://www.youtube.com/watch?v=f15zA0PhSek",
+        "embedUrl": "https://www.youtube-nocookie.com/embed/f15zA0PhSek?rel=0",
+        "poster": "media/videos/lesson-03-khan-poster.jpg",
         "sourceRef": "V3",
-        "transcriptRequired": true
+        "transcriptRequired": false
       },
-      "watchFor": "Watch how a table becomes points on a graph.",
+      "watchFor": "Watch how the teacher moves variable terms to one side, keeps the equation balanced, and checks whether the answer works.",
       "contextQuestions": [
         {
           "id": "l3-vq1",
-          "type": "short_answer",
-          "prompt": "Why does the teacher make a table before graphing?",
-          "grading": "ai_rubric",
-          "rubricId": "math-explanation-3",
-          "feedback": "A strong answer says the table creates ordered pairs that can be plotted."
+          "type": "multiple_choice",
+          "prompt": "When variables are on both sides, what is usually a smart first goal?",
+          "options": [
+            {"value": "A", "text": "Get the variable terms onto one side of the equation"},
+            {"value": "B", "text": "Divide both sides before moving anything"},
+            {"value": "C", "text": "Erase the smaller variable term without changing the other side"},
+            {"value": "D", "text": "Guess values until one works"}
+          ],
+          "answer": "A",
+          "grading": "deterministic",
+          "feedback": "A good first goal is to collect the variable terms on one side while doing the same legal move to both sides."
         },
         {
           "id": "l3-vq2",
+          "type": "short_answer",
+          "prompt": "Why do you have to do the same move to both sides of the equation?",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "expectedElements": ["keep balanced", "equation stays true", "same operation both sides"],
+          "commonMisconceptions": ["only change the side with x", "move terms without changing signs"],
+          "feedback": "A strong answer says the equation has to stay balanced, so any operation used on one side must also be used on the other side."
+        },
+        {
+          "id": "l3-vq3",
           "type": "multiple_choice",
-          "prompt": "In y = 2x + 7, what does the 7 represent on the graph?",
+          "prompt": "If the variables cancel and the equation becomes 10 = 15, what does that mean?",
           "options": [
-            {"value": "A", "text": "The x-intercept"},
-            {"value": "B", "text": "The y-intercept"},
-            {"value": "C", "text": "The slope"},
-            {"value": "D", "text": "The highest point"}
+            {"value": "A", "text": "One solution"},
+            {"value": "B", "text": "No solution"},
+            {"value": "C", "text": "Infinitely many solutions"},
+            {"value": "D", "text": "x = 10"}
           ],
           "answer": "B",
           "grading": "deterministic",
-          "feedback": "When x = 0, y = 7, so the graph crosses the y-axis at 7."
+          "feedback": "10 = 15 is false, so no value of x can make the original equation true."
+        },
+        {
+          "id": "l3-vq4",
+          "type": "multiple_choice",
+          "prompt": "If the variables cancel and the equation becomes 10 = 10, what does that mean?",
+          "options": [
+            {"value": "A", "text": "No solution"},
+            {"value": "B", "text": "One solution"},
+            {"value": "C", "text": "Infinitely many solutions"},
+            {"value": "D", "text": "x = 10"}
+          ],
+          "answer": "C",
+          "grading": "deterministic",
+          "feedback": "10 = 10 is always true, so every value of x works."
         }
       ]
     },
     {
       "id": "learn",
       "type": "teaching",
-      "title": "Same Relationship, Four Forms",
-      "studentText": "A linear relationship has a steady change. If each extra mile adds the same $2, the table grows by 2 each time, the graph is a line, and the equation has a constant rate.",
+      "title": "Worked Example: Move Variables, Then Constants",
+      "studentText": "When x appears on both sides, collect the x terms first. Then move the constants. The goal is still the same: isolate the variable.",
       "workedExample": {
-        "prompt": "For C = 2m + 5, find the cost for 0, 1, 2, and 3 miles.",
+        "prompt": "Solve 4x + 7 = 2x + 21.",
         "steps": [
-          "m = 0 gives C = 5.",
-          "m = 1 gives C = 7.",
-          "m = 2 gives C = 9.",
-          "m = 3 gives C = 11.",
-          "The points are (0,5), (1,7), (2,9), and (3,11)."
+          "Move variable terms: subtract 2x from both sides to get 2x + 7 = 21.",
+          "Move constants: subtract 7 from both sides to get 2x = 14.",
+          "Divide: divide both sides by 2 to get x = 7.",
+          "Check: 4(7) + 7 = 35 and 2(7) + 21 = 35."
         ],
-        "commonMistake": "Do not multiply the starting fee by the miles. The starting fee happens once."
+        "commonMistake": "A common mistake is subtracting 2x from one side only. Every legal move must happen to both sides."
       }
+    },
+    {
+      "id": "balance_lab",
+      "type": "balance_lab",
+      "title": "Hands-On: Choose the Next Balanced Move",
+      "studentText": "Use the undo board to solve 4x + 7 = 2x + 21. Choose the next legal move from the bank. The board only moves forward when your move keeps the equation balanced.",
+      "balanceLab": {
+        "startEquation": "4x + 7 = 2x + 21",
+        "states": [
+          {
+            "equation": "4x + 7 = 2x + 21",
+            "tokens": ["4x", "+7", "=", "2x", "+21"],
+            "actions": [
+              {"text": "Subtract 2x from both sides", "action": "subtract2x"},
+              {"text": "Subtract 7 from both sides", "action": "subtract7"},
+              {"text": "Divide by 2", "action": "divide2"},
+              {"text": "Add 21 to both sides", "action": "add21"}
+            ],
+            "expectedAction": "subtract2x",
+            "dropText": "Choose the first move that gets variable terms together.",
+            "feedback": "Start by moving the smaller variable term so the x terms are on one side.",
+            "wrongFeedback": "Not yet. Since x appears on both sides, first collect the variable terms."
+          },
+          {
+            "equation": "2x + 7 = 21",
+            "tokens": ["2x", "+7", "=", "21"],
+            "actions": [
+              {"text": "Subtract 7 from both sides", "action": "subtract7"},
+              {"text": "Subtract 2x from both sides", "action": "subtract2x"},
+              {"text": "Divide by 2", "action": "divide2"},
+              {"text": "Add 7 to both sides", "action": "add7"}
+            ],
+            "expectedAction": "subtract7",
+            "dropText": "Choose the move that clears the constant.",
+            "feedback": "Good. Subtracting 2x from both sides leaves 2x + 7 = 21. Now clear the +7.",
+            "wrongFeedback": "Not yet. x is still not isolated because +7 is attached to 2x."
+          },
+          {
+            "equation": "2x = 14",
+            "tokens": ["2x", "=", "14"],
+            "actions": [
+              {"text": "Divide by 2", "action": "divide2"},
+              {"text": "Subtract 14", "action": "subtract14"},
+              {"text": "Multiply by 2", "action": "multiply2"},
+              {"text": "Add 2", "action": "add2"}
+            ],
+            "expectedAction": "divide2",
+            "dropText": "Choose the final undo move.",
+            "feedback": "Good. Subtracting 7 leaves 2x = 14. What undoes multiplying by 2?",
+            "wrongFeedback": "Not yet. x is being multiplied by 2, so use the inverse operation."
+          },
+          {
+            "equation": "x = 7",
+            "tokens": ["x", "=", "7"],
+            "actions": [],
+            "dropText": "Solved",
+            "feedback": "Solved: x = 7. You moved variables, moved constants, then divided."
+          }
+        ],
+        "complete": "Solved: x = 7."
+      }
+    },
+    {
+      "id": "real_world",
+      "type": "practice",
+      "title": "Real-World Equation: Photo Booth Packages",
+      "studentTextHtml": "<div class=\"scenario-summary\"><p><strong>Scenario:</strong> A school event is comparing two photo booth packages.</p><p><strong>Classic Booth:</strong> $18 setup fee plus <strong>$4 per photo strip</strong>.</p><p><strong>Deluxe Booth:</strong> $6 setup fee plus <strong>$7 per photo strip</strong>.</p><p><strong>Question:</strong> After how many photo strips will the two packages cost the same?</p><p><strong>Equation:</strong> 4x + 18 = 7x + 6</p></div>",
+      "image": {
+        "src": "media/images/lesson-03-photo-booth-packages-real-world.png",
+        "alt": "Students comparing two photo booth package tables at a school event.",
+        "caption": "Two photo booth packages can start with different fees and grow at different rates. Your job is to find when the costs match."
+      },
+      "questions": [
+        {
+          "id": "l3-rw1",
+          "type": "short_answer",
+          "prompt": "In the equation 4x + 18 = 7x + 6, what does x represent?",
+          "grading": "ai_rubric",
+          "rubricId": "factual-short-2",
+          "maxPoints": 2,
+          "expectedElements": ["number of photo strips", "photo strips ordered"],
+          "commonMisconceptions": ["total cost", "setup fee", "dollars per strip"],
+          "feedback": "x represents the number of photo strips."
+        },
+        {
+          "id": "l3-rw2",
+          "type": "numeric",
+          "prompt": "Solve 4x + 18 = 7x + 6. What is x?",
+          "answer": 4,
+          "grading": "deterministic",
+          "feedback": "Subtract 4x from both sides: 18 = 3x + 6. Subtract 6: 12 = 3x. Divide by 3: x = 4."
+        },
+        {
+          "id": "l3-rw3",
+          "type": "short_answer",
+          "prompt": "Explain what x = 4 means in the photo booth situation.",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "expectedElements": ["4 photo strips", "same cost", "both packages cost 34 dollars"],
+          "commonMisconceptions": ["$4 total", "$4 per strip", "4 students"],
+          "feedback": "x = 4 means the two packages cost the same after 4 photo strips. Both plans cost $34."
+        }
+      ]
     },
     {
       "id": "practice",
@@ -89,25 +286,49 @@
       "questions": [
         {
           "id": "l3-p1",
-          "type": "table_fill",
-          "prompt": "Complete the table for y = 3x + 4 when x = 0, 1, 2.",
-          "answer": [4, 7, 10],
+          "type": "numeric",
+          "prompt": "Solve: 6x + 5 = 2x + 21",
+          "answer": 4,
           "grading": "deterministic",
-          "feedback": "Substitute each x-value into 3x + 4."
+          "feedback": "Subtract 2x to get 4x + 5 = 21. Subtract 5 to get 4x = 16. x = 4."
         },
         {
           "id": "l3-p2",
           "type": "multiple_choice",
-          "prompt": "A table has y-values 8, 11, 14, 17 as x increases by 1. What is the rate of change?",
+          "prompt": "Solve: 3x + 10 = 3x + 4. What kind of solution does it have?",
           "options": [
-            {"value": "A", "text": "1"},
-            {"value": "B", "text": "3"},
-            {"value": "C", "text": "8"},
-            {"value": "D", "text": "17"}
+            {"value": "A", "text": "One solution"},
+            {"value": "B", "text": "No solution"},
+            {"value": "C", "text": "Infinitely many solutions"},
+            {"value": "D", "text": "x = 6"}
           ],
           "answer": "B",
           "grading": "deterministic",
-          "feedback": "The y-values increase by 3 each time."
+          "feedback": "Subtract 3x from both sides and you get 10 = 4, which is false. No solution."
+        },
+        {
+          "id": "l3-p3",
+          "type": "multiple_choice",
+          "prompt": "Solve: 5x + 8 = 5x + 8. What kind of solution does it have?",
+          "options": [
+            {"value": "A", "text": "No solution"},
+            {"value": "B", "text": "One solution"},
+            {"value": "C", "text": "Infinitely many solutions"},
+            {"value": "D", "text": "x = 8"}
+          ],
+          "answer": "C",
+          "grading": "deterministic",
+          "feedback": "The two sides are identical. Every value of x keeps the equation true."
+        },
+        {
+          "id": "l3-p4",
+          "type": "short_answer",
+          "prompt": "Explain how you know whether an equation has no solution after the variables cancel.",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "expectedElements": ["variables cancel", "false statement", "no value works"],
+          "commonMisconceptions": ["x equals zero", "always infinitely many", "ignore constants"],
+          "feedback": "If the variables cancel and the remaining statement is false, like 10 = 4, then no value works."
         }
       ]
     },
@@ -115,46 +336,76 @@
       "id": "check",
       "type": "check",
       "title": "Exit Check",
-      "masteryThreshold": 0.8,
+      "masteryThreshold": 0.7,
       "questions": [
         {
           "id": "w1-l3-q1",
-          "type": "multiple_choice",
-          "prompt": "A gym charges $20 to join and $10 per month. Which equation represents total cost T after m months?",
-          "options": [
-            {"value": "A", "text": "T = 20m + 10"},
-            {"value": "B", "text": "T = 10m + 20"},
-            {"value": "C", "text": "T = 30m"},
-            {"value": "D", "text": "T = 10m - 20"}
-          ],
-          "answer": "B",
+          "type": "numeric",
+          "prompt": "Solve: 5x + 3 = 2x + 18",
+          "answer": 5,
           "grading": "deterministic",
-          "feedback": "$20 happens once; $10 repeats each month."
+          "feedback": "Subtract 2x to get 3x + 3 = 18. Subtract 3 to get 3x = 15. x = 5."
         },
         {
           "id": "w1-l3-q2",
-          "type": "numeric",
-          "prompt": "Using T = 10m + 20, what is the total cost after 6 months?",
-          "answer": 80,
+          "type": "multiple_choice",
+          "prompt": "What is the first strong move for 8x - 6 = 3x + 14?",
+          "options": [
+            {"value": "A", "text": "Subtract 3x from both sides"},
+            {"value": "B", "text": "Subtract 14 from both sides"},
+            {"value": "C", "text": "Divide both sides by 8"},
+            {"value": "D", "text": "Add 6x to both sides"}
+          ],
+          "answer": "A",
           "grading": "deterministic",
-          "feedback": "10(6) + 20 = 80."
+          "feedback": "Subtracting 3x moves the variable terms together and keeps the equation balanced."
         },
         {
           "id": "w1-l3-q3",
+          "type": "multiple_choice",
+          "prompt": "Solve: 4x + 9 = 4x - 2. What kind of solution does it have?",
+          "options": [
+            {"value": "A", "text": "One solution"},
+            {"value": "B", "text": "No solution"},
+            {"value": "C", "text": "Infinitely many solutions"},
+            {"value": "D", "text": "x = 11"}
+          ],
+          "answer": "B",
+          "grading": "deterministic",
+          "feedback": "Subtract 4x and you get 9 = -2, which is false. No solution."
+        },
+        {
+          "id": "w1-l3-q4",
+          "type": "multiple_choice",
+          "prompt": "Solve: 2(3x + 5) = 6x + 10. What kind of solution does it have?",
+          "options": [
+            {"value": "A", "text": "One solution"},
+            {"value": "B", "text": "No solution"},
+            {"value": "C", "text": "Infinitely many solutions"},
+            {"value": "D", "text": "x = 10"}
+          ],
+          "answer": "C",
+          "grading": "deterministic",
+          "feedback": "Distribute to get 6x + 10 = 6x + 10. This is always true, so there are infinitely many solutions."
+        },
+        {
+          "id": "w1-l3-q5",
           "type": "short_answer",
-          "prompt": "Explain how you can tell from a table whether a relationship is linear.",
+          "prompt": "In your own words, explain how variables on both sides can lead to one solution, no solution, or infinitely many solutions.",
           "grading": "ai_rubric",
           "rubricId": "math-explanation-3",
-          "feedback": "A strong answer says the y-values change by a constant amount when x changes evenly."
+          "expectedElements": ["variables cancel", "true statement", "false statement", "specific value"],
+          "commonMisconceptions": ["variables cancel always means no solution", "x always equals zero", "checking is not needed"],
+          "feedback": "A strong answer says that if solving gives x equal to one number, there is one solution; if variables cancel and leave a false statement, there is no solution; if variables cancel and leave a true statement, there are infinitely many solutions."
         }
       ]
     }
   ],
   "gate": {
-    "completion": "Student attempts the video questions, practice, and exit check.",
-    "mastery": "At least 80% objective accuracy and a clear explanation of constant rate.",
-    "remediation": "Build a table from a simple equation and identify the constant change.",
-    "enrichment": "Create a cost model for a real subscription and show it as a table and equation."
+    "completion": "Student attempts the overview reflection, video questions, real-world task, practice, and exit check.",
+    "mastery": "70% or higher across the lesson, with the exit check flagged for teacher follow-up if it falls below 70%.",
+    "remediation": "Practice collecting variable terms on one side, then classify true and false statements after variables cancel.",
+    "enrichment": "Create two pricing plans that become equal at a chosen number of items, then prove the solution."
   },
-  "teacherReviewTriggers": ["low_ai_confidence", "misread_context", "rubric_score_1_or_lower"]
+  "teacherReviewTriggers": ["low_ai_confidence", "exit_check_below_70", "solution_type_confusion", "rubric_score_1_or_lower"]
 }

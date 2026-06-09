@@ -1587,7 +1587,7 @@
   <script src="js/auth.js"></script>
   <script>
     const lessonIds = ["01", "02", "03", "04", "05"];
-    const COURSE_ASSET_VERSION = "2026-06-09-module-1-lesson-2d";
+    const COURSE_ASSET_VERSION = "2026-06-09-module-1-lesson-3a";
     const courseHome = {
       title: "CAASPP Math Success Academy",
       subtitle: "Build confidence with the math moves that show up again and again on CAASPP.",
@@ -1666,7 +1666,7 @@
 
     function renderList() {
       const list = document.getElementById("lesson-list");
-      const isOpenLesson = (lesson) => Number(lesson.lessonId) <= 2;
+      const isOpenLesson = (lesson) => Number(lesson.lessonId) <= 3;
       list.innerHTML = state.lessons.map((lesson, index) => `
         <button class="lesson-button ${index === state.active ? "active" : ""}" data-index="${index}" ${isOpenLesson(lesson) ? "" : "disabled"}>
           <strong>Lesson ${lesson.lessonId}: ${escapeHtml(lesson.title)}</strong>
@@ -1803,6 +1803,7 @@
         ${renderNextSteps(lesson)}
       `;
       initBalanceLabs(root);
+      window.StudyBuddy?.resetForLesson?.();
       root.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
@@ -1910,7 +1911,7 @@
       const map = {
         "01": "media/infographics/lesson-01-undo-the-equation-guide.png",
         "02": "media/infographics/lesson-02-clean-up-equation-guide.png",
-        "03": "media/infographics/inf-03-four-forms.svg",
+        "03": "media/infographics/lesson-03-variables-both-sides-guide.png",
         "04": "media/infographics/inf-04-slope-intercept.svg",
         "05": "media/infographics/inf-05-function-machine.svg"
       };
@@ -2619,11 +2620,21 @@
           id: section.id,
           title: section.title,
           type: section.type,
-          studentText: section.studentText || "",
+          studentText: section.studentText || stripLessonHtml(section.studentTextHtml || ""),
           watchFor: section.watchFor || "",
           workedExample: section.workedExample || null,
           scenario: section.scenario || "",
-          commonMistake: section.workedExample?.commonMistake || ""
+          commonMistake: section.workedExample?.commonMistake || "",
+          questions: [
+            ...(section.questions || []),
+            ...(section.contextQuestions || [])
+          ].map((question) => ({
+            id: question.id,
+            type: question.type,
+            prompt: question.prompt,
+            promptHtml: question.promptHtml || "",
+            options: question.options?.map((option) => option.text) || []
+          }))
         })),
         allowedHelp: [
           "explain the current concept",
@@ -2636,6 +2647,13 @@
           "write the student's constructed response"
         ]
       };
+    }
+
+    function stripLessonHtml(html) {
+      return String(html || "")
+        .replace(/<[^>]*>/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
     }
 
     async function askStudyBuddy(studentMessage) {
@@ -2705,13 +2723,16 @@
       },
 
       showWelcome() {
-        this.addBotMessage("Hi! I'm your CAASPP Math Study Buddy. Ask me to explain a step, check your reasoning, or make a similar practice problem.");
+        const lesson = state.lessons[state.active];
+        const lessonLabel = lesson ? `Lesson ${lesson.lessonId}: ${lesson.title}` : "this lesson";
+        const lessonTopic = lesson?.title || "the lesson";
+        this.addBotMessage(`Hi! I'm your CAASPP Math Study Buddy. I'm looking at ${lessonLabel}. Ask me to explain a step, check your reasoning, or make a similar practice problem.`);
         const suggestions = document.createElement("div");
         suggestions.className = "sb-suggestions";
         [
-          "Help me start Lesson 1",
-          "Quiz me on inverse operations",
-          "What does coefficient mean?"
+          "Help me start this lesson",
+          `Help me understand ${lessonTopic}`,
+          "Make a similar practice problem"
         ].forEach((text) => {
           const chip = document.createElement("button");
           chip.className = "sb-suggestion";
@@ -2724,6 +2745,13 @@
           suggestions.appendChild(chip);
         });
         this.messagesEl.appendChild(suggestions);
+      },
+
+      resetForLesson() {
+        if (!this.messagesEl) return;
+        this.history = [];
+        this.messagesEl.innerHTML = "";
+        this.showWelcome();
       },
 
       formatMarkdown(text) {
@@ -2815,6 +2843,7 @@
         }
       }
     };
+    window.StudyBuddy = StudyBuddy;
 
     async function setupCourseNav() {
       const nav = document.getElementById("course-nav");
