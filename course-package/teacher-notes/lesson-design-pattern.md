@@ -105,3 +105,11 @@ Lesson 2 uses `3(x + 8) + 2x = 79` with answer `x = 11`:
 5. Check: `3(11 + 8) + 2(11) = 79`.
 
 The hands-on activity should require students to choose the next valid move, not simply click through a revealed solution. For Lesson 2 the correct sequence is distribute, combine like terms, subtract 24, divide by 5. Wrong choices should give targeted feedback and leave the equation unchanged.
+
+## Readability And Student-Facing Copy Rule
+
+- Lesson text must be chunked so students can scan it on phone and desktop. Long scenario paragraphs should become short blocks with bolded labels such as **Scenario**, **What x means**, **Total**, and **Equation**.
+- Use color accents only to clarify structure, not as decoration. Good uses: highlighting a worked-step label, calling out an equation, or separating a common mistake from the solution.
+- Every caption, direction, question, and section title must be student-facing. Do not write builder notes such as "use the page text for exact numbers," "this image gives the setting," or "the student should..." on lesson pages.
+- Exit-check questions should ask for a clear mathematical takeaway in language students understand. Avoid teacher-facing diagnostic phrasing unless the student is actually being asked to find a specific error in a shown solution.
+- When a transcript is available, video questions should be transcript-locked to the actual moves in the video. Ask about the specific teacher move, sign change, simplification, or check shown on screen instead of generic questions that could fit any similar video.

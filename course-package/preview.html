@@ -504,6 +504,51 @@
       font-size: 0.92rem;
     }
 
+    .worked-example-card {
+      border: 1px solid #bfd3e8;
+      border-radius: 8px;
+      background: #f7fbff;
+      padding: 14px;
+      margin-top: 12px;
+    }
+
+    .worked-example-card p {
+      margin-bottom: 10px;
+    }
+
+    .worked-example-card .steps {
+      margin-bottom: 12px;
+    }
+
+    .worked-example-card .steps li {
+      margin-bottom: 8px;
+    }
+
+    .worked-step-label {
+      font-weight: 800;
+      color: #0f3d6e;
+    }
+
+    .scenario-summary {
+      border-left: 5px solid var(--gold);
+      background: #fffaf0;
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+    }
+
+    .scenario-summary strong {
+      color: #7a4b00;
+    }
+
+    .scenario-summary p {
+      margin: 0 0 8px;
+    }
+
+    .scenario-summary p:last-child {
+      margin-bottom: 0;
+    }
+
     .math-expression {
       display: inline-flex;
       align-items: center;
@@ -1542,7 +1587,7 @@
   <script src="js/auth.js"></script>
   <script>
     const lessonIds = ["01", "02", "03", "04", "05"];
-    const COURSE_ASSET_VERSION = "2026-06-09-module-1-lesson-2b";
+    const COURSE_ASSET_VERSION = "2026-06-09-module-1-lesson-2c";
     const courseHome = {
       title: "CAASPP Math Success Academy",
       subtitle: "Build confidence with the math moves that show up again and again on CAASPP.",
@@ -1772,7 +1817,8 @@
 
     function renderSection(section) {
       let body = "";
-      if (section.studentText) body += `<p>${escapeHtml(section.studentText)}</p>`;
+      if (section.studentTextHtml) body += section.studentTextHtml;
+      else if (section.studentText) body += `<p>${escapeHtml(section.studentText)}</p>`;
       if (section.image) body += renderLessonImage(section.image);
       if (section.video) body += renderVideo(section);
       if (section.workedExample) body += renderWorkedExample(section.workedExample);
@@ -1874,12 +1920,21 @@
 
     function renderWorkedExample(example) {
       return `
-        <div>
+        <div class="worked-example-card">
           <p><strong>Worked example:</strong> ${escapeHtml(example.prompt)}</p>
-          <ol class="steps">${(example.steps || []).map(step => `<li>${escapeHtml(step)}</li>`).join("")}</ol>
+          <ol class="steps">${(example.steps || []).map(step => `<li>${formatWorkedStep(step)}</li>`).join("")}</ol>
           <p class="common-mistake"><strong>Common mistake:</strong> ${escapeHtml(example.commonMistake)}</p>
         </div>
       `;
+    }
+
+    function formatWorkedStep(step) {
+      const text = String(step || "");
+      const colonIndex = text.indexOf(":");
+      if (colonIndex <= 0) return escapeHtml(text);
+      const label = text.slice(0, colonIndex + 1);
+      const rest = text.slice(colonIndex + 1);
+      return `<span class="worked-step-label">${escapeHtml(label)}</span>${escapeHtml(rest)}`;
     }
 
     function renderBalanceLab(lab) {

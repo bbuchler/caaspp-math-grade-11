@@ -95,65 +95,68 @@
         "embedUrl": "https://www.youtube-nocookie.com/embed/YZBStgZGyDY?rel=0",
         "poster": "media/videos/lesson-02-khan-poster.jpg",
         "sourceRef": "V2",
-        "transcriptRequired": false
+        "transcriptRequired": true
       },
-      "watchFor": "Watch for the order of the moves: distribute first, combine like terms if possible, then use inverse operations to isolate the variable.",
+      "watchFor": "Watch how the teacher clears parentheses first, including the hidden -1 in front of (9x - 6), then moves x terms and constants to opposite sides.",
       "contextQuestions": [
         {
           "id": "l2-vq1",
           "type": "multiple_choice",
-          "prompt": "When an equation has parentheses like 3(x + 8), what cleanup move usually comes first?",
+          "prompt": "In the video, why does -(9x - 6) become -9x + 6?",
           "options": [
-            {"value": "A", "text": "Divide both sides by x"},
-            {"value": "B", "text": "Use the distributive property"},
-            {"value": "C", "text": "Ignore the parentheses"},
-            {"value": "D", "text": "Subtract the coefficient"}
+            {"value": "A", "text": "Because the minus sign acts like multiplying the whole parentheses by -1"},
+            {"value": "B", "text": "Because 9x and -6 are like terms"},
+            {"value": "C", "text": "Because the teacher divided both terms by -1"},
+            {"value": "D", "text": "Because the parentheses can be ignored"}
           ],
-          "answer": "B",
+          "answer": "A",
           "grading": "deterministic",
-          "feedback": "Parentheses often need the distributive property before the equation is ready for inverse operations."
+          "feedback": "A minus sign in front of parentheses means multiply every term inside by -1: -1(9x - 6) = -9x + 6."
         },
         {
           "id": "l2-vq2",
-          "type": "short_answer",
-          "prompt": "What does it mean to combine like terms before solving?",
-          "grading": "ai_rubric",
-          "rubricId": "factual-short-2",
-          "maxPoints": 2,
-          "expectedElements": ["same variable", "add or subtract coefficients", "simplify one side"],
-          "commonMisconceptions": ["combine unlike terms", "multiply all terms", "combine constants with x terms"],
-          "feedback": "A strong answer says you combine terms with the same variable part, such as 3x + 2x becoming 5x."
+          "type": "multiple_choice",
+          "prompt": "After distributing, the left side has -9 and +6. What do those constants combine to?",
+          "options": [
+            {"value": "A", "text": "-15"},
+            {"value": "B", "text": "-3"},
+            {"value": "C", "text": "3"},
+            {"value": "D", "text": "15"}
+          ],
+          "answer": "B",
+          "grading": "deterministic",
+          "feedback": "-9 + 6 = -3, so the left side simplifies to -9x - 3."
         },
         {
           "id": "l2-vq3",
           "type": "multiple_choice",
-          "prompt": "Which pair can be combined as like terms?",
+          "prompt": "Why does the teacher subtract 12x from both sides?",
           "options": [
-            {"value": "A", "text": "5x and 7"},
-            {"value": "B", "text": "4x and -2x"},
-            {"value": "C", "text": "3x and 3y"},
-            {"value": "D", "text": "x and x^2"}
+            {"value": "A", "text": "To move the x terms to one side of the equation"},
+            {"value": "B", "text": "To make the constants cancel first"},
+            {"value": "C", "text": "To change -9x into +9x"},
+            {"value": "D", "text": "To check the final answer"}
           ],
-          "answer": "B",
+          "answer": "A",
           "grading": "deterministic",
-          "feedback": "4x and -2x both have the same variable part, x."
+          "feedback": "Subtracting 12x from both sides removes the x term from the right side and groups the x terms together."
         },
         {
           "id": "l2-vq4",
           "type": "short_answer",
-          "prompt": "Why is it useful to check a multi-step equation solution after you solve?",
+          "prompt": "The video gets x = -1. How does the teacher check that the answer works?",
           "grading": "ai_rubric",
           "rubricId": "math-explanation-3",
-          "expectedElements": ["substitute back", "original equation", "catch distribution or sign mistakes", "make both sides equal"],
-          "commonMisconceptions": ["checking is only for one-step equations", "checking means redoing the same work"],
-          "feedback": "A strong answer says checking catches mistakes by substituting the answer into the original equation."
+          "expectedElements": ["substitute -1", "original equation", "left side equals 6", "right side equals 6", "both sides match"],
+          "commonMisconceptions": ["check only one side", "use the simplified equation only", "change the original equation"],
+          "feedback": "A strong answer says the teacher substitutes -1 into the original equation and shows both sides equal 6."
         }
       ]
     },
     {
       "id": "learn",
       "type": "teaching",
-      "title": "Clean Up Before You Undo",
+      "title": "Worked Example: Distribute, Combine, Solve",
       "studentText": "A multi-step equation is easier when you separate the cleanup moves from the undo moves.",
       "workedExample": {
         "prompt": "Solve 3(x + 8) + 2x = 79.",
@@ -247,10 +250,11 @@
       "type": "practice",
       "title": "Real-World Equation: 3-on-3 Tournament Bundles",
       "studentText": "A student group is running a lunchtime 3-on-3 basketball tournament. They sell 3 team bundles. Each bundle includes one entry wristband that costs x dollars plus an $8 snack card. They also sell 2 extra wristbands for x dollars each. The total collected is $79. The situation can be modeled by 3(x + 8) + 2x = 79.",
+      "studentTextHtml": "<div class=\"scenario-summary\"><p><strong>Scenario:</strong> A student group is running a lunchtime 3-on-3 basketball tournament.</p><p>They sell <strong>3 team bundles</strong>. Each bundle includes one entry wristband that costs <strong>x dollars</strong> plus an <strong>$8 snack card</strong>.</p><p>They also sell <strong>2 extra wristbands</strong> for <strong>x dollars each</strong>. The total collected is <strong>$79</strong>.</p><p><strong>Equation:</strong> 3(x + 8) + 2x = 79</p></div>",
       "image": {
         "src": "media/images/lesson-02-basketball-tournament-real-world.png",
         "alt": "High school students at a basketball tournament sign-up table with wristbands, snack cards, and a clipboard.",
-        "caption": "The image gives the tournament setting. Use the page text for the exact numbers and equation."
+        "caption": "The table is selling tournament bundles and extra wristbands. Your job is to figure out the price of one wristband."
       },
       "questions": [
         {
@@ -384,12 +388,12 @@
         {
           "id": "w1-l2-q5",
           "type": "short_answer",
-          "prompt": "Explain how to tell whether a student's multi-step equation solution has a distribution mistake.",
+          "prompt": "In your own words, explain the best order for solving a multi-step equation like 3(x + 8) + 2x = 79.",
           "grading": "ai_rubric",
           "rubricId": "math-explanation-3",
-          "expectedElements": ["check each term inside parentheses", "multiplier applies to every term", "look for sign mistakes", "substitute or compare equivalent expressions"],
-          "commonMisconceptions": ["only check the final answer", "only multiply the variable term", "distribution is optional"],
-          "feedback": "A strong answer says to check whether the outside number multiplied every term inside the parentheses, including constants and signs."
+          "expectedElements": ["distribute first", "combine like terms", "use inverse operations", "check the solution"],
+          "commonMisconceptions": ["guess first", "divide before simplifying", "ignore parentheses", "only change one side"],
+          "feedback": "A strong answer says to clean up first by distributing and combining like terms, then use inverse operations to isolate x, and finally check the answer."
         }
       ]
     }
