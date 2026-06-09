@@ -65,6 +65,7 @@ Default lesson length: **60 minutes** unless Baptiste asks for a different pacin
 
 13. **Finish Line**
    - Celebrates completion, names what students learned, gives a simple "ready/need practice" message, offers an optional challenge, then submits the lesson.
+   - The optional challenge should be an actual extension question with its own `Submit Answer` / `Update Answer` feedback flow before the final lesson submit, not a hidden ungraded text box.
 
 ## Grading Rules
 

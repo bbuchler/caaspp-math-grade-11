@@ -102,61 +102,72 @@
         "embedUrl": "https://www.youtube-nocookie.com/embed/f15zA0PhSek?rel=0",
         "poster": "media/videos/lesson-03-khan-poster.jpg",
         "sourceRef": "V3",
-        "transcriptRequired": false
+        "transcriptRequired": true
       },
-      "watchFor": "Watch how the teacher moves variable terms to one side, keeps the equation balanced, and checks whether the answer works.",
+      "watchFor": "Watch the exact equation 2x + 3 = 5x - 2. Notice how the teacher visualizes both sides, subtracts 2x, adds 2, divides by 3, and explains why 5/3 is the same as 1 2/3.",
       "contextQuestions": [
         {
           "id": "l3-vq1",
           "type": "multiple_choice",
-          "prompt": "When variables are on both sides, what is usually a smart first goal?",
+          "prompt": "In the video equation 2x + 3 = 5x - 2, why does the teacher subtract 2x from both sides first?",
           "options": [
-            {"value": "A", "text": "Get the variable terms onto one side of the equation"},
-            {"value": "B", "text": "Divide both sides before moving anything"},
-            {"value": "C", "text": "Erase the smaller variable term without changing the other side"},
-            {"value": "D", "text": "Guess values until one works"}
+            {"value": "A", "text": "To remove the x terms from the left side and leave a positive number of x's on the right"},
+            {"value": "B", "text": "To divide both sides by 2"},
+            {"value": "C", "text": "To remove the constants from both sides"},
+            {"value": "D", "text": "To make the equation have no solution"}
           ],
           "answer": "A",
           "grading": "deterministic",
-          "feedback": "A good first goal is to collect the variable terms on one side while doing the same legal move to both sides."
+          "feedback": "Subtracting 2x from both sides removes the x terms from the left and leaves 3x on the right."
         },
         {
           "id": "l3-vq2",
-          "type": "short_answer",
-          "prompt": "Why do you have to do the same move to both sides of the equation?",
-          "grading": "ai_rubric",
-          "rubricId": "math-explanation-3",
-          "expectedElements": ["keep balanced", "equation stays true", "same operation both sides"],
-          "commonMisconceptions": ["only change the side with x", "move terms without changing signs"],
-          "feedback": "A strong answer says the equation has to stay balanced, so any operation used on one side must also be used on the other side."
+          "type": "multiple_choice",
+          "prompt": "After subtracting 2x from both sides, what equation is left?",
+          "options": [
+            {"value": "A", "text": "3 = 3x - 2"},
+            {"value": "B", "text": "3 = 5x - 2"},
+            {"value": "C", "text": "2x = 3x - 2"},
+            {"value": "D", "text": "5 = 3x"}
+          ],
+          "answer": "A",
+          "grading": "deterministic",
+          "feedback": "The 2x terms on the left cancel, and 5x - 2x leaves 3x, so the equation becomes 3 = 3x - 2."
         },
         {
           "id": "l3-vq3",
-          "type": "multiple_choice",
-          "prompt": "If the variables cancel and the equation becomes 10 = 15, what does that mean?",
-          "options": [
-            {"value": "A", "text": "One solution"},
-            {"value": "B", "text": "No solution"},
-            {"value": "C", "text": "Infinitely many solutions"},
-            {"value": "D", "text": "x = 10"}
-          ],
-          "answer": "B",
-          "grading": "deterministic",
-          "feedback": "10 = 15 is false, so no value of x can make the original equation true."
+          "type": "short_answer",
+          "prompt": "Why does the teacher add 2 to both sides after getting 3 = 3x - 2?",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "expectedElements": ["cancel -2", "isolate 3x", "both sides", "5 = 3x"],
+          "commonMisconceptions": ["add only to one side", "subtract 2", "divide before clearing the constant"],
+          "feedback": "A strong answer says that adding 2 cancels the -2 on the right, keeps the equation balanced, and leaves 5 = 3x."
         },
         {
           "id": "l3-vq4",
           "type": "multiple_choice",
-          "prompt": "If the variables cancel and the equation becomes 10 = 10, what does that mean?",
+          "prompt": "When the video reaches 5 = 3x, why does the teacher divide both sides by 3?",
           "options": [
-            {"value": "A", "text": "No solution"},
-            {"value": "B", "text": "One solution"},
-            {"value": "C", "text": "Infinitely many solutions"},
-            {"value": "D", "text": "x = 10"}
+            {"value": "A", "text": "Because x is being multiplied by 3, and division by 3 isolates x"},
+            {"value": "B", "text": "Because the 5 needs to disappear"},
+            {"value": "C", "text": "Because every variables-on-both-sides equation ends by dividing by 3"},
+            {"value": "D", "text": "Because 5 and 3 are like terms"}
           ],
-          "answer": "C",
+          "answer": "A",
           "grading": "deterministic",
-          "feedback": "10 = 10 is always true, so every value of x works."
+          "feedback": "3x means 3 times x. Dividing both sides by 3 leaves one x, so x = 5/3."
+        },
+        {
+          "id": "l3-vq5",
+          "type": "short_answer",
+          "prompt": "The video says x = 5/3, which can also be written as 1 2/3. Explain why those two forms mean the same value.",
+          "grading": "ai_rubric",
+          "rubricId": "factual-short-2",
+          "maxPoints": 2,
+          "expectedElements": ["5/3", "1 2/3", "same value", "improper fraction", "mixed number"],
+          "commonMisconceptions": ["5/3 is 1/3", "1 2/3 is larger than 5/3", "fractions cannot be answers"],
+          "feedback": "5/3 is an improper fraction. Three thirds make 1 whole, with 2 thirds left over, so 5/3 = 1 2/3."
         }
       ]
     },

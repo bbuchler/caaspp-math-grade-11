@@ -2223,9 +2223,9 @@
           challenge: "Create a believable wrong solution for 4(x + 3) + 2x = 54. Then explain exactly where the mistake happens and solve it correctly."
         },
         "03": {
-          done: ["Complete the table.", "Match the table to an equation.", "Explain what the pattern means."],
-          retry: ["Make a three-row table for y = 2x + 5.", "Circle the starting value and the repeated change."],
-          challenge: "Create a real situation that matches y = 3x + 10, then explain what 3 and 10 mean."
+          done: ["Move variable terms", "Move constants", "Classify the solution"],
+          retry: ["redo the practice section", "ask Study Buddy to explain why variables can cancel", "check one answer in the original equation"],
+          challenge: "Create two school-event pricing plans that become equal after 5 items. Write an equation with variables on both sides, solve it, and explain what your answer means."
         },
         "04": {
           done: ["Identify the slope.", "Identify the intercept.", "Explain both numbers in the situation."],
@@ -2243,6 +2243,7 @@
 
     function renderNextSteps(lesson) {
       const next = lessonNextSteps(lesson);
+      const bonusQuestion = bonusChallengeQuestion(lesson, next);
       return `
         <section class="section-card">
           <header><h3>Finish Line</h3></header>
@@ -2270,16 +2271,41 @@
             </div>
             <div class="challenge-box">
               <p><strong>Bonus Challenge:</strong> ${escapeHtml(next.challenge)}</p>
-              <textarea id="finish-challenge-answer" placeholder="Write your equation, solve it, and explain what x means."></textarea>
+              <p class="muted">Optional extension. Submit it here if you want feedback before you submit the lesson.</p>
+              ${renderQuestion(bonusQuestion)}
             </div>
             <div class="submit-box">
-              <p>When you are done, submit the lesson. Your checked answers are saved, and your challenge response will go to your teacher if you wrote one.</p>
+              <p>When you are done, submit the lesson. Your checked answers are saved as you go. If you tried the bonus, submit that answer above first so you can see feedback.</p>
               <button class="submit-lesson" type="button">Submit Lesson</button>
               <div class="submit-status" id="submit-status"></div>
             </div>
           </div>
         </section>
       `;
+    }
+
+    function bonusChallengeQuestion(lesson, next) {
+      const expectedByLesson = {
+        "01": ["equation", "solve", "inverse operation", "meaning in situation"],
+        "02": ["wrong solution", "mistake", "correct solution", "distribute", "combine like terms"],
+        "03": ["two pricing plans", "variables on both sides", "equal after 5 items", "solve", "explain meaning"],
+        "04": ["formula", "rearrange", "chosen variable", "real-world meaning"],
+        "05": ["model", "change one number", "explain effect", "real-world meaning"]
+      };
+      return {
+        id: `l${lesson.lessonId}-bonus-challenge`,
+        type: "short_answer",
+        prompt: next.challenge,
+        grading: "ai_rubric",
+        rubricId: "math-extension-3",
+        maxPoints: 3,
+        sectionId: "bonus_challenge",
+        sectionType: "extension",
+        sectionTitle: "Bonus Challenge",
+        expectedElements: expectedByLesson[lesson.lessonId] || ["equation", "answer", "explanation"],
+        commonMisconceptions: ["gives only an answer", "does not explain what the variable means", "uses numbers that do not match the situation"],
+        feedback: "A strong bonus answer creates a clear situation, shows the math, and explains what the solution means."
+      };
     }
 
     function masteryDescription(term) {
@@ -2290,6 +2316,9 @@
         "Distributive property": "You can multiply the outside number by every term in parentheses.",
         "Combine like terms": "You can clean up terms that share the same variable part.",
         "Error analysis": "You can spot the step where a solution stopped being valid."
+        ,"Move variable terms": "You can collect x terms on one side of the equation."
+        ,"Move constants": "You can move number terms to the other side while keeping balance."
+        ,"Classify the solution": "You can tell whether the equation has one solution, no solution, or infinitely many solutions."
       };
       return descriptions[term] || "You can explain the main idea in your own words.";
     }
@@ -2297,7 +2326,8 @@
     function finishSummary(lesson) {
       const summaries = {
         "01": "You can now undo an equation one move at a time, keep both sides balanced, and check whether your answer actually works.",
-        "02": "You can now clean up a multi-step equation, solve it with balanced inverse operations, and explain common mistakes in someone else's work."
+        "02": "You can now clean up a multi-step equation, solve it with balanced inverse operations, and explain common mistakes in someone else's work.",
+        "03": "You can now solve equations with variables on both sides and explain whether the result gives one answer, no answer, or every answer."
       };
       return summaries[lesson.lessonId] || `You practiced the main skill for Lesson ${lesson.lessonId}: ${lesson.learningTarget}`;
     }
@@ -2531,7 +2561,6 @@
       const lesson = state.lessons[state.active];
       const status = document.getElementById("submit-status");
       const button = document.querySelector("button.submit-lesson");
-      const answer = document.getElementById("finish-challenge-answer")?.value.trim() || "";
 
       if (!lesson || !status || !button) return;
       button.disabled = true;
@@ -2542,26 +2571,6 @@
       const studentId = "pilot-student";
       const lessonId = lesson.lessonId || "01";
       if (canSaveStudentWork()) {
-        if (answer) {
-          const challengeQuestion = {
-            id: `l${lesson.lessonId}-finish-challenge`,
-            type: "short_answer",
-            prompt: lessonNextSteps(lesson).challenge,
-            grading: "teacher_override",
-            sectionId: "finish_line",
-            sectionTitle: "Finish Line"
-          };
-
-          savePilotSubmission(challengeQuestion, answer, {
-            score: 0,
-            maxScore: 0,
-            feedback: "Submitted for teacher review.",
-            correct: true,
-            confidence: 1,
-            needsTeacherReview: true
-          });
-        }
-
         const key = "caasppMathPilotSubmissions";
         const existing = JSON.parse(localStorage.getItem(key) || "{}");
         existing[studentId] = existing[studentId] || { studentId, studentName: "Test Student", lessons: {} };
