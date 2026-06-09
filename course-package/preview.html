@@ -404,6 +404,54 @@
       margin: 10px 0;
     }
 
+    .video-poster {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #0f263f;
+      margin: 10px 0;
+      overflow: hidden;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .video-poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .video-poster::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(15,38,63,0.05), rgba(15,38,63,0.45));
+    }
+
+    .video-play {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.92);
+      background: rgba(36,87,166,0.9);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 14px 30px rgba(0,0,0,0.28);
+    }
+
+    .video-play svg {
+      margin-left: 5px;
+    }
+
     .overview-video {
       display: block;
       width: 100%;
@@ -1779,7 +1827,14 @@
     function renderVideo(section) {
       const src = section.video.embedUrl;
       const frame = src
-        ? `<iframe class="video-frame" src="${escapeHtml(src)}" title="${escapeHtml(section.title)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`
+        ? section.video.poster
+          ? `<button class="video-poster" type="button" data-video-src="${escapeHtml(src)}" data-video-title="${escapeHtml(section.title)}" aria-label="Play ${escapeHtml(section.title)}">
+              <img src="${escapeHtml(section.video.poster)}" alt="${escapeHtml(section.title)} video poster">
+              <span class="video-play" aria-hidden="true">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              </span>
+            </button>`
+          : `<iframe class="video-frame" src="${escapeHtml(src)}" title="${escapeHtml(section.title)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`
         : `<div class="video-frame" style="display:grid;place-items:center;color:#d7e3ef;padding:18px;text-align:center;">
             <div>
               <strong>Embedded player not available for this source yet.</strong><br>
@@ -1794,6 +1849,14 @@
           <p class="watch-for"><a href="${escapeHtml(section.video.url)}" target="_blank" rel="noopener">Open the video in a new tab</a></p>
         </div>
       `;
+    }
+
+    function activateVideoPoster(button) {
+      const src = button.dataset.videoSrc;
+      const title = button.dataset.videoTitle || "Lesson video";
+      if (!src) return;
+      const separator = src.includes("?") ? "&" : "?";
+      button.outerHTML = `<iframe class="video-frame" src="${escapeHtml(src)}${separator}autoplay=1" title="${escapeHtml(title)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
     }
 
     function renderInfographic(lessonId) {
@@ -2186,6 +2249,12 @@
       if (event.target.matches(".operation-tile.draggable")) {
         const labEl = event.target.closest(".balance-lab");
         applyBalanceMove(labEl, event.target.dataset.undoAction);
+        return;
+      }
+
+      const videoPoster = event.target.closest(".video-poster");
+      if (videoPoster) {
+        activateVideoPoster(videoPoster);
         return;
       }
 

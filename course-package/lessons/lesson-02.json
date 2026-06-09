@@ -93,6 +93,7 @@
         "provider": "youtube",
         "url": "https://www.youtube.com/watch?v=YZBStgZGyDY",
         "embedUrl": "https://www.youtube-nocookie.com/embed/YZBStgZGyDY?rel=0",
+        "poster": "media/videos/lesson-02-khan-poster.jpg",
         "sourceRef": "V2",
         "transcriptRequired": false
       },
