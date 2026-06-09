@@ -10,7 +10,7 @@ Media must teach a move students will use immediately. For this pilot, every vid
 | --- | --- | --- | --- |
 | 01 | NotebookLM overview: Deconstructing the Equation | Start of Lesson 01 | Watch the launch overview before practicing inverse operations. |
 | 01 | Level one linear equations | After quick start | Answer transcript-verified questions about 5x, coefficients, dividing both sides, and checking solutions. |
-| 02 | Solving and graphing linear inequalities | After quick start | Identify open/closed boundary and shading direction. |
+| 02 | Solving equations with the distributive property | After quick start | Answer questions about distributing, combining like terms, and checking multi-step equation work. |
 | 03 | Graphing a linear equation | Before table-to-graph practice | Explain why a table helps graph a line. |
 | 04 | Finding slope and intercepts from tables | Before slope/intercept practice | Identify change in y over change in x and intercept meaning. |
 | 05 | Evaluating discrete functions | Before mini performance task | Identify input/output and explain function notation. |
@@ -20,7 +20,7 @@ Media must teach a move students will use immediately. For this pilot, every vid
 | Asset ID | Lesson | Purpose | Format | Insertion point |
 | --- | --- | --- | --- | --- |
 | INF-01 | 01 | Show "undo operations" order for equations | Two-column process card | After worked example |
-| INF-02 | 02 | Show inequality symbol, boundary point, and shading direction | Decision table | Before practice |
+| INF-02 | 02 | Show the two-phase process for multi-step equations: clean up, then isolate and solve | Large visual guide | After worked example |
 | INF-03 | 03 | Connect words, table, equation, and graph | Four-panel map | After video |
 | INF-04 | 04 | Explain slope and intercept in context | Annotated line graph | Before exit check |
 | INF-05 | 05 | Show input-rule-output function machine | Simple diagram | Before mini performance task |
@@ -31,7 +31,7 @@ Media must teach a move students will use immediately. For this pilot, every vid
 | --- | --- |
 | INF-01 | `media/infographics/inf-01-equation-undo.svg` |
 | INF-01A | `media/infographics/lesson-01-undo-the-equation-guide.png` |
-| INF-02 | `media/infographics/inf-02-inequality-graph.svg` |
+| INF-02 | `media/infographics/lesson-02-clean-up-equation-guide.png` |
 | INF-03 | `media/infographics/inf-03-four-forms.svg` |
 | INF-04 | `media/infographics/inf-04-slope-intercept.svg` |
 | INF-05 | `media/infographics/inf-05-function-machine.svg` |
@@ -63,7 +63,7 @@ Graphic status values:
 | INF-01 | replaced | Functional placeholder replaced in preview by INF-01A. |
 | INF-01A | approved for draft | Full-size visual inspection completed. Core math is correct: `4x + 18 = 46`, `4x = 28`, `x = 7`. Minor final-copy caveats: "packs earned $28" should mean sticker-pack sales earned $28, and the quick-reference table appears cropped at the bottom. Use near overview video for draft; revise before final classroom approval if source editing is possible. |
 | RW-01 | approved for draft | Generated real-world club merch image inserted in Lesson 01. Visual check completed in the local preview: image loads, supports the `3x + 2x + 7 = 47` context, and exact math remains as page text for reliability. |
-| INF-02 | needs revision | Functional placeholder. Replace with real-world lunch/budget imagery plus number-line overlay. |
+| INF-02 | approved for draft | User-provided NotebookLM infographic inserted in Lesson 02. Math check completed: `3(x + 8) + 2x = 79`, `3x + 24 + 2x = 79`, `5x + 24 = 79`, `5x = 55`, `x = 11`, and verification `57 + 22 = 79` are correct. Use page text for exact directions because some small infographic text may be hard to read on phones. |
 | INF-03 | needs revision | Functional placeholder. Replace with rideshare route imagery plus table/equation overlay. |
 | INF-04 | needs revision | Functional placeholder. Replace with spirit shirt fundraiser imagery plus slope/intercept overlay. |
 | INF-05 | needs revision | Functional placeholder. Replace with school dance budget imagery plus function notation overlay. |

@@ -1,82 +1,287 @@
 {
   "lessonId": "02",
-  "title": "Inequalities Are Ranges",
-  "module": "Week 1 - Linear Equations, Inequalities, and Functions",
-  "estimatedMinutes": 40,
-  "sourceRefs": ["S1", "S3", "V2"],
-  "learningTarget": "I can solve and graph inequalities and explain what the solution range means.",
-  "whyItMatters": "An equation usually gives one answer. An inequality gives a range of answers, which is exactly how many real limits work: minimum age, maximum cost, at least this many credits, fewer than this many absences.",
+  "title": "Clean Up the Equation",
+  "module": "Module 1 - Algebra Fluency",
+  "estimatedMinutes": 60,
+  "sourceRefs": ["S1", "S2", "S3", "V2"],
+  "learningTarget": "I can combine like terms and use the distributive property to solve multi-step equations.",
+  "whyItMatters": "This lesson builds on inverse operations. Multi-step equations usually need cleanup first: distribute through parentheses, combine like terms, then undo the remaining operations in a balanced way.",
+  "realWorldApplication": "On CAASPP, multi-step equations often appear inside word problems or student-work examples. In real life, the same skill helps you work backward through bundle prices, fees, subscriptions, sports events, and budgets.",
+  "standards": [
+    {
+      "code": "A-REI.1",
+      "label": "Explain why each equation-solving step is valid."
+    },
+    {
+      "code": "A-REI.3",
+      "label": "Solve linear equations in one variable."
+    },
+    {
+      "code": "A-CED.1",
+      "label": "Create equations from real situations and use them to solve problems."
+    }
+  ],
+  "overviewPrompt": "Create a short overview video for 11th grade students preparing for the CAASPP math test.\n\nLesson title: Clean Up the Equation\n\nMain idea: Some equations need to be cleaned up before you solve them. First use the distributive property, then combine like terms, then use inverse operations to isolate x.\n\nUse this exact example:\n\nSolve 3(x + 8) + 2x = 79.\n\nStep 1: Distribute the 3.\n3(x + 8) becomes 3x + 24, so the equation becomes:\n3x + 24 + 2x = 79\n\nStep 2: Combine like terms.\n3x + 2x = 5x, so the equation becomes:\n5x + 24 = 79\n\nStep 3: Undo the +24.\nSubtract 24 from both sides:\n5x = 55\n\nStep 4: Undo multiplication by 5.\nDivide both sides by 5:\nx = 11\n\nCheck:\n3(11 + 8) + 2(11) = 79\n3(19) + 22 = 79\n57 + 22 = 79\n79 = 79\n\nThe final answer is x = 11.\n\nKeep the video short, clear, and student-friendly. Emphasize that multi-step equations are not harder because of one big trick. They are solved by doing small legal moves in the right order: distribute, combine like terms, undo, and check.",
+  "vocabulary": [
+    {
+      "term": "Like terms",
+      "definition": "Terms with the same variable part, like 3x and 2x. They can be combined."
+    },
+    {
+      "term": "Distributive property",
+      "definition": "Multiplying a number by each term inside parentheses. Example: 3(x + 8) becomes 3x + 24."
+    },
+    {
+      "term": "Simplify",
+      "definition": "Make an expression cleaner by combining like terms or removing parentheses."
+    },
+    {
+      "term": "Multi-step equation",
+      "definition": "An equation that takes more than one math move to solve."
+    },
+    {
+      "term": "Error analysis",
+      "definition": "Looking at someone else's work to find the exact step where the math stopped being valid."
+    }
+  ],
   "sections": [
+    {
+      "id": "overview",
+      "type": "reflection",
+      "title": "Overview Reflection",
+      "studentText": "After watching the overview, explain the main point in your own words.",
+      "questions": [
+        {
+          "id": "l2-overview-reflection",
+          "type": "short_answer",
+          "prompt": "In your own words, explain why a multi-step equation often needs to be simplified before you solve it.",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "expectedElements": ["combine like terms", "use the distributive property", "clean up before inverse operations", "isolate the variable"],
+          "commonMisconceptions": ["solve by guessing", "always divide first", "only change one side"],
+          "feedback": "A strong response explains that simplifying clears away parentheses and like terms so the inverse operations are easier and valid."
+        }
+      ]
+    },
     {
       "id": "launch",
       "type": "launch",
       "title": "Quick Start",
-      "studentText": "A student has $30 for lunch this week. Each lunch costs $6. The inequality 6d <= 30 represents how many days the student can buy lunch.",
+      "studentText": "Before solving a full equation, check whether you can spot the cleanup move.",
       "questions": [
         {
           "id": "l2-launch-1",
           "type": "multiple_choice",
-          "prompt": "What does d <= 5 mean in this situation?",
+          "prompt": "Which expression is equivalent to 3(x + 8)?",
           "options": [
-            {"value": "A", "text": "The student must buy lunch exactly 5 days."},
-            {"value": "B", "text": "The student can buy lunch 5 days or fewer."},
-            {"value": "C", "text": "The student can buy lunch more than 5 days."},
-            {"value": "D", "text": "The student has $5 total."}
+            {"value": "A", "text": "3x + 8"},
+            {"value": "B", "text": "3x + 24"},
+            {"value": "C", "text": "x + 24"},
+            {"value": "D", "text": "11x"}
           ],
           "answer": "B",
           "grading": "deterministic",
-          "feedback": "<= means the boundary value counts, and anything below it also works."
+          "feedback": "Distribute the 3 to both terms: 3 times x is 3x, and 3 times 8 is 24."
         }
       ]
     },
     {
       "id": "video",
       "type": "video",
-      "title": "Watch: Solving and graphing linear inequalities",
+      "title": "Watch: Solving equations with the distributive property",
       "video": {
-        "provider": "khanacademy",
-        "url": "https://www.khanacademy.org/video/solving-and-graphing-linear-inequalities-in-two-variables-1",
+        "provider": "youtube",
+        "url": "https://www.youtube.com/watch?v=YZBStgZGyDY",
+        "embedUrl": "https://www.youtube-nocookie.com/embed/YZBStgZGyDY?rel=0",
         "sourceRef": "V2",
-        "transcriptRequired": true
+        "transcriptRequired": false
       },
-      "watchFor": "Watch how the graph shows whether the boundary number is included.",
+      "watchFor": "Watch for the order of the moves: distribute first, combine like terms if possible, then use inverse operations to isolate the variable.",
       "contextQuestions": [
         {
           "id": "l2-vq1",
           "type": "multiple_choice",
-          "prompt": "For y > 5, should the point at 5 be open or closed?",
+          "prompt": "When an equation has parentheses like 3(x + 8), what cleanup move usually comes first?",
           "options": [
-            {"value": "A", "text": "Open, because 5 is not included."},
-            {"value": "B", "text": "Closed, because 5 is included."}
+            {"value": "A", "text": "Divide both sides by x"},
+            {"value": "B", "text": "Use the distributive property"},
+            {"value": "C", "text": "Ignore the parentheses"},
+            {"value": "D", "text": "Subtract the coefficient"}
           ],
-          "answer": "A",
+          "answer": "B",
           "grading": "deterministic",
-          "feedback": "The symbol > does not include the boundary value, so use an open point."
+          "feedback": "Parentheses often need the distributive property before the equation is ready for inverse operations."
         },
         {
           "id": "l2-vq2",
           "type": "short_answer",
-          "prompt": "In your own words, what does shading to the right on a number line usually mean?",
+          "prompt": "What does it mean to combine like terms before solving?",
+          "grading": "ai_rubric",
+          "rubricId": "factual-short-2",
+          "maxPoints": 2,
+          "expectedElements": ["same variable", "add or subtract coefficients", "simplify one side"],
+          "commonMisconceptions": ["combine unlike terms", "multiply all terms", "combine constants with x terms"],
+          "feedback": "A strong answer says you combine terms with the same variable part, such as 3x + 2x becoming 5x."
+        },
+        {
+          "id": "l2-vq3",
+          "type": "multiple_choice",
+          "prompt": "Which pair can be combined as like terms?",
+          "options": [
+            {"value": "A", "text": "5x and 7"},
+            {"value": "B", "text": "4x and -2x"},
+            {"value": "C", "text": "3x and 3y"},
+            {"value": "D", "text": "x and x^2"}
+          ],
+          "answer": "B",
+          "grading": "deterministic",
+          "feedback": "4x and -2x both have the same variable part, x."
+        },
+        {
+          "id": "l2-vq4",
+          "type": "short_answer",
+          "prompt": "Why is it useful to check a multi-step equation solution after you solve?",
           "grading": "ai_rubric",
           "rubricId": "math-explanation-3",
-          "feedback": "A strong answer says the values are greater than the boundary."
+          "expectedElements": ["substitute back", "original equation", "catch distribution or sign mistakes", "make both sides equal"],
+          "commonMisconceptions": ["checking is only for one-step equations", "checking means redoing the same work"],
+          "feedback": "A strong answer says checking catches mistakes by substituting the answer into the original equation."
         }
       ]
     },
     {
       "id": "learn",
       "type": "teaching",
-      "title": "Boundary and Direction",
-      "studentText": "Graphing an inequality takes two decisions: whether the boundary number counts, and which direction the solutions go. Use a closed point for <= or >=. Use an open point for < or >.",
+      "title": "Clean Up Before You Undo",
+      "studentText": "A multi-step equation is easier when you separate the cleanup moves from the undo moves.",
       "workedExample": {
-        "prompt": "Solve and graph: x - 4 > 9.",
+        "prompt": "Solve 3(x + 8) + 2x = 79.",
         "steps": [
-          "Add 4 to both sides: x > 13.",
-          "Put an open point at 13 because 13 is not included.",
-          "Shade to the right because the solutions are greater than 13."
+          "Distribute first: 3x + 24 + 2x = 79.",
+          "Combine like terms: 5x + 24 = 79.",
+          "Subtract 24 from both sides: 5x = 55.",
+          "Divide both sides by 5: x = 11.",
+          "Check: 3(11 + 8) + 2(11) = 57 + 22 = 79."
         ],
-        "commonMistake": "Students often solve correctly but shade the wrong direction. Test a number if you are unsure."
+        "commonMistake": "A common mistake is writing 3(x + 8) as 3x + 8. The 3 must multiply both x and 8."
       }
+    },
+    {
+      "id": "balance_lab",
+      "type": "balance_lab",
+      "title": "Hands-On: Choose the Next Legal Move",
+      "studentText": "Use the undo board to solve 3(x + 8) + 2x = 79. Pick the next algebra move from the bank and drag it into the box. The board only moves forward when the choice keeps the math valid.",
+      "balanceLab": {
+        "startEquation": "3(x + 8) + 2x = 79",
+        "states": [
+          {
+            "equation": "3(x + 8) + 2x = 79",
+            "tokens": ["3(x + 8)", "+2x", "=", "79"],
+            "actions": [
+              {"text": "Distribute 3", "action": "distribute"},
+              {"text": "Combine 3x and 2x", "action": "combine"},
+              {"text": "Subtract 24", "action": "subtract24"},
+              {"text": "Divide by 5", "action": "divide5"}
+            ],
+            "expectedAction": "distribute",
+            "dropText": "Choose the first cleanup move.",
+            "feedback": "Start with the parentheses. What has to happen to 3(x + 8)?",
+            "wrongFeedback": "Not yet. The expression still has parentheses, so clean those up first."
+          },
+          {
+            "equation": "3x + 24 + 2x = 79",
+            "tokens": ["3x", "+24", "+2x", "=", "79"],
+            "actions": [
+              {"text": "Combine 3x and 2x", "action": "combine"},
+              {"text": "Subtract 24", "action": "subtract24"},
+              {"text": "Divide by 5", "action": "divide5"},
+              {"text": "Add 24", "action": "add24"}
+            ],
+            "expectedAction": "combine",
+            "dropText": "Choose the next cleanup move.",
+            "feedback": "Good. Distributing changed 3(x + 8) into 3x + 24. Now look for like terms.",
+            "wrongFeedback": "Not yet. Before undoing the +24, combine the x terms on the left."
+          },
+          {
+            "equation": "5x + 24 = 79",
+            "tokens": ["5x", "+24", "=", "79"],
+            "actions": [
+              {"text": "Subtract 24", "action": "subtract24"},
+              {"text": "Divide by 5", "action": "divide5"},
+              {"text": "Subtract 5", "action": "subtract5"},
+              {"text": "Add 24", "action": "add24"}
+            ],
+            "expectedAction": "subtract24",
+            "dropText": "Choose the first undo move.",
+            "feedback": "Nice. 3x + 2x became 5x. Now undo the +24.",
+            "wrongFeedback": "Not yet. The variable term has +24 attached, so undo the addition first."
+          },
+          {
+            "equation": "5x = 55",
+            "tokens": ["5x", "=", "55"],
+            "actions": [
+              {"text": "Divide by 5", "action": "divide5"},
+              {"text": "Multiply by 5", "action": "multiply5"},
+              {"text": "Subtract 55", "action": "subtract55"},
+              {"text": "Add 5", "action": "add5"}
+            ],
+            "expectedAction": "divide5",
+            "dropText": "Choose the final undo move.",
+            "feedback": "Good. Subtracting 24 from both sides leaves 5x = 55. What undoes multiplying by 5?",
+            "wrongFeedback": "Not yet. x is being multiplied by 5, so use the inverse of multiplication."
+          },
+          {
+            "equation": "x = 11",
+            "tokens": ["x", "=", "11"],
+            "actions": [],
+            "dropText": "Solved",
+            "feedback": "Solved: x = 11. You distributed, combined like terms, subtracted 24, then divided by 5."
+          }
+        ],
+        "complete": "Solved: x = 11."
+      }
+    },
+    {
+      "id": "real_world",
+      "type": "practice",
+      "title": "Real-World Equation: 3-on-3 Tournament Bundles",
+      "studentText": "A student group is running a lunchtime 3-on-3 basketball tournament. They sell 3 team bundles. Each bundle includes one entry wristband that costs x dollars plus an $8 snack card. They also sell 2 extra wristbands for x dollars each. The total collected is $79. The situation can be modeled by 3(x + 8) + 2x = 79.",
+      "image": {
+        "src": "media/images/lesson-02-basketball-tournament-real-world.png",
+        "alt": "High school students at a basketball tournament sign-up table with wristbands, snack cards, and a clipboard.",
+        "caption": "The image gives the tournament setting. Use the page text for the exact numbers and equation."
+      },
+      "questions": [
+        {
+          "id": "l2-rw1",
+          "type": "short_answer",
+          "prompt": "In the tournament equation 3(x + 8) + 2x = 79, what does x represent?",
+          "grading": "ai_rubric",
+          "rubricId": "factual-short-2",
+          "maxPoints": 2,
+          "expectedElements": ["cost of one wristband", "price of each entry wristband"],
+          "commonMisconceptions": ["number of students", "total money", "snack card cost"],
+          "feedback": "x represents the price of one entry wristband."
+        },
+        {
+          "id": "l2-rw2",
+          "type": "numeric",
+          "prompt": "Solve 3(x + 8) + 2x = 79. What is x?",
+          "answer": 11,
+          "grading": "deterministic",
+          "feedback": "Distribute to get 3x + 24 + 2x = 79, combine to get 5x + 24 = 79, subtract 24, then divide by 5. x = 11."
+        },
+        {
+          "id": "l2-rw3",
+          "type": "short_answer",
+          "prompt": "Explain what x = 11 means in the tournament situation.",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "expectedElements": ["each wristband costs 11 dollars", "$11 per entry wristband", "wristband price"],
+          "commonMisconceptions": ["11 students", "11 bundles", "11 dollars total"],
+          "feedback": "x = 11 means each entry wristband costs $11."
+        }
+      ]
     },
     {
       "id": "practice",
@@ -85,25 +290,43 @@
       "questions": [
         {
           "id": "l2-p1",
-          "type": "multiple_choice",
-          "prompt": "Solve: x + 8 <= 20",
-          "options": [
-            {"value": "A", "text": "x <= 12"},
-            {"value": "B", "text": "x >= 12"},
-            {"value": "C", "text": "x <= 28"},
-            {"value": "D", "text": "x >= 28"}
-          ],
-          "answer": "A",
+          "type": "numeric",
+          "prompt": "Solve: 2(x + 5) + 3x = 40",
+          "answer": 6,
           "grading": "deterministic",
-          "feedback": "Subtract 8 from both sides."
+          "feedback": "Distribute to get 2x + 10 + 3x = 40. Combine: 5x + 10 = 40. x = 6."
         },
         {
           "id": "l2-p2",
+          "type": "multiple_choice",
+          "prompt": "A student solves 4(x + 3) = 44 by writing 4x + 3 = 44. What is the mistake?",
+          "options": [
+            {"value": "A", "text": "They forgot to divide by 4 first."},
+            {"value": "B", "text": "They did not distribute the 4 to the 3."},
+            {"value": "C", "text": "They should have added 3 to both sides."},
+            {"value": "D", "text": "There is no mistake."}
+          ],
+          "answer": "B",
+          "grading": "deterministic",
+          "feedback": "4(x + 3) should become 4x + 12 because 4 multiplies both terms inside the parentheses."
+        },
+        {
+          "id": "l2-p3",
           "type": "short_answer",
-          "prompt": "A school event can spend no more than $250 on snacks. Write an inequality for buying x boxes at $12 each.",
+          "prompt": "Explain the first two cleanup moves you would use to solve 5x + 2(x - 4) = 34.",
           "grading": "ai_rubric",
-          "rubricId": "math-model-3",
-          "feedback": "A strong model is 12x <= 250."
+          "rubricId": "math-explanation-3",
+          "expectedElements": ["distribute 2", "2x - 8", "combine 5x and 2x", "7x - 8"],
+          "commonMisconceptions": ["combine before distributing", "2(x - 4) = 2x - 4", "5x + 2x - 4"],
+          "feedback": "First distribute the 2 to get 5x + 2x - 8 = 34. Then combine like terms to get 7x - 8 = 34."
+        },
+        {
+          "id": "l2-p4",
+          "type": "numeric",
+          "prompt": "Solve: 5x + 2(x - 4) = 34",
+          "answer": 6,
+          "grading": "deterministic",
+          "feedback": "Distribute: 5x + 2x - 8 = 34. Combine: 7x - 8 = 34. Add 8, then divide by 7. x = 6."
         }
       ]
     },
@@ -111,53 +334,70 @@
       "id": "check",
       "type": "check",
       "title": "Exit Check",
-      "masteryThreshold": 0.8,
+      "masteryThreshold": 0.7,
       "questions": [
         {
           "id": "w1-l2-q1",
           "type": "multiple_choice",
-          "prompt": "Which graph matches x >= -2?",
+          "prompt": "Which expression is equivalent to 4(x - 2)?",
           "options": [
-            {"value": "A", "text": "Open point at -2, shaded left"},
-            {"value": "B", "text": "Closed point at -2, shaded left"},
-            {"value": "C", "text": "Open point at -2, shaded right"},
-            {"value": "D", "text": "Closed point at -2, shaded right"}
+            {"value": "A", "text": "4x - 2"},
+            {"value": "B", "text": "4x - 8"},
+            {"value": "C", "text": "x - 8"},
+            {"value": "D", "text": "4x + 8"}
           ],
-          "answer": "D",
+          "answer": "B",
           "grading": "deterministic",
-          "feedback": ">= includes -2 and all numbers greater than -2."
+          "feedback": "Distribute the 4 to both terms: 4x - 8."
         },
         {
           "id": "w1-l2-q2",
-          "type": "multiple_choice",
-          "prompt": "Solve: 3x < 18",
-          "options": [
-            {"value": "A", "text": "x < 6"},
-            {"value": "B", "text": "x > 6"},
-            {"value": "C", "text": "x < 15"},
-            {"value": "D", "text": "x > 15"}
-          ],
-          "answer": "A",
+          "type": "numeric",
+          "prompt": "Solve: 3(x + 4) = 30",
+          "answer": 6,
           "grading": "deterministic",
-          "feedback": "Divide both sides by 3."
+          "feedback": "3x + 12 = 30, so 3x = 18 and x = 6."
         },
         {
           "id": "w1-l2-q3",
+          "type": "numeric",
+          "prompt": "Solve: 2(x + 7) + x = 35",
+          "answer": 7,
+          "grading": "deterministic",
+          "feedback": "2x + 14 + x = 35, so 3x + 14 = 35, 3x = 21, and x = 7."
+        },
+        {
+          "id": "w1-l2-q4",
+          "type": "multiple_choice",
+          "prompt": "A student writes 2(x + 5) + 3x = 2x + 5 + 3x. What should the corrected expression be?",
+          "options": [
+            {"value": "A", "text": "5x + 5"},
+            {"value": "B", "text": "5x + 10"},
+            {"value": "C", "text": "2x + 15"},
+            {"value": "D", "text": "6x + 10"}
+          ],
+          "answer": "B",
+          "grading": "deterministic",
+          "feedback": "2(x + 5) becomes 2x + 10, and 2x + 3x combines to 5x."
+        },
+        {
+          "id": "w1-l2-q5",
           "type": "short_answer",
-          "prompt": "Explain the difference between x < 6 and x <= 6.",
+          "prompt": "Explain how to tell whether a student's multi-step equation solution has a distribution mistake.",
           "grading": "ai_rubric",
           "rubricId": "math-explanation-3",
-          "feedback": "A strong answer says x < 6 does not include 6, while x <= 6 includes 6."
+          "expectedElements": ["check each term inside parentheses", "multiplier applies to every term", "look for sign mistakes", "substitute or compare equivalent expressions"],
+          "commonMisconceptions": ["only check the final answer", "only multiply the variable term", "distribution is optional"],
+          "feedback": "A strong answer says to check whether the outside number multiplied every term inside the parentheses, including constants and signs."
         }
       ]
     }
   ],
   "gate": {
-    "completion": "Student attempts the video questions, practice, and exit check.",
-    "mastery": "At least 80% on objective items and correct boundary/direction reasoning.",
-    "remediation": "Match five inequality symbols to open/closed point and shading direction.",
-    "enrichment": "Write and graph an inequality for a school policy or budget limit."
+    "completion": "Student attempts the overview reflection, video questions, real-world task, practice, and exit check.",
+    "mastery": "At least 70% on the exit check, with practice available for revision until the cleanup moves make sense.",
+    "remediation": "Review distribution and combine-like-terms moves, then retry two multi-step equations with new numbers.",
+    "enrichment": "Create a believable wrong solution with a distribution or like-terms error, then explain exactly how to fix it."
   },
-  "teacherReviewTriggers": ["low_ai_confidence", "graph_explanation_unclear", "rubric_score_1_or_lower"]
+  "teacherReviewTriggers": ["low_ai_confidence", "distribution_error_unclear", "rubric_score_1_or_lower"]
 }
-

@@ -3,9 +3,9 @@
 ## Course
 
 - Course title: CAASPP Mathematics Success Academy - Grade 11
-- Pilot module: Week 1 - Linear Equations, Inequalities, and Functions
+- Pilot module: Module 1 - Algebra Fluency
 - Total course shape: 4 modules / 20 lessons
-- Current pilot: Lesson 1 is fully built and submitted by a test student. Lessons 2-20 are visible as the future course shape.
+- Current build: Lessons 1-2 are active. Lessons 3-20 are visible as the future course shape.
 - Default lesson length: 60 minutes unless Baptiste asks otherwise.
 
 ## Week 1 Sequence
@@ -13,10 +13,10 @@
 | Lesson | Title | Time | Objective | Gate |
 | --- | --- | ---: | --- | --- |
 | 01 | Undo the Equation | 60 min | Solve one-step and two-step equations and explain inverse operations. | Practice can update; exit check locks and flags review if weak. |
-| 02 | Inequalities Are Ranges | 60 min | Solve and graph inequalities; interpret open/closed points and direction. | Build after Lesson 1 pattern is approved. |
-| 03 | Lines Tell Stories | 60 min | Build and interpret linear equations from tables, graphs, and situations. | Build after Lesson 1 pattern is approved. |
-| 04 | Slope, Intercepts, and Meaning | 60 min | Interpret slope/rate of change and intercepts in context. | Build after Lesson 1 pattern is approved. |
-| 05 | Function Notation and Mini Performance Task | 60 min | Evaluate functions and complete a short modeling task using multiple representations. | Build after Lesson 1 pattern is approved. |
+| 02 | Clean Up the Equation | 60 min | Solve multi-step equations by distributing, combining like terms, and using inverse operations. | Active lesson; practice can update; exit check locks and flags review if weak. |
+| 03 | Variables on Both Sides | 60 min | Solve equations with variables on both sides and classify one solution, no solution, or infinitely many solutions. | Build next. |
+| 04 | Literal Equations and Formulas | 60 min | Rearrange formulas to solve for a chosen variable. | Build after Lesson 3. |
+| 05 | Module 1 Review and Performance Task | 60 min | Apply equation-solving strategies to real-world problems. | Build after Lessons 3-4. |
 
 ## Objective Map
 

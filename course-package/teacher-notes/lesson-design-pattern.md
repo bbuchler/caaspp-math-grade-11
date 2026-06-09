@@ -91,3 +91,17 @@ Later, when there are more students, use the same saved question data to add:
 - most-missed questions
 - small-group suggestions
 - backup/remediation lessons
+
+## Lesson 2 Implementation Note
+
+For overview videos created in NotebookLM or a similar tool, give the model one exact worked example with the final answer and check already written out. This reduces the chance that the generated overview invents numbers or solves the example incorrectly.
+
+Lesson 2 uses `3(x + 8) + 2x = 79` with answer `x = 11`:
+
+1. Distribute: `3x + 24 + 2x = 79`.
+2. Combine like terms: `5x + 24 = 79`.
+3. Subtract 24: `5x = 55`.
+4. Divide by 5: `x = 11`.
+5. Check: `3(11 + 8) + 2(11) = 79`.
+
+The hands-on activity should require students to choose the next valid move, not simply click through a revealed solution. For Lesson 2 the correct sequence is distribute, combine like terms, subtract 24, divide by 5. Wrong choices should give targeted feedback and leave the equation unchanged.

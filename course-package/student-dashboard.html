@@ -43,7 +43,7 @@
     <section class="hero">
       <div>
         <h2>Your CAASPP Math Prep</h2>
-        <p>Start with Lesson 1. As you complete lessons, this dashboard will show your progress and next review steps.</p>
+        <p>Work through Module 1 in order. As you complete lessons, this dashboard will show your progress and next review steps.</p>
       </div>
       <a class="btn btn-primary" href="preview.html?lesson=01">Open Lesson 1</a>
     </section>
@@ -60,7 +60,7 @@
   <script src="js/shared-course-data.js?v=class-sections-1"></script>
   <script src="js/auth.js"></script>
   <script>
-    const titles = ["Undo the Equation","Inequalities Are Ranges","Lines Tell Stories","Slope, Intercepts, and Meaning","Function Notation and Mini Performance Task"];
+    const titles = ["Undo the Equation","Clean Up the Equation","Variables on Both Sides","Literal Equations and Formulas","Module 1 Review and Performance Task"];
     async function init() {
       const profile = await CAASPPAuth.requireRole(["student"]);
       if (!profile) return;
@@ -68,10 +68,10 @@
       await CourseData.ensureEnrollment(profile.id, "student");
       document.getElementById("lessons").innerHTML = Array.from({ length: 20 }, (_, i) => {
         const n = i + 1;
-        const active = n === 1;
+        const active = n <= 2;
         return `<div class="lesson-row">
           <div><strong>Lesson ${String(n).padStart(2, "0")}: ${titles[i] || `Module ${Math.ceil(n / 5)} Lesson ${n}`}</strong><br><span class="pill ${active ? "active" : ""}">${active ? "Open" : "Upcoming"}</span></div>
-          ${active ? `<a class="btn btn-primary" href="preview.html?lesson=01">Start</a>` : `<span class="pill">Coming Soon</span>`}
+          ${active ? `<a class="btn btn-primary" href="preview.html?lesson=${String(n).padStart(2, "0")}">Start</a>` : `<span class="pill">Coming Soon</span>`}
         </div>`;
       }).join("");
     }

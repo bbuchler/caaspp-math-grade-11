@@ -846,7 +846,7 @@
     let remoteTrendRows = null;
     let remoteCourseStudents = null;
     let remoteCourseTeachers = null;
-    let remoteLessonOneResponses = [];
+    let remoteActiveLessonResponses = [];
     let remoteClassArchitecture = null;
     let remoteDataLoaded = false;
     let activeModuleFilter = "all";
@@ -857,14 +857,24 @@
     let currentProfile = null;
     let pendingStatusToggle = null;
 
-    const lessonOneSections = [
-      { id: "overview", label: "Overview", questionIds: ["l1-overview-reflection"] },
-      { id: "launch", label: "Quick Start", questionIds: ["l1-launch-1"] },
-      { id: "video", label: "Video Questions", questionIds: ["l1-vq1", "l1-vq2", "l1-vq3", "l1-vq4"] },
-      { id: "real_world", label: "Real World", questionIds: ["l1-rw1", "l1-rw2", "l1-rw3"] },
-      { id: "practice", label: "Practice", questionIds: ["l1-p1", "l1-p2", "l1-p3"] },
-      { id: "check", label: "Exit Check", questionIds: ["w1-l1-q1", "w1-l1-q2", "w1-l1-q3", "w1-l1-q4", "w1-l1-q5"] }
-    ];
+    const lessonSections = {
+      1: [
+        { id: "overview", label: "Overview", questionIds: ["l1-overview-reflection"] },
+        { id: "launch", label: "Quick Start", questionIds: ["l1-launch-1"] },
+        { id: "video", label: "Video Questions", questionIds: ["l1-vq1", "l1-vq2", "l1-vq3", "l1-vq4"] },
+        { id: "real_world", label: "Real World", questionIds: ["l1-rw1", "l1-rw2", "l1-rw3"] },
+        { id: "practice", label: "Practice", questionIds: ["l1-p1", "l1-p2", "l1-p3"] },
+        { id: "check", label: "Exit Check", questionIds: ["w1-l1-q1", "w1-l1-q2", "w1-l1-q3", "w1-l1-q4", "w1-l1-q5"] }
+      ],
+      2: [
+        { id: "overview", label: "Overview", questionIds: ["l2-overview-reflection"] },
+        { id: "launch", label: "Quick Start", questionIds: ["l2-launch-1"] },
+        { id: "video", label: "Video Questions", questionIds: ["l2-vq1", "l2-vq2", "l2-vq3", "l2-vq4"] },
+        { id: "real_world", label: "Real World", questionIds: ["l2-rw1", "l2-rw2", "l2-rw3"] },
+        { id: "practice", label: "Practice", questionIds: ["l2-p1", "l2-p2", "l2-p3", "l2-p4"] },
+        { id: "check", label: "Exit Check", questionIds: ["w1-l2-q1", "w1-l2-q2", "w1-l2-q3", "w1-l2-q4", "w1-l2-q5"] }
+      ]
+    };
 
     const courseLessons = Array.from({ length: 20 }, (_, index) => {
       const number = index + 1;
@@ -872,13 +882,13 @@
         number,
         title: [
           "Undo the Equation",
-          "Inequalities Are Ranges",
-          "Lines Tell Stories",
-          "Slope, Intercepts, and Meaning",
-          "Function Notation and Mini Performance Task"
+          "Clean Up the Equation",
+          "Variables on Both Sides",
+          "Literal Equations and Formulas",
+          "Module 1 Review and Performance Task"
         ][index] || `Lesson ${number}`,
-        active: number === 1,
-        preview: number === 1
+        active: number <= 2,
+        preview: number <= 2
       };
     });
 
@@ -887,7 +897,7 @@
     }
 
     function activeLessonSections() {
-      return activeDetailLessonNumber === 1 ? lessonOneSections : [];
+      return lessonSections[activeDetailLessonNumber] || [];
     }
 
     function renderActiveLessonSelector() {
@@ -1009,8 +1019,12 @@
       return JSON.parse(localStorage.getItem(SUBMISSION_KEY) || "{}");
     }
 
-    function sectionStats(studentSubmission, section) {
-      const responses = studentSubmission?.lessons?.["01"]?.responses || {};
+    function lessonKey(lessonNumber = activeDetailLessonNumber) {
+      return String(lessonNumber).padStart(2, "0");
+    }
+
+    function sectionStats(studentSubmission, section, lessonNumber = activeDetailLessonNumber) {
+      const responses = studentSubmission?.lessons?.[lessonKey(lessonNumber)]?.responses || {};
       const items = section.questionIds.map((id) => responses[id]).filter(Boolean);
       const answered = items.length;
       const score = items.reduce((sum, item) => sum + Number(item.score || 0), 0);
@@ -1022,7 +1036,7 @@
     }
 
     function remoteResponsesToSubmission(studentId) {
-      const rows = (remoteLessonOneResponses || []).filter((row) => row.student_id === studentId);
+      const rows = (remoteActiveLessonResponses || []).filter((row) => row.student_id === studentId);
       const responses = rows.reduce((map, row) => {
         map[row.question_id] = {
           questionId: row.question_id,
@@ -1045,7 +1059,7 @@
         .at(-1) || "";
       return {
         lessons: {
-          "01": {
+          [lessonKey(activeDetailLessonNumber)]: {
             responses,
             updatedAt
           }
@@ -1054,8 +1068,9 @@
     }
 
     function lessonStats(studentSubmission) {
-      const sections = lessonOneSections.map((section) => sectionStats(studentSubmission, section));
-      const exitSection = sections[lessonOneSections.findIndex((section) => section.id === "check")];
+      const sectionsForLesson = activeLessonSections();
+      const sections = sectionsForLesson.map((section) => sectionStats(studentSubmission, section));
+      const exitSection = sections[sectionsForLesson.findIndex((section) => section.id === "check")];
       const answered = sections.reduce((sum, section) => sum + section.answered, 0);
       const expected = sections.reduce((sum, section) => sum + section.expected, 0);
       const score = sections.reduce((sum, section) => sum + section.score, 0);
@@ -1063,7 +1078,7 @@
       const percent = maxScore ? Math.round((score / maxScore) * 100) : null;
       const needsTeacherReview = sections.some((section) => section.needsTeacherReview);
       const exitNeedsReview = Boolean(exitSection?.exitNeedsReview);
-      const updatedAt = studentSubmission?.lessons?.["01"]?.updatedAt || "";
+      const updatedAt = studentSubmission?.lessons?.[lessonKey(activeDetailLessonNumber)]?.updatedAt || "";
       return { answered, expected, score, maxScore, percent, needsTeacherReview, exitNeedsReview, updatedAt };
     }
 
@@ -1217,10 +1232,10 @@
         item.student_id === studentId && Number(item.lesson_number) === Number(lessonNumber)
       );
       if (!row || row.attempt_status === "not_started") {
-        const expected = lessonOneSections.reduce((sum, section) => sum + section.questionIds.length, 0);
+        const expected = (lessonSections[lessonNumber] || []).reduce((sum, section) => sum + section.questionIds.length, 0);
         return { answered: 0, expected, score: 0, maxScore: 0, percent: null, needsTeacherReview: false, exitNeedsReview: false, updatedAt: "" };
       }
-      const submissionStats = Number(lessonNumber) === 1
+      const submissionStats = Number(lessonNumber) === Number(activeDetailLessonNumber) && lessonSections[Number(lessonNumber)]
         ? lessonStats(remoteResponsesToSubmission(studentId))
         : null;
       return {
@@ -1290,7 +1305,7 @@
               <div class="row-actions">
                 ${remoteMode && !enrolled
                   ? `<button class="btn btn-primary btn-small" type="button" data-enroll-student="${student.id}">Enroll</button>`
-                  : `<a class="btn btn-primary btn-small" href="teacher-student.html?student=${encodeURIComponent(student.id)}&lesson=01">View Work</a>`}
+                  : `<a class="btn btn-primary btn-small" href="teacher-student.html?student=${encodeURIComponent(student.id)}&lesson=${lessonKey(activeDetailLessonNumber)}">View Work</a>`}
                 <button class="btn btn-secondary btn-small" type="button" data-welcome-email="${student.id}" title="Welcome Email">Email</button>
                 <button class="btn btn-secondary btn-small" type="button" data-reset-password="${student.id}">Reset Password</button>
                 <button class="btn btn-danger btn-small" type="button" data-reset-lesson="${student.id}">Reset Lesson</button>
@@ -1304,7 +1319,8 @@
 
     function renderLessonOneBreakdown() {
       renderActiveLessonSelector();
-      if (activeDetailLessonNumber !== 1) {
+      const sectionsForLesson = activeLessonSections();
+      if (!sectionsForLesson.length) {
         const lesson = activeLesson();
         document.getElementById("lesson-one-body").innerHTML = `
           <tr>
@@ -1325,19 +1341,14 @@
       }
       body.innerHTML = students.map((student) => {
         const studentSubmission = remoteDataLoaded ? remoteResponsesToSubmission(student.id) : submissions[student.id];
-        const stats = remoteDataLoaded ? remoteStats(student.id, 1) : lessonStats(studentSubmission);
+        const stats = remoteDataLoaded ? remoteStats(student.id, activeDetailLessonNumber) : lessonStats(studentSubmission);
         return `
           <tr>
             <td>
-              <a href="teacher-student.html?student=${encodeURIComponent(student.id)}&lesson=01">${student.name}</a>
+              <a href="teacher-student.html?student=${encodeURIComponent(student.id)}&lesson=${lessonKey(activeDetailLessonNumber)}">${student.name}</a>
               <span class="muted">${statusMarkup(stats)}</span>
             </td>
-            <td>${formatSection(studentSubmission, lessonOneSections[0])}</td>
-            <td>${formatSection(studentSubmission, lessonOneSections[1])}</td>
-            <td>${formatSection(studentSubmission, lessonOneSections[2])}</td>
-            <td>${formatSection(studentSubmission, lessonOneSections[3])}</td>
-            <td>${formatSection(studentSubmission, lessonOneSections[4])}</td>
-            <td>${formatSection(studentSubmission, lessonOneSections[5])}</td>
+            ${sectionsForLesson.map((section) => `<td>${formatSection(studentSubmission, section)}</td>`).join("")}
             <td>${formatDate(stats.updatedAt)}</td>
           </tr>
         `;
@@ -1394,7 +1405,7 @@
         const lesson = activeLesson();
         const flagged = (remoteGradebookRows || [])
           .filter((row) => Number(row.lesson_number) === activeDetailLessonNumber && row.needs_teacher_review);
-        const studentCountForTrends = new Set((remoteLessonOneResponses || []).map((row) => row.student_id)).size;
+        const studentCountForTrends = new Set((remoteActiveLessonResponses || []).map((row) => row.student_id)).size;
         const trends = (remoteTrendRows || [])
           .filter((trend) => Number(trend.needs_support || 0) > 0)
           .slice(0, 3);
@@ -1462,7 +1473,7 @@
           <div class="queue-item">
             <strong>${response.studentName} - ${response.sectionTitle || "Lesson 1"}</strong>
             <p>${response.prompt}</p>
-            <a class="btn btn-primary btn-small" href="teacher-student.html?student=pilot-student&lesson=01">Review Work</a>
+            <a class="btn btn-primary btn-small" href="teacher-student.html?student=pilot-student&lesson=${lessonKey(activeDetailLessonNumber)}">Review Work</a>
           </div>
         `).join("") || `<p class="empty-panel">No flagged responses right now.</p>`}
         <h4 class="insight-group-title">Early Class Patterns</h4>
@@ -1470,7 +1481,7 @@
           <div class="queue-item">
             <strong>Top Missed Question</strong>
             <p>${topTrend.count} response${topTrend.count === 1 ? "" : "s"} need support on: ${topTrend.prompt}</p>
-            <a class="btn btn-secondary btn-small" href="preview.html?lesson=01">Open Lesson 1</a>
+            <a class="btn btn-secondary btn-small" href="preview.html?lesson=${lessonKey(activeDetailLessonNumber)}">Open Lesson ${activeDetailLessonNumber}</a>
           </div>
         ` : `<p class="empty-panel">Patterns will appear after more students submit responses.</p>`}
       `;
@@ -1709,7 +1720,7 @@
       const firstName = name.split(" ")[0] || name;
       const siteUrl = `${window.location.origin}/course-package/index.html`;
       if (role === "teacher") {
-        return `Hi ${escapeHtml(firstName)},<br><br>You now have a teacher account for <b>CAASPP Math Success Academy</b>. This is a 20-lesson math prep course built to help 11th grade students review the skills that show up often on CAASPP: equations, inequalities, linear relationships, slope/intercepts, function notation, modeling, and written reasoning.<br><br><b>Your Login</b><ul style="padding-left:22px;margin-top:4px;margin-bottom:4px;"><li><b>Website:</b> ${escapeHtml(siteUrl)}</li><li><b>Username:</b> ${escapeHtml(login || "ask your course admin")}</li>${loginPasswordLine(password)}</ul><br><b>Basic Overview</b><ul style="padding-left:22px;margin-top:4px;margin-bottom:4px;"><li>Students work through lessons with an <b>overview video</b>, vocabulary, practice questions, hands-on/visual supports, a real-world task, and an exit check.</li><li>The dashboard shows the <b>gradebook</b>, work samples, class filters, and teacher follow-up flags.</li><li>Practice questions can be updated as students learn. Exit checks are the final evidence for the lesson.</li><li>Use <b>+ Add Class</b> to organize rosters and <b>+ Add Account</b> to add students or co-teachers.</li></ul><br>This is just a basic overview. If you have questions, use the <b>Teacher Guide</b> inside the course dashboard for the full lesson structure and grading notes.<br><br>Hope you enjoy!`;
+        return `Hi ${escapeHtml(firstName)},<br><br>You now have a teacher account for <b>CAASPP Math Success Academy</b>. This is a 20-lesson math prep course built to help 11th grade students review the skills that show up often on CAASPP: equation solving, interpreting expressions, formulas, modeling, and written reasoning.<br><br><b>Your Login</b><ul style="padding-left:22px;margin-top:4px;margin-bottom:4px;"><li><b>Website:</b> ${escapeHtml(siteUrl)}</li><li><b>Username:</b> ${escapeHtml(login || "ask your course admin")}</li>${loginPasswordLine(password)}</ul><br><b>Basic Overview</b><ul style="padding-left:22px;margin-top:4px;margin-bottom:4px;"><li>Students work through lessons with an <b>overview video</b>, vocabulary, practice questions, hands-on/visual supports, a real-world task, and an exit check.</li><li>The dashboard shows the <b>gradebook</b>, work samples, class filters, and teacher follow-up flags.</li><li>Practice questions can be updated as students learn. Exit checks are the final evidence for the lesson.</li><li>Use <b>+ Add Class</b> to organize rosters and <b>+ Add Account</b> to add students or co-teachers.</li></ul><br>This is just a basic overview. If you have questions, use the <b>Teacher Guide</b> inside the course dashboard for the full lesson structure and grading notes.<br><br>Hope you enjoy!`;
       }
       return `Hi ${escapeHtml(firstName)},<br><br>Welcome to <b>CAASPP Math Success Academy</b>. This course is designed to help you practice the math moves that show up again and again on CAASPP, especially solving equations, reading relationships, and explaining your reasoning.<br><br><b>Your Login</b><ul style="padding-left:22px;margin-top:4px;margin-bottom:4px;"><li><b>Website:</b> ${escapeHtml(siteUrl)}</li><li><b>Username:</b> ${escapeHtml(login || "ask your teacher")}</li>${loginPasswordLine(password)}</ul><br><b>How the Course Works</b><ul style="padding-left:22px;margin-top:4px;margin-bottom:4px;"><li>Start with <b>Lesson 1: Undo the Equation</b>.</li><li>You will watch a short overview, answer video questions, practice the math, complete a real-world problem, and finish with an exit check.</li><li>Practice questions can be updated as you learn, so use the feedback to improve your answer.</li><li>Your teacher can see your progress and help if you get stuck.</li></ul><br>If you have trouble signing in or are not sure what to do next, ask your teacher. Hope you enjoy!`;
     }
@@ -1814,7 +1825,7 @@
       remoteCourseTeachers = typeof window.CourseData.loadCourseTeachers === "function"
         ? (await window.CourseData.loadCourseTeachers()) || []
         : [];
-      remoteLessonOneResponses = Array.isArray(lessonResponses) ? lessonResponses : [];
+      remoteActiveLessonResponses = Array.isArray(lessonResponses) ? lessonResponses : [];
       remoteClassArchitecture = classArchitecture;
     }
 
@@ -1932,19 +1943,21 @@
     document.getElementById("btn-export").addEventListener("click", () => {
       const rows = [["Student", "Login", "Status", "Overview", "Quick Start", "Video Questions", "Real World", "Practice", "Exit Check", "Lesson Score", "Last Activity"]];
       const submissions = getSubmissions();
+      const sectionsForExport = activeLessonSections();
       getAccounts().filter((account) => account.role === "student").forEach((student) => {
         const studentSubmission = submissions[student.id];
         const stats = lessonStats(studentSubmission);
+        const sectionCells = sectionsForExport.map((section) => formatSection(studentSubmission, section).replace(/<[^>]*>/g, ""));
         rows.push([
           student.name,
           student.login,
           stats.answered ? (stats.answered === stats.expected ? "Complete" : "In Progress") : "Not Started",
-          lessonOneSections.map((section) => formatSection(studentSubmission, section).replace(/<[^>]*>/g, ""))[0],
-          lessonOneSections.map((section) => formatSection(studentSubmission, section).replace(/<[^>]*>/g, ""))[1],
-          lessonOneSections.map((section) => formatSection(studentSubmission, section).replace(/<[^>]*>/g, ""))[2],
-          lessonOneSections.map((section) => formatSection(studentSubmission, section).replace(/<[^>]*>/g, ""))[3],
-          lessonOneSections.map((section) => formatSection(studentSubmission, section).replace(/<[^>]*>/g, ""))[4],
-          lessonOneSections.map((section) => formatSection(studentSubmission, section).replace(/<[^>]*>/g, ""))[5],
+          sectionCells[0] || "",
+          sectionCells[1] || "",
+          sectionCells[2] || "",
+          sectionCells[3] || "",
+          sectionCells[4] || "",
+          sectionCells[5] || "",
           stats.percent === null ? "" : `${stats.percent}%`,
           stats.updatedAt
         ]);

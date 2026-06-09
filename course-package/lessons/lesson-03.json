@@ -1,11 +1,11 @@
 {
   "lessonId": "03",
-  "title": "Lines Tell Stories",
-  "module": "Week 1 - Linear Equations, Inequalities, and Functions",
-  "estimatedMinutes": 45,
+  "title": "Variables on Both Sides",
+  "module": "Module 1 - Algebra Fluency",
+  "estimatedMinutes": 60,
   "sourceRefs": ["S1", "S3", "V3"],
-  "learningTarget": "I can connect a linear situation to a table, equation, and graph.",
-  "whyItMatters": "CAASPP often gives the same relationship in different forms. The skill is not just calculating; it is recognizing the same story when it is told as words, a table, an equation, or a graph.",
+  "learningTarget": "I can solve equations where variables appear on both sides.",
+  "whyItMatters": "Some equations compare two expressions that both contain variables. Cleaning up both sides helps you decide whether the equation has one solution, no solution, or infinitely many solutions.",
   "sections": [
     {
       "id": "launch",
@@ -158,4 +158,3 @@
   },
   "teacherReviewTriggers": ["low_ai_confidence", "misread_context", "rubric_score_1_or_lower"]
 }
-

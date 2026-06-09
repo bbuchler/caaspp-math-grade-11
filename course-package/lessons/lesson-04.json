@@ -1,11 +1,11 @@
 {
   "lessonId": "04",
-  "title": "Slope, Intercepts, and Meaning",
-  "module": "Week 1 - Linear Equations, Inequalities, and Functions",
-  "estimatedMinutes": 45,
+  "title": "Literal Equations and Formulas",
+  "module": "Module 1 - Algebra Fluency",
+  "estimatedMinutes": 60,
   "sourceRefs": ["S1", "S3", "V4"],
-  "learningTarget": "I can explain what slope and intercepts mean in a real situation.",
-  "whyItMatters": "A graph is not just a picture. On CAASPP, the slope and intercept usually tell the story: starting amount, rate per unit, break-even point, or when something runs out.",
+  "learningTarget": "I can rearrange formulas to solve for a chosen variable.",
+  "whyItMatters": "Formulas in science, sports, money, and design often have more than one variable. Rearranging a formula lets you solve for the quantity you actually need.",
   "sections": [
     {
       "id": "launch",
@@ -156,4 +156,3 @@
   },
   "teacherReviewTriggers": ["low_ai_confidence", "units_missing_from_explanation", "rubric_score_1_or_lower"]
 }
-

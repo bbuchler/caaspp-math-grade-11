@@ -388,11 +388,11 @@
     <div class="page-wrapper">
       <div>
         <h1 id="page-title">Work Sample</h1>
-        <p>Lesson 01: Undo the Equation</p>
+        <p id="header-lesson-label">Lesson Work Sample</p>
       </div>
       <div class="actions">
         <a class="btn btn-secondary" href="teacher-dashboard.html">Back to Gradebook</a>
-        <a class="btn btn-secondary" href="preview.html?lesson=01">Preview Lesson</a>
+        <a class="btn btn-secondary" id="preview-lesson-link" href="preview.html?lesson=01">Preview Lesson</a>
       </div>
     </div>
   </header>
@@ -405,10 +405,11 @@
   <script>
     const ACCOUNT_KEY = "caasppMathPilotAccounts";
     const SUBMISSION_KEY = "caasppMathPilotSubmissions";
-    const COURSE_ASSET_VERSION = "2026-06-05-exit-check-v2";
+    const COURSE_ASSET_VERSION = "2026-06-09-module-1-lesson-2";
     const params = new URLSearchParams(window.location.search);
     const studentId = params.get("student") || "pilot-student";
     const lessonNumber = Number(params.get("lesson") || "1") || 1;
+    const lessonKey = String(lessonNumber).padStart(2, "0");
     let lessonData = null;
     let remoteResponses = null;
     let remoteGradebookRows = null;
@@ -507,7 +508,7 @@
     }
 
     async function load() {
-      const lessonResponse = await fetch(`lessons/lesson-01.json?v=${COURSE_ASSET_VERSION}`);
+      const lessonResponse = await fetch(`lessons/lesson-${lessonKey}.json?v=${COURSE_ASSET_VERSION}`);
       lessonData = await lessonResponse.json();
       if (window.CourseData && studentId !== "pilot-student") {
         const rows = await window.CourseData.loadStudentResponses(studentId, lessonNumber);
@@ -528,10 +529,12 @@
       };
       const submission = remoteResponses
         ? { responses: remoteResponsesToMap(remoteResponses), updatedAt: latestRemoteUpdate(remoteResponses) }
-        : getSubmissions()[studentId]?.lessons?.["01"] || { responses: {}, updatedAt: "" };
+        : getSubmissions()[studentId]?.lessons?.[lessonKey] || { responses: {}, updatedAt: "" };
       const stats = lessonStats(submission.responses);
       document.title = `${account.name} - CAASPP Math Work Sample`;
       document.getElementById("page-title").textContent = "CAASPP Math Work Sample";
+      document.getElementById("header-lesson-label").textContent = `Lesson ${lessonKey}: ${lessonData.title}`;
+      document.getElementById("preview-lesson-link").href = `preview.html?lesson=${lessonKey}`;
 
       const root = document.getElementById("root");
       root.innerHTML = `
@@ -667,7 +670,7 @@
 
     async function saveFeedback(questionId) {
       const submissions = getSubmissions();
-      const lesson = submissions[studentId]?.lessons?.["01"];
+      const lesson = submissions[studentId]?.lessons?.[lessonKey];
       const response = remoteResponses
         ? remoteResponsesToMap(remoteResponses)[questionId]
         : lesson?.responses?.[questionId];
@@ -708,14 +711,14 @@
 
     function resetLesson() {
       const submissions = getSubmissions();
-      if (submissions[studentId]?.lessons?.["01"]) delete submissions[studentId].lessons["01"];
+      if (submissions[studentId]?.lessons?.[lessonKey]) delete submissions[studentId].lessons[lessonKey];
       saveSubmissions(submissions);
       render();
     }
 
     async function regradeSingleAiResponse(questionId) {
       const submissions = getSubmissions();
-      const lesson = submissions[studentId]?.lessons?.["01"];
+      const lesson = submissions[studentId]?.lessons?.[lessonKey];
       const question = flattenQuestions(lessonData).find((item) => item.id === questionId);
       const response = remoteResponses
         ? remoteResponsesToMap(remoteResponses)[questionId]
@@ -735,7 +738,7 @@
             questionText: question.prompt,
             studentAnswer: response.answer,
             rubricId: question.rubricId,
-            lessonContext: { lessonId: "01", lessonTitle: lessonData.title, learningTarget: lessonData.learningTarget },
+            lessonContext: { lessonId: lessonKey, lessonTitle: lessonData.title, learningTarget: lessonData.learningTarget },
             maxPoints: question.maxPoints || 3
           })
         });

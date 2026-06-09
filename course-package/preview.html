@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -207,6 +207,16 @@
     .lesson-button.active {
       border-left: 5px solid var(--blue);
       padding-left: 11px;
+    }
+
+    .lesson-button:disabled {
+      cursor: default;
+      opacity: 0.72;
+      background: #f7f9fb;
+    }
+
+    .lesson-button:disabled:hover {
+      background: #f7f9fb;
     }
 
     .lesson-button strong {
@@ -1430,7 +1440,7 @@
       <div class="brand-row">
         <div>
           <h1>CAASPP Math Success Academy</h1>
-          <p>Week 1 preview: equations, inequalities, linear functions, slope/intercepts, and function notation.</p>
+          <p>Module 1 preview: solving equations, interpreting expressions, and building algebra fluency.</p>
         </div>
       </div>
       <nav id="course-nav" class="teacher-nav" aria-label="Course navigation">
@@ -1446,8 +1456,8 @@
   <div class="shell">
     <aside>
       <div class="side-head">
-        <h2>Module 1: Linear Foundations</h2>
-        <p>Five daily lessons that move from solving equations to using linear models in context.</p>
+        <h2>Module 1: Algebra Fluency</h2>
+        <p>Five lessons that build from basic equation solving to real-world equation modeling.</p>
       </div>
       <button id="home-button" class="home-button" type="button">
         <strong>Course Overview</strong>
@@ -1484,18 +1494,18 @@
   <script src="js/auth.js"></script>
   <script>
     const lessonIds = ["01", "02", "03", "04", "05"];
-    const COURSE_ASSET_VERSION = "2026-06-05-exit-check-v2";
+    const COURSE_ASSET_VERSION = "2026-06-09-module-1-lesson-2b";
     const courseHome = {
       title: "CAASPP Math Success Academy",
       subtitle: "Build confidence with the math moves that show up again and again on CAASPP.",
       currentModule: "Module 1: Linear Foundations",
-      currentModuleSummary: "This module starts with equations, then moves into inequalities, tables, graphs, slope, intercepts, and function notation. The goal is to see the same linear relationship in different forms and explain what it means.",
+      currentModuleSummary: "This module builds equation fluency: undo simple equations, clean up multi-step equations, solve equations with variables on both sides, rearrange formulas, and apply those moves in a real-world performance task.",
       modules: [
         {
           title: "Module 1: Linear Foundations",
           range: "Lessons 1-5",
           status: "Open pilot module",
-          summary: "Equations, inequalities, tables, graphs, slope, intercepts, and function notation."
+          summary: "One-step, two-step, multi-step, variables on both sides, literal equations, and a performance task."
         },
         {
           title: "Module 2",
@@ -1523,9 +1533,10 @@
       },
       moduleMoves: [
         "Undo equations while keeping both sides balanced.",
-        "Read inequalities as ranges of possible values.",
-        "Connect a situation to a table, graph, and equation.",
-        "Explain slope, intercepts, and function notation in context."
+        "Clean up equations before solving.",
+        "Use the distributive property and combine like terms.",
+        "Decide whether an equation has one solution, no solution, or infinitely many solutions.",
+        "Rearrange formulas and apply equation-solving strategies in context."
       ]
     };
     const state = { lessons: [], active: null, profile: null, savedResponses: {} };
@@ -1562,14 +1573,16 @@
 
     function renderList() {
       const list = document.getElementById("lesson-list");
+      const isOpenLesson = (lesson) => Number(lesson.lessonId) <= 2;
       list.innerHTML = state.lessons.map((lesson, index) => `
-        <button class="lesson-button ${index === state.active ? "active" : ""}" data-index="${index}">
+        <button class="lesson-button ${index === state.active ? "active" : ""}" data-index="${index}" ${isOpenLesson(lesson) ? "" : "disabled"}>
           <strong>Lesson ${lesson.lessonId}: ${escapeHtml(lesson.title)}</strong>
-          <span>${escapeHtml(lesson.learningTarget)}</span>
+          <span>${escapeHtml(lesson.learningTarget)}${isOpenLesson(lesson) ? "" : " (coming soon)"}</span>
         </button>
       `).join("");
 
       list.querySelectorAll("button").forEach((button) => {
+        if (button.disabled) return;
         button.addEventListener("click", () => renderLesson(Number(button.dataset.index)));
       });
 
@@ -1595,7 +1608,7 @@
         <section class="section-card">
           <header><h3>Course Map</h3></header>
           <div class="section-body">
-            <p>Each module will hold five lessons. Lesson 1 is the fully built pilot; the rest of the course will follow the same structure once the pilot lesson is approved.</p>
+            <p>Each module holds five lessons. Module 1 focuses on equation fluency, from basic inverse operations to real-world performance tasks.</p>
             <div class="module-grid">
               ${courseHome.modules.map((module, index) => `
                 <div class="module-card ${index === 0 ? "current" : ""}">
@@ -1643,13 +1656,14 @@
       root.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
-    function renderOverviewVideo() {
-      const video = courseHome.overviewVideo;
+    function renderOverviewVideo(lesson) {
+      const video = lesson?.overviewVideo || (lesson?.lessonId === "01" ? courseHome.overviewVideo : null);
+      if (!video) return "";
       return `
         <section class="section-card">
-          <header><h3>Start Here: Deconstructing the Equation</h3></header>
+          <header><h3>Start Here: ${escapeHtml(video.sectionTitle || video.title || "Overview")}</h3></header>
           <div class="section-body">
-            <p>Watch this quick overview before you start the first problem. It gives you the main idea for Lesson 1: solving an equation is about undoing one step at a time while keeping the equation balanced.</p>
+            <p>${escapeHtml(video.description || "Watch this quick overview before you start the first problem.")}</p>
             <div class="video-box">
               <strong>${escapeHtml(video.title)}</strong>
               <video class="overview-video" controls preload="metadata" poster="${escapeHtml(video.poster)}">
@@ -1690,7 +1704,7 @@
           ${lesson.realWorldApplication ? `<p class="application-note"><strong>Real-world application:</strong> ${escapeHtml(lesson.realWorldApplication)}</p>` : ""}
           <div class="target"><span class="target-label">Lesson Goal</span><span>${escapeHtml(lesson.learningTarget)}</span></div>
         </section>
-        ${lesson.lessonId === "01" ? renderOverviewVideo() : ""}
+        ${renderOverviewVideo(lesson)}
         ${renderLessonSections(lesson)}
         ${renderNextSteps(lesson)}
       `;
@@ -1785,7 +1799,7 @@
     function renderInfographic(lessonId) {
       const map = {
         "01": "media/infographics/lesson-01-undo-the-equation-guide.png",
-        "02": "media/infographics/inf-02-inequality-graph.svg",
+        "02": "media/infographics/lesson-02-clean-up-equation-guide.png",
         "03": "media/infographics/inf-03-four-forms.svg",
         "04": "media/infographics/inf-04-slope-intercept.svg",
         "05": "media/infographics/inf-05-function-machine.svg"
@@ -1811,7 +1825,7 @@
           <div class="balance-equation" aria-live="polite">${escapeHtml(lab.startEquation)}</div>
           <div class="undo-board" aria-label="Equation undo board"></div>
           <div class="operation-bank" aria-label="Operation bank"></div>
-          <div class="undo-drop-zone" role="region" aria-label="Undo box">Drag the inverse operation here.</div>
+          <div class="undo-drop-zone" role="region" aria-label="Move box">Drag your chosen move here.</div>
           <div class="balance-feedback" aria-live="polite">Start by removing the same amount from both sides.</div>
         </div>
       `;
@@ -1822,6 +1836,9 @@
     }
 
     function currentBalanceState(lab, stepIndex) {
+      if (Array.isArray(lab.states) && lab.states.length) {
+        return lab.states[Math.min(stepIndex, lab.states.length - 1)];
+      }
       if (stepIndex <= 0) {
         return {
           equation: lab.startEquation,
@@ -1883,15 +1900,18 @@
       const stepIndex = Number(labEl.dataset.step || 0);
       const state = currentBalanceState(lab, stepIndex);
       labEl.querySelector(".balance-equation").textContent = state.equation;
-      labEl.querySelector(".undo-board").innerHTML = state.tokens.map((token) => `
-        <span class="undo-token ${token.action ? "draggable" : ""}" ${token.action ? `draggable="true" data-undo-action="${escapeHtml(token.action)}"` : ""}>
-          ${escapeHtml(token.text)}
-        </span>
-      `).join("");
+      labEl.querySelector(".undo-board").innerHTML = state.tokens.map((token) => {
+        const item = typeof token === "string" ? { text: token } : token;
+        return `
+          <span class="undo-token ${item.action ? "draggable" : ""}" ${item.action ? `draggable="true" data-undo-action="${escapeHtml(item.action)}"` : ""}>
+            ${escapeHtml(item.text)}
+          </span>
+        `;
+      }).join("");
       labEl.querySelector(".operation-bank").innerHTML = `
-        <strong>Choose the inverse operation:</strong>
+        <strong>Choose the next move:</strong>
         ${state.actions.map((action) => `
-          <span class="operation-tile ${action.state === "choice" ? "draggable" : escapeHtml(action.state)}" ${action.state === "choice" ? `draggable="true" data-undo-action="${escapeHtml(action.action)}"` : ""}>
+          <span class="operation-tile ${action.state === "done" ? "done" : "draggable"}" ${action.state === "done" ? "" : `draggable="true" data-undo-action="${escapeHtml(action.action)}"`}>
             ${escapeHtml(action.text)}
           </span>
         `).join("")}
@@ -1904,6 +1924,20 @@
       const lab = JSON.parse(labEl.dataset.balanceLab);
       const stepIndex = Number(labEl.dataset.step || 0);
       const feedback = labEl.querySelector(".balance-feedback");
+      if (Array.isArray(lab.states) && lab.states.length) {
+        const current = lab.states[Math.min(stepIndex, lab.states.length - 1)];
+        if (!current.expectedAction) {
+          feedback.textContent = lab.complete || current.feedback || "Solved.";
+          return;
+        }
+        if (action !== current.expectedAction) {
+          feedback.textContent = current.wrongFeedback || "Not quite. Choose the operation that keeps the equation balanced.";
+          return;
+        }
+        labEl.dataset.step = String(stepIndex + 1);
+        updateBalanceLab(labEl);
+        return;
+      }
       if (stepIndex >= lab.steps.length) {
         feedback.textContent = lab.complete;
         return;
@@ -2064,9 +2098,9 @@
           challenge: "A club has $12 saved and earns $3 for each snack box sold. They need $30 total. Write an equation, solve it, and explain what your answer means in the situation."
         },
         "02": {
-          done: ["Solve the inequality.", "Choose the correct open or closed point.", "Explain which direction the graph should go."],
-          retry: ["Graph x > 4.", "Graph x <= -2.", "Write one sentence explaining each graph."],
-          challenge: "Write a school rule that could be modeled with an inequality, then graph the possible values."
+          done: ["Distributive property", "Combine like terms", "Error analysis"],
+          retry: ["redo the practice section", "ask Study Buddy to walk through the cleanup move", "check one answer by substitution"],
+          challenge: "Create a believable wrong solution for 4(x + 3) + 2x = 54. Then explain exactly where the mistake happens and solve it correctly."
         },
         "03": {
           done: ["Complete the table.", "Match the table to an equation.", "Explain what the pattern means."],
@@ -2094,9 +2128,9 @@
           <header><h3>Finish Line</h3></header>
           <div class="section-body">
             <div class="finish-card">
-              <div class="finish-badge">🏁 Lesson ${escapeHtml(lesson.lessonId)} Finish</div>
+              <div class="finish-badge">Lesson ${escapeHtml(lesson.lessonId)} Finish</div>
               <h3 class="finish-title">Congratulations. You completed Lesson ${escapeHtml(lesson.lessonId)}: ${escapeHtml(lesson.title)}.</h3>
-              <p class="finish-summary">You can now undo an equation one move at a time, keep both sides balanced, and check whether your answer actually works.</p>
+              <p class="finish-summary">${escapeHtml(finishSummary(lesson))}</p>
               <div class="learned-list" aria-label="What you learned">
                 ${next.done.map((item) => `
                   <div class="learned-item">
@@ -2132,9 +2166,20 @@
       const descriptions = {
         "Coefficient": "You know it is the number multiplying the variable.",
         "Inverse operation": "You can choose the move that undoes the operation.",
-        "Check a solution": "You can plug your answer back in and see if the equation is true."
+        "Check a solution": "You can plug your answer back in and see if the equation is true.",
+        "Distributive property": "You can multiply the outside number by every term in parentheses.",
+        "Combine like terms": "You can clean up terms that share the same variable part.",
+        "Error analysis": "You can spot the step where a solution stopped being valid."
       };
       return descriptions[term] || "You can explain the main idea in your own words.";
+    }
+
+    function finishSummary(lesson) {
+      const summaries = {
+        "01": "You can now undo an equation one move at a time, keep both sides balanced, and check whether your answer actually works.",
+        "02": "You can now clean up a multi-step equation, solve it with balanced inverse operations, and explain common mistakes in someone else's work."
+      };
+      return summaries[lesson.lessonId] || `You practiced the main skill for Lesson ${lesson.lessonId}: ${lesson.learningTarget}`;
     }
 
     document.addEventListener("click", (event) => {

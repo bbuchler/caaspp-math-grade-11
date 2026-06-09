@@ -1,11 +1,11 @@
 {
   "lessonId": "05",
-  "title": "Function Notation and Mini Performance Task",
-  "module": "Week 1 - Linear Equations, Inequalities, and Functions",
-  "estimatedMinutes": 55,
+  "title": "Module 1 Review and Performance Task",
+  "module": "Module 1 - Algebra Fluency",
+  "estimatedMinutes": 60,
   "sourceRefs": ["S1", "S3", "S4", "S5", "V5"],
-  "learningTarget": "I can evaluate function notation and use a linear model to answer a real question.",
-  "whyItMatters": "Function notation looks fancy, but it is mostly input and output. CAASPP uses it because it is a compact way to ask what happens when a real situation changes.",
+  "learningTarget": "I can apply equation-solving strategies to real-world problems.",
+  "whyItMatters": "CAASPP often asks you to create an equation from a situation, solve it, and explain what the answer means. This lesson pulls the Module 1 equation skills together in one performance task.",
   "sections": [
     {
       "id": "launch",
