@@ -22,6 +22,13 @@
     }
   ],
   "overviewPrompt": "Create a short overview video for 11th grade students preparing for the CAASPP math test.\n\nLesson title: Clean Up the Equation\n\nMain idea: Some equations need to be cleaned up before you solve them. First use the distributive property, then combine like terms, then use inverse operations to isolate x.\n\nUse this exact example:\n\nSolve 3(x + 8) + 2x = 79.\n\nStep 1: Distribute the 3.\n3(x + 8) becomes 3x + 24, so the equation becomes:\n3x + 24 + 2x = 79\n\nStep 2: Combine like terms.\n3x + 2x = 5x, so the equation becomes:\n5x + 24 = 79\n\nStep 3: Undo the +24.\nSubtract 24 from both sides:\n5x = 55\n\nStep 4: Undo multiplication by 5.\nDivide both sides by 5:\nx = 11\n\nCheck:\n3(11 + 8) + 2(11) = 79\n3(19) + 22 = 79\n57 + 22 = 79\n79 = 79\n\nThe final answer is x = 11.\n\nKeep the video short, clear, and student-friendly. Emphasize that multi-step equations are not harder because of one big trick. They are solved by doing small legal moves in the right order: distribute, combine like terms, undo, and check.",
+  "overviewVideo": {
+    "sectionTitle": "Start Here: Clean Up the Equation",
+    "title": "Lesson 2 Overview: Clean Up the Equation",
+    "description": "Watch this quick overview before you start the first problem. It shows why multi-step equations usually need cleanup moves before the final undo steps.",
+    "src": "media/videos/module-01-lesson-02-clean-up-equation-overview-web.mp4",
+    "poster": "media/videos/module-01-lesson-02-clean-up-equation-overview-poster.png"
+  },
   "vocabulary": [
     {
       "term": "Like terms",

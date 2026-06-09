@@ -1587,7 +1587,7 @@
   <script src="js/auth.js"></script>
   <script>
     const lessonIds = ["01", "02", "03", "04", "05"];
-    const COURSE_ASSET_VERSION = "2026-06-09-module-1-lesson-2c";
+    const COURSE_ASSET_VERSION = "2026-06-09-module-1-lesson-2d";
     const courseHome = {
       title: "CAASPP Math Success Academy",
       subtitle: "Build confidence with the math moves that show up again and again on CAASPP.",
@@ -1752,6 +1752,7 @@
     function renderOverviewVideo(lesson) {
       const video = lesson?.overviewVideo || (lesson?.lessonId === "01" ? courseHome.overviewVideo : null);
       if (!video) return "";
+      const posterAttr = video.poster ? ` poster="${escapeHtml(video.poster)}"` : "";
       return `
         <section class="section-card">
           <header><h3>Start Here: ${escapeHtml(video.sectionTitle || video.title || "Overview")}</h3></header>
@@ -1759,7 +1760,7 @@
             <p>${escapeHtml(video.description || "Watch this quick overview before you start the first problem.")}</p>
             <div class="video-box">
               <strong>${escapeHtml(video.title)}</strong>
-              <video class="overview-video" controls preload="metadata" poster="${escapeHtml(video.poster)}">
+              <video class="overview-video" controls preload="metadata"${posterAttr}>
                 <source src="${escapeHtml(video.src)}" type="video/mp4">
               </video>
               <p class="watch-for"><a href="${escapeHtml(video.src)}" target="_blank" rel="noopener">Open the overview video in a new tab</a></p>
@@ -1915,7 +1916,7 @@
       };
       const src = map[lessonId];
       if (!src) return "";
-      return `<figure class="infographic"><img src="${src}" alt="Lesson ${lessonId} infographic"></figure>`;
+      return `<figure class="infographic"><img src="${src}?v=${COURSE_ASSET_VERSION}" alt="Lesson ${lessonId} infographic"></figure>`;
     }
 
     function renderWorkedExample(example) {
