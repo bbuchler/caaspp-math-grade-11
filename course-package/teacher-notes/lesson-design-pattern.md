@@ -115,3 +115,17 @@ The hands-on activity should require students to choose the next valid move, not
 - Exit-check questions should ask for a clear mathematical takeaway in language students understand. Avoid teacher-facing diagnostic phrasing unless the student is actually being asked to find a specific error in a shown solution.
 - When a transcript is available, video questions should be transcript-locked to the actual moves in the video. Ask about the specific teacher move, sign change, simplification, or check shown on screen instead of generic questions that could fit any similar video.
 - Math/pricing text can be baked into an image when it is large, readable, and verified. Still put the official problem, equation, and answerable numbers in page text so the lesson is accessible and not dependent on image OCR.
+
+## Lesson 3 Implementation Note
+
+Lesson 3 uses `2x + 3 = 5x - 2` for the Khan video questions because that is the actual equation in the supplied transcript. The contextual questions should follow the video's sequence:
+
+1. Subtract `2x` from both sides.
+2. Recognize the result `3 = 3x - 2`.
+3. Add `2` to both sides.
+4. Recognize the result `5 = 3x`.
+5. Divide by `3` and connect `x = 5/3` to `1 2/3`.
+
+For teacher dashboards, marking a lesson active is a two-part change: set the lesson's `active/preview` gate and add that lesson's section/question ids to the gradebook section map. Do both before saying the lesson is ready for teacher/student testing.
+
+For generated real-world images, use the image generator when Baptiste asks for it. Hand-rendered overlays are acceptable only when they are visually polished and aligned, or when image-generated text fails verification. Approved source images from `assets/images` should be copied into `course-package/media/images` for the live lesson.
