@@ -597,7 +597,7 @@
     <div class="dashboard-header">
       <div>
         <h2>Course Gradebook</h2>
-        <p>Click a lesson score to open that student's work sample. Lesson 1 is active; Lessons 2-20 are placeholders until we build them.</p>
+        <p>Click a lesson score to open that student's work sample. Lessons 1-3 are active; Lessons 4-20 are placeholders until we build them.</p>
       </div>
       <div class="teacher-controls">
         <button class="btn btn-secondary" type="button" data-open-modal="modal-add-class">+ Add Class</button>
@@ -873,6 +873,14 @@
         { id: "real_world", label: "Real World", questionIds: ["l2-rw1", "l2-rw2", "l2-rw3"] },
         { id: "practice", label: "Practice", questionIds: ["l2-p1", "l2-p2", "l2-p3", "l2-p4"] },
         { id: "check", label: "Exit Check", questionIds: ["w1-l2-q1", "w1-l2-q2", "w1-l2-q3", "w1-l2-q4", "w1-l2-q5"] }
+      ],
+      3: [
+        { id: "overview", label: "Overview", questionIds: ["l3-overview-reflection"] },
+        { id: "launch", label: "Quick Start", questionIds: ["l3-launch-1"] },
+        { id: "video", label: "Video Questions", questionIds: ["l3-vq1", "l3-vq2", "l3-vq3", "l3-vq4", "l3-vq5"] },
+        { id: "real_world", label: "Real World", questionIds: ["l3-rw1", "l3-rw2", "l3-rw3"] },
+        { id: "practice", label: "Practice", questionIds: ["l3-p1", "l3-p2", "l3-p3", "l3-p4"] },
+        { id: "check", label: "Exit Check", questionIds: ["w1-l3-q1", "w1-l3-q2", "w1-l3-q3", "w1-l3-q4", "w1-l3-q5"] }
       ]
     };
 
@@ -887,8 +895,8 @@
           "Literal Equations and Formulas",
           "Module 1 Review and Performance Task"
         ][index] || `Lesson ${number}`,
-        active: number <= 2,
-        preview: number <= 2
+        active: number <= 3,
+        preview: number <= 3
       };
     });
 
