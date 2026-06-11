@@ -42,13 +42,13 @@
   ],
   "sections": [
     {
-      "id": "overview",
-      "type": "reflection",
-      "title": "Overview Reflection",
-      "studentText": "After watching the overview, explain the main point in your own words.",
+      "id": "warmup",
+      "type": "launch",
+      "title": "Warm-Up: Build, Solve, Explain",
+      "studentText": "Before the performance task, think about the three parts of a strong real-world math answer.",
       "questions": [
         {
-          "id": "l5-overview-reflection",
+          "id": "l5-warmup-1",
           "type": "short_answer",
           "prompt": "What are the three things you usually need to do in a real-world equation problem?",
           "grading": "ai_rubric",
