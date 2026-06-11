@@ -45,17 +45,21 @@
       "id": "warmup",
       "type": "launch",
       "title": "Warm-Up: Build, Solve, Explain",
-      "studentText": "Before the performance task, think about the three parts of a strong real-world math answer.",
+      "studentTextHtml": "<div class=\"scenario-summary\"><p><strong>What is the point of this lesson?</strong> So far, you have practiced undoing equations, cleaning up multi-step equations, solving variables on both sides, and rearranging formulas. Today you use those skills together.</p><p><strong>Why it matters:</strong> Real CAASPP problems often do not say, \"solve this equation.\" They describe a situation, and you have to build the equation, solve it, and explain what your answer means.</p><p><strong>Warm-up:</strong> Two students answered the same real-world problem.</p><p><strong>Problem:</strong> A club has $35 saved and earns $5 per ticket. They want $100 total. How many tickets do they need to sell?</p><p><strong>Student A:</strong> 13</p><p><strong>Student B:</strong> 5t + 35 = 100, so 5t = 65 and t = 13. The club needs to sell 13 tickets.</p></div>",
       "questions": [
         {
           "id": "l5-warmup-1",
-          "type": "short_answer",
-          "prompt": "What are the three things you usually need to do in a real-world equation problem?",
-          "grading": "ai_rubric",
-          "rubricId": "math-explanation-3",
-          "expectedElements": ["build equation", "solve", "explain meaning"],
-          "commonMisconceptions": ["only solve", "no units", "no explanation"],
-          "feedback": "A strong answer says you need to build the equation, solve it, and explain what the answer means in context."
+          "type": "multiple_choice",
+          "prompt": "Which answer would earn stronger credit on a performance task, and why?",
+          "options": [
+            {"value": "A", "text": "Student A, because the answer is short"},
+            {"value": "B", "text": "Student B, because it builds the equation, solves it, and explains what 13 means"},
+            {"value": "C", "text": "Student A, because equations are not needed in word problems"},
+            {"value": "D", "text": "They are the same because both include 13"}
+          ],
+          "answer": "B",
+          "grading": "deterministic",
+          "feedback": "Student B earns stronger credit because the response includes the equation, the solving steps, and the meaning of 13 tickets."
         }
       ]
     },
