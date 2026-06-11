@@ -1587,7 +1587,7 @@
   <script src="js/auth.js"></script>
   <script>
     const lessonIds = ["01", "02", "03", "04", "05"];
-    const COURSE_ASSET_VERSION = "2026-06-09-module-1-lesson-3a";
+    const COURSE_ASSET_VERSION = "2026-06-11-module-1-lessons-4-5";
     const courseHome = {
       title: "CAASPP Math Success Academy",
       subtitle: "Build confidence with the math moves that show up again and again on CAASPP.",
@@ -1666,7 +1666,7 @@
 
     function renderList() {
       const list = document.getElementById("lesson-list");
-      const isOpenLesson = (lesson) => Number(lesson.lessonId) <= 3;
+      const isOpenLesson = (lesson) => Number(lesson.lessonId) <= 5;
       list.innerHTML = state.lessons.map((lesson, index) => `
         <button class="lesson-button ${index === state.active ? "active" : ""}" data-index="${index}" ${isOpenLesson(lesson) ? "" : "disabled"}>
           <strong>Lesson ${lesson.lessonId}: ${escapeHtml(lesson.title)}</strong>
@@ -1911,9 +1911,7 @@
       const map = {
         "01": "media/infographics/lesson-01-undo-the-equation-guide.png",
         "02": "media/infographics/lesson-02-clean-up-equation-guide.png",
-        "03": "media/infographics/lesson-03-variables-both-sides-guide.png",
-        "04": "media/infographics/inf-04-slope-intercept.svg",
-        "05": "media/infographics/inf-05-function-machine.svg"
+        "03": "media/infographics/lesson-03-variables-both-sides-guide.png"
       };
       const src = map[lessonId];
       if (!src) return "";
@@ -2228,14 +2226,14 @@
           challenge: "Create two school-event pricing plans that become equal after 5 items. Write an equation with variables on both sides, solve it, and explain what your answer means."
         },
         "04": {
-          done: ["Identify the slope.", "Identify the intercept.", "Explain both numbers in the situation."],
-          retry: ["For y = 6x + 12, explain the 6 and the 12 in a real-world context."],
-          challenge: "Compare two plans with different starting costs and rates. Decide when one becomes better than the other."
+          done: ["Target variable", "Rearrange a formula", "Substitute with units"],
+          retry: ["redo the formula practice", "ask Study Buddy to explain d = rt", "try solving the same formula for a different variable"],
+          challenge: "Choose a formula from science, sports, or geometry. Rearrange it for a different variable and explain when that version would be useful."
         },
         "05": {
-          done: ["Evaluate the function.", "Identify input and output.", "Use the model to answer a real question."],
-          retry: ["If f(x) = 4x + 3, find f(2), f(5), and f(10)."],
-          challenge: "Change one number in your model and explain how the answer changes."
+          done: ["Build an equation", "Solve the model", "Explain the answer"],
+          retry: ["redo the mixed practice", "review one missed lesson from Module 1", "ask Study Buddy to make a similar event-budget problem"],
+          challenge: "Create your own event-budget problem. Include a setup cost, an amount earned per item, a target amount, an equation, a solution, and a sentence explaining the answer."
         }
       };
       return defaults[lesson.lessonId] || defaults["01"];
@@ -2290,7 +2288,7 @@
         "02": ["wrong solution", "mistake", "correct solution", "distribute", "combine like terms"],
         "03": ["two pricing plans", "variables on both sides", "equal after 5 items", "solve", "explain meaning"],
         "04": ["formula", "rearrange", "chosen variable", "real-world meaning"],
-        "05": ["model", "change one number", "explain effect", "real-world meaning"]
+        "05": ["event budget", "setup cost", "amount per item", "equation", "solution", "meaning"]
       };
       return {
         id: `l${lesson.lessonId}-bonus-challenge`,
@@ -2319,6 +2317,12 @@
         ,"Move variable terms": "You can collect x terms on one side of the equation."
         ,"Move constants": "You can move number terms to the other side while keeping balance."
         ,"Classify the solution": "You can tell whether the equation has one solution, no solution, or infinitely many solutions."
+        ,"Target variable": "You can identify which variable the question wants."
+        ,"Rearrange a formula": "You can isolate a variable in a formula before substituting values."
+        ,"Substitute with units": "You can plug in values and say what the answer means."
+        ,"Build an equation": "You can turn a real situation into a mathematical model."
+        ,"Solve the model": "You can use Module 1 equation moves to find the answer."
+        ,"Explain the answer": "You can connect the number back to the real situation."
       };
       return descriptions[term] || "You can explain the main idea in your own words.";
     }
@@ -2327,7 +2331,9 @@
       const summaries = {
         "01": "You can now undo an equation one move at a time, keep both sides balanced, and check whether your answer actually works.",
         "02": "You can now clean up a multi-step equation, solve it with balanced inverse operations, and explain common mistakes in someone else's work.",
-        "03": "You can now solve equations with variables on both sides and explain whether the result gives one answer, no answer, or every answer."
+        "03": "You can now solve equations with variables on both sides and explain whether the result gives one answer, no answer, or every answer.",
+        "04": "You can now rearrange formulas so the variable you need is alone before you substitute numbers.",
+        "05": "You can now build, solve, and explain a real-world equation using the main Module 1 skills."
       };
       return summaries[lesson.lessonId] || `You practiced the main skill for Lesson ${lesson.lessonId}: ${lesson.learningTarget}`;
     }

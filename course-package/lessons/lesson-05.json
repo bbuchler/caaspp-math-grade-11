@@ -5,146 +5,372 @@
   "estimatedMinutes": 60,
   "sourceRefs": ["S1", "S3", "S4", "S5", "V5"],
   "learningTarget": "I can apply equation-solving strategies to real-world problems.",
-  "whyItMatters": "CAASPP often asks you to create an equation from a situation, solve it, and explain what the answer means. This lesson pulls the Module 1 equation skills together in one performance task.",
+  "whyItMatters": "CAASPP often asks you to do more than solve a clean equation. You may need to read a situation, build an equation, solve it, and explain what the answer means.",
+  "realWorldApplication": "This review lesson pulls together the Module 1 skills: inverse operations, multi-step equations, variables on both sides, and rearranging formulas.",
+  "standards": [
+    {
+      "code": "A-CED.1",
+      "label": "Create equations from real situations and use them to solve problems."
+    },
+    {
+      "code": "A-REI.1",
+      "label": "Explain why each equation-solving step is valid."
+    },
+    {
+      "code": "A-REI.3",
+      "label": "Solve linear equations in one variable."
+    }
+  ],
+  "overviewPrompt": "Create a short overview video for 11th grade students preparing for the CAASPP math test.\n\nLesson title: Module 1 Review and Performance Task\n\nMain idea: This lesson reviews the equation-solving skills from Module 1. Students should read a real situation, build an equation, solve it, and explain what the solution means.\n\nQuick review of the four skills:\n1. One-step and two-step equations: undo operations while keeping both sides balanced.\n2. Multi-step equations: distribute and combine like terms before undoing.\n3. Variables on both sides: collect variable terms on one side and constants on the other.\n4. Literal equations: rearrange a formula for the variable you need.\n\nUse this exact performance-task example:\n\nA student music night has a $120 setup cost. Tickets earn $8 each. The club wants $280 after paying the setup cost.\n\nEquation:\n8t - 120 = 280\n\nSolve:\nAdd 120 to both sides: 8t = 400\nDivide by 8: t = 50\n\nCheck:\n8(50) - 120 = 400 - 120 = 280\n\nMeaning:\nThe club needs to sell 50 tickets to have $280 after paying the setup cost.\n\nKeep the video short and encouraging. Emphasize that the final answer needs units and meaning, not just a number.",
+  "vocabulary": [
+    {
+      "term": "Model",
+      "definition": "An equation or expression that represents a real situation."
+    },
+    {
+      "term": "Constraint",
+      "definition": "A condition or limit in a problem, such as needing at least $280."
+    },
+    {
+      "term": "Solution meaning",
+      "definition": "What the answer represents in the real situation."
+    },
+    {
+      "term": "Check",
+      "definition": "Substitute the solution back into the original equation to see whether it works."
+    }
+  ],
   "sections": [
+    {
+      "id": "overview",
+      "type": "reflection",
+      "title": "Overview Reflection",
+      "studentText": "After watching the overview, explain the main point in your own words.",
+      "questions": [
+        {
+          "id": "l5-overview-reflection",
+          "type": "short_answer",
+          "prompt": "What are the three things you usually need to do in a real-world equation problem?",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "expectedElements": ["build equation", "solve", "explain meaning"],
+          "commonMisconceptions": ["only solve", "no units", "no explanation"],
+          "feedback": "A strong answer says you need to build the equation, solve it, and explain what the answer means in context."
+        }
+      ]
+    },
     {
       "id": "launch",
       "type": "launch",
       "title": "Quick Start",
-      "studentText": "For f(x) = 4x + 9, the input is x and the output is f(x).",
+      "studentText": "Match the problem type to the first move.",
       "questions": [
         {
           "id": "l5-launch-1",
-          "type": "numeric",
-          "prompt": "Find f(3).",
-          "answer": 21,
+          "type": "multiple_choice",
+          "prompt": "Which first move makes the most sense for 3(x + 4) + 2x = 47?",
+          "options": [
+            {"value": "A", "text": "Distribute the 3"},
+            {"value": "B", "text": "Divide by 47"},
+            {"value": "C", "text": "Subtract 2x from one side only"},
+            {"value": "D", "text": "Stop because x is already isolated"}
+          ],
+          "answer": "A",
           "grading": "deterministic",
-          "feedback": "Substitute 3 for x: 4(3) + 9 = 21."
+          "feedback": "Clean up parentheses first: distribute before combining like terms."
         }
       ]
     },
     {
       "id": "video",
       "type": "video",
-      "title": "Watch: Evaluating discrete functions",
+      "title": "Watch: Linear Equation Word Problem",
       "video": {
-        "provider": "khanacademy",
-        "url": "https://www.khanacademy.org/math/algebra-1-tx/x36b5a29ce1c3a684%3Aintroduction-to-functions/x36b5a29ce1c3a684%3Aevaluating-functions/v/evaluate-discrete-function",
+        "provider": "youtube",
+        "url": "https://www.youtube.com/watch?v=xKH1Evwu150",
+        "embedUrl": "https://www.youtube-nocookie.com/embed/xKH1Evwu150?rel=0",
+        "poster": "https://i.ytimg.com/vi/xKH1Evwu150/hqdefault.jpg",
         "sourceRef": "V5",
-        "transcriptRequired": true
+        "transcriptRequired": false
       },
-      "watchFor": "Watch how the input points to exactly one output.",
+      "watchFor": "Watch how the problem gets translated into an equation before solving. The setup matters as much as the arithmetic.",
       "contextQuestions": [
         {
           "id": "l5-vq1",
-          "type": "short_answer",
-          "prompt": "When you see f(4), what number is the input?",
-          "answer": "4",
+          "type": "multiple_choice",
+          "prompt": "In a word problem, what should you identify before solving?",
+          "options": [
+            {"value": "A", "text": "What the variable represents"},
+            {"value": "B", "text": "Only the biggest number"},
+            {"value": "C", "text": "The answer choices first"},
+            {"value": "D", "text": "A random value for x"}
+          ],
+          "answer": "A",
           "grading": "deterministic",
-          "feedback": "The input is the number inside the parentheses."
+          "feedback": "You need to know what the variable represents before building the equation."
         },
         {
           "id": "l5-vq2",
           "type": "short_answer",
-          "prompt": "Why is function notation useful when a problem has many possible inputs?",
+          "prompt": "Why is it important to explain what the solution means after solving a word problem?",
           "grading": "ai_rubric",
           "rubricId": "math-explanation-3",
-          "feedback": "A strong answer says function notation clearly shows which input is being used."
+          "expectedElements": ["context", "units", "answer means", "real situation"],
+          "commonMisconceptions": ["number alone is enough", "units do not matter"],
+          "feedback": "A strong answer says the solution needs to connect back to the real situation with units or meaning."
+        },
+        {
+          "id": "l5-vq3",
+          "type": "multiple_choice",
+          "prompt": "If an answer is 22.5 tickets, what should you usually do in a real ticket-selling problem?",
+          "options": [
+            {"value": "A", "text": "Round up if the goal must be met"},
+            {"value": "B", "text": "Round down because fewer tickets is easier"},
+            {"value": "C", "text": "Leave it as 22.5 tickets"},
+            {"value": "D", "text": "Change the equation"}
+          ],
+          "answer": "A",
+          "grading": "deterministic",
+          "feedback": "Tickets are whole items. If the goal must be met, round up."
         }
       ]
     },
     {
-      "id": "learn",
+      "id": "review_moves",
       "type": "teaching",
-      "title": "Input, Rule, Output",
-      "studentText": "Function notation is a machine label. If f(x) = 4x + 9, then f(3) means use 3 as the input. The output is 21.",
+      "title": "Four Moves You Now Have",
+      "studentTextHtml": "<div class=\"scenario-summary\"><p><strong>Undo:</strong> Use inverse operations to isolate the variable.</p><p><strong>Clean up:</strong> Distribute and combine like terms before solving.</p><p><strong>Collect:</strong> If variables are on both sides, move variable terms together.</p><p><strong>Rearrange:</strong> If a formula is solved for the wrong variable, isolate the variable you need.</p></div>",
       "workedExample": {
-        "prompt": "A school dance has a setup cost of $180 and earns $8 per ticket. Let P(t) = 8t - 180 be the profit after selling t tickets.",
+        "prompt": "A music night has a $120 setup cost and earns $8 per ticket. The club wants $280 after paying the setup cost. Write and solve an equation.",
         "steps": [
-          "P(50) = 8(50) - 180.",
-          "P(50) = 400 - 180 = 220.",
-          "After 50 tickets, the event has a $220 profit."
+          "Define the variable: let t = number of tickets sold.",
+          "Build the model: 8t - 120 = 280.",
+          "Add 120 to both sides: 8t = 400.",
+          "Divide by 8: t = 50.",
+          "Explain: the club needs to sell 50 tickets."
         ],
-        "commonMistake": "Do not stop at 220 without units or meaning. In context, 220 means dollars of profit."
+        "commonMistake": "Do not write only t = 50. The performance task needs the equation, the solving steps, and what 50 means."
       }
+    },
+    {
+      "id": "balance_lab",
+      "type": "balance_lab",
+      "title": "Hands-On: Choose the Review Move",
+      "studentText": "Use the undo board to solve the music-night equation 8t - 120 = 280.",
+      "balanceLab": {
+        "startEquation": "8t - 120 = 280",
+        "states": [
+          {
+            "equation": "8t - 120 = 280",
+            "tokens": ["8t", "-120", "=", "280"],
+            "actions": [
+              {"text": "Add 120 to both sides", "action": "add120"},
+              {"text": "Subtract 120 from both sides", "action": "subtract120"},
+              {"text": "Divide by 8", "action": "divide8"},
+              {"text": "Multiply by 8", "action": "multiply8"}
+            ],
+            "expectedAction": "add120",
+            "dropText": "Choose the first inverse operation.",
+            "feedback": "The -120 is attached to 8t, so undo it first.",
+            "wrongFeedback": "Not yet. Clear the -120 before dividing by 8."
+          },
+          {
+            "equation": "8t = 400",
+            "tokens": ["8t", "=", "400"],
+            "actions": [
+              {"text": "Divide by 8", "action": "divide8"},
+              {"text": "Add 8", "action": "add8"},
+              {"text": "Subtract 400", "action": "subtract400"},
+              {"text": "Multiply by 8", "action": "multiply8"}
+            ],
+            "expectedAction": "divide8",
+            "dropText": "Choose the final inverse operation.",
+            "feedback": "Adding 120 leaves 8t = 400.",
+            "wrongFeedback": "Not yet. t is being multiplied by 8, so divide by 8."
+          },
+          {
+            "equation": "t = 50",
+            "tokens": ["t", "=", "50"],
+            "actions": [],
+            "dropText": "Solved",
+            "feedback": "Solved: t = 50 tickets."
+          }
+        ],
+        "complete": "Solved: t = 50 tickets."
+      }
+    },
+    {
+      "id": "real_world",
+      "type": "practice",
+      "title": "Performance Task: Music Night Budget",
+      "studentTextHtml": "<div class=\"scenario-summary\"><p><strong>Scenario:</strong> Student Council is planning a campus music night.</p><p><strong>Setup cost:</strong> $120 for sound, flyers, and decorations.</p><p><strong>Ticket income:</strong> $8 per ticket.</p><p><strong>Goal:</strong> Have $280 left after paying the setup cost.</p></div>",
+      "image": {
+        "src": "media/images/lesson-05-music-night-performance-task.png",
+        "alt": "Students planning a school music night budget with tickets and flyers.",
+        "caption": "A performance task asks you to build the equation, solve it, and explain the answer."
+      },
+      "questions": [
+        {
+          "id": "l5-rw1",
+          "type": "short_answer",
+          "prompt": "Define the variable for this situation.",
+          "grading": "ai_rubric",
+          "rubricId": "factual-short-2",
+          "maxPoints": 2,
+          "expectedElements": ["t", "tickets", "number of tickets"],
+          "commonMisconceptions": ["dollars", "profit", "setup cost"],
+          "feedback": "A good definition is: let t = the number of tickets sold."
+        },
+        {
+          "id": "l5-rw2",
+          "type": "short_answer",
+          "prompt": "Write an equation for the situation.",
+          "grading": "ai_rubric",
+          "rubricId": "factual-short-2",
+          "maxPoints": 2,
+          "expectedElements": ["8t - 120 = 280", "8t", "120", "280"],
+          "commonMisconceptions": ["8t + 120 = 280", "120t - 8 = 280"],
+          "feedback": "The equation is 8t - 120 = 280."
+        },
+        {
+          "id": "l5-rw3",
+          "type": "numeric",
+          "prompt": "Solve the equation. How many tickets are needed?",
+          "answer": 50,
+          "grading": "deterministic",
+          "feedback": "8t - 120 = 280, so 8t = 400 and t = 50."
+        },
+        {
+          "id": "l5-rw4",
+          "type": "short_answer",
+          "prompt": "Explain what your answer means in the music-night situation.",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "expectedElements": ["50 tickets", "after setup cost", "280 dollars left"],
+          "commonMisconceptions": ["50 dollars", "50 students required", "does not mention the goal"],
+          "feedback": "A strong answer says the council needs to sell 50 tickets to have $280 after paying the setup cost."
+        }
+      ]
     },
     {
       "id": "practice",
       "type": "practice",
-      "title": "Mini Performance Task: School Dance Budget",
-      "scenario": "Student Council is planning a dance. Renting the room and equipment costs $180. Tickets sell for $8 each. The profit model is P(t) = 8t - 180.",
+      "title": "Mixed Practice",
       "questions": [
         {
           "id": "l5-p1",
           "type": "numeric",
-          "prompt": "Find P(30).",
-          "answer": 60,
+          "prompt": "Solve: 5x + 9 = 44",
+          "answer": 7,
           "grading": "deterministic",
-          "feedback": "8(30) - 180 = 60."
+          "feedback": "Subtract 9 to get 5x = 35, then divide by 5."
         },
         {
           "id": "l5-p2",
           "type": "numeric",
-          "prompt": "How many tickets must be sold to break even?",
-          "answer": 23,
+          "prompt": "Solve: 2(x + 6) + 3x = 47",
+          "answer": 7,
           "grading": "deterministic",
-          "feedback": "Solve 8t - 180 >= 0. The exact break-even is 22.5 tickets, so the council must sell at least 23 whole tickets."
+          "feedback": "Distribute and combine: 2x + 12 + 3x = 47, so 5x + 12 = 47 and x = 7."
         },
         {
           "id": "l5-p3",
-          "type": "constructed_response",
-          "prompt": "Explain why 22.5 tickets is not a practical final answer in this situation.",
-          "grading": "ai_rubric",
-          "rubricId": "modeling-explanation-5",
-          "feedback": "A strong answer says tickets are whole items, so the council must round up to 23 tickets to avoid losing money."
+          "type": "numeric",
+          "prompt": "Solve: 4x + 18 = 7x + 6",
+          "answer": 4,
+          "grading": "deterministic",
+          "feedback": "Subtract 4x to get 18 = 3x + 6. Subtract 6, then divide by 3."
+        },
+        {
+          "id": "l5-p4",
+          "type": "multiple_choice",
+          "prompt": "Solve d = rt for r.",
+          "options": [
+            {"value": "A", "text": "r = d/t"},
+            {"value": "B", "text": "r = dt"},
+            {"value": "C", "text": "r = t/d"},
+            {"value": "D", "text": "r = d - t"}
+          ],
+          "answer": "A",
+          "grading": "deterministic",
+          "feedback": "Divide both sides by t."
         }
       ]
     },
     {
       "id": "check",
       "type": "check",
-      "title": "Week 1 Check",
-      "masteryThreshold": 0.8,
+      "title": "Exit Check",
+      "masteryThreshold": 0.7,
       "questions": [
         {
           "id": "w1-l5-q1",
           "type": "numeric",
-          "prompt": "If f(x) = 2x + 11, find f(7).",
-          "answer": 25,
+          "prompt": "Solve: 3x + 11 = 35",
+          "answer": 8,
           "grading": "deterministic",
-          "feedback": "2(7) + 11 = 25."
+          "feedback": "Subtract 11 to get 3x = 24, then divide by 3."
         },
         {
           "id": "w1-l5-q2",
           "type": "multiple_choice",
-          "prompt": "For P(t) = 8t - 180, what does -180 represent?",
+          "prompt": "Which expression is equivalent to 4(x + 5) + 2x?",
           "options": [
-            {"value": "A", "text": "The cost before selling tickets"},
-            {"value": "B", "text": "The number of tickets sold"},
-            {"value": "C", "text": "The profit for each ticket"},
-            {"value": "D", "text": "The maximum profit"}
+            {"value": "A", "text": "6x + 20"},
+            {"value": "B", "text": "4x + 7"},
+            {"value": "C", "text": "6x + 5"},
+            {"value": "D", "text": "4x + 20"}
           ],
           "answer": "A",
           "grading": "deterministic",
-          "feedback": "The model starts at -180 because the event has a $180 cost before ticket sales."
+          "feedback": "Distribute to get 4x + 20, then combine with 2x."
         },
         {
           "id": "w1-l5-q3",
-          "type": "constructed_response",
-          "prompt": "Student Council wants at least $500 profit. Write an inequality and explain how many tickets they need to sell.",
+          "type": "multiple_choice",
+          "prompt": "Solve: 6x + 10 = 6x - 4. What kind of solution does it have?",
+          "options": [
+            {"value": "A", "text": "One solution"},
+            {"value": "B", "text": "No solution"},
+            {"value": "C", "text": "Infinitely many solutions"},
+            {"value": "D", "text": "x = 14"}
+          ],
+          "answer": "B",
+          "grading": "deterministic",
+          "feedback": "Subtract 6x from both sides and you get 10 = -4, which is false."
+        },
+        {
+          "id": "w1-l5-q4",
+          "type": "multiple_choice",
+          "prompt": "A club has $35 saved and earns $5 per ticket. They want $100 total. Which equation matches the situation?",
+          "options": [
+            {"value": "A", "text": "5t + 35 = 100"},
+            {"value": "B", "text": "35t + 5 = 100"},
+            {"value": "C", "text": "5t - 100 = 35"},
+            {"value": "D", "text": "100t + 35 = 5"}
+          ],
+          "answer": "A",
+          "grading": "deterministic",
+          "feedback": "The club starts with 35 and adds 5 dollars per ticket."
+        },
+        {
+          "id": "w1-l5-q5",
+          "type": "short_answer",
+          "prompt": "For 5t + 35 = 100, solve for t and explain what the answer means.",
           "grading": "ai_rubric",
-          "rubricId": "modeling-explanation-5",
-          "expectedElements": ["8t - 180 >= 500", "8t >= 680", "t >= 85", "at least 85 tickets"],
-          "feedback": "A strong answer writes 8t - 180 >= 500 and solves to t >= 85."
+          "rubricId": "math-explanation-3",
+          "expectedElements": ["t = 13", "13 tickets", "100 total", "35 saved"],
+          "commonMisconceptions": ["13 dollars", "does not explain", "subtracts 5 first"],
+          "feedback": "A strong answer solves 5t = 65, so t = 13, and explains that the club needs to sell 13 tickets."
         }
       ]
     }
   ],
   "gate": {
-    "completion": "Student attempts the video questions, mini performance task, and Week 1 check.",
-    "mastery": "At least 80% objective accuracy and 8/10 or better on the modeling rubric.",
-    "remediation": "Review input/output notation and solve one break-even problem with a smaller number set.",
-    "enrichment": "Change the ticket price and explain how the break-even point changes."
+    "completion": "Student attempts the overview reflection, video questions, performance task, mixed practice, and exit check.",
+    "mastery": "70% or higher across the lesson, with the exit check flagged for teacher follow-up if it falls below 70%.",
+    "remediation": "Review the four Module 1 moves and retry a shorter performance task with smaller numbers.",
+    "enrichment": "Create your own event-budget equation, solve it, and explain how changing one number changes the solution."
   },
-  "teacherReviewTriggers": ["low_ai_confidence", "model_missing_units", "rounding_reasoning_missing", "rubric_score_below_8"]
+  "teacherReviewTriggers": ["low_ai_confidence", "model_missing_units", "equation_creation_error", "rubric_score_1_or_lower"]
 }

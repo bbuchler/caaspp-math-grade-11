@@ -5,80 +5,253 @@
   "estimatedMinutes": 60,
   "sourceRefs": ["S1", "S3", "V4"],
   "learningTarget": "I can rearrange formulas to solve for a chosen variable.",
-  "whyItMatters": "Formulas in science, sports, money, and design often have more than one variable. Rearranging a formula lets you solve for the quantity you actually need.",
+  "whyItMatters": "Formulas show relationships between quantities. When a problem asks for a different variable than the formula is already solved for, you can rearrange the formula first and then plug in values.",
+  "realWorldApplication": "On CAASPP, formula questions often show up in science, geometry, speed, distance, or measurement situations. The skill is still equation solving: undo operations until the variable you need is alone.",
+  "standards": [
+    {
+      "code": "A-CED.4",
+      "label": "Rearrange formulas to highlight a quantity of interest."
+    },
+    {
+      "code": "A-REI.1",
+      "label": "Explain why each equation-solving step is valid."
+    }
+  ],
+  "overviewPrompt": "Create a short overview video for 11th grade students preparing for the CAASPP math test.\n\nLesson title: Literal Equations and Formulas\n\nMain idea: A literal equation is a formula with more than one variable. Students are not always solving for x. They may need to rearrange a formula so the requested variable is alone.\n\nUse this exact example:\n\nFormula: d = rt\nSolve for t.\n\nStep 1: Notice that r and t are multiplied.\nStep 2: To isolate t, divide both sides by r.\nStep 3: d/r = t, so t = d/r.\n\nThen use numbers:\nA robotics club measures a robot traveling 24 feet at 6 feet per second. How long did it travel?\nUse t = d/r.\nt = 24/6 = 4.\nThe robot traveled for 4 seconds.\n\nAlso briefly show a geometry example with stacked fraction language:\nA = one-half b h. To solve for b, multiply both sides by 2, then divide by h, so b = 2A/h.\n\nKeep it short, student-friendly, and focused on rearranging before substituting.",
+  "vocabulary": [
+    {
+      "term": "Literal equation",
+      "definition": "An equation or formula with more than one variable."
+    },
+    {
+      "term": "Formula",
+      "definition": "An equation that shows how quantities are related, such as d = rt."
+    },
+    {
+      "term": "Solve for a variable",
+      "definition": "Rearrange the equation until the chosen variable is alone."
+    },
+    {
+      "term": "Substitute",
+      "definition": "Put a known value into a formula after the formula is arranged correctly."
+    }
+  ],
   "sections": [
+    {
+      "id": "overview",
+      "type": "reflection",
+      "title": "Overview Reflection",
+      "studentText": "After watching the overview, explain the main point in your own words.",
+      "questions": [
+        {
+          "id": "l4-overview-reflection",
+          "type": "short_answer",
+          "prompt": "Why might it be useful to rearrange a formula before putting numbers into it?",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "expectedElements": ["solve for the variable needed", "formula", "isolate", "then substitute"],
+          "commonMisconceptions": ["always plug in first", "only x can be solved for", "formula cannot change"],
+          "feedback": "A strong answer says rearranging lets you isolate the variable you need, then substitute the known values."
+        }
+      ]
+    },
     {
       "id": "launch",
       "type": "launch",
       "title": "Quick Start",
-      "studentText": "A fundraiser starts with $40 donated by a sponsor. Students then earn $6 for each ticket sold. The model is M = 6t + 40.",
+      "studentText": "A robotics club uses the formula d = rt, where d is distance, r is rate, and t is time.",
       "questions": [
         {
           "id": "l4-launch-1",
           "type": "multiple_choice",
-          "prompt": "What does 40 mean in this model?",
+          "prompt": "If you need to find time t in d = rt, which variable should be alone at the end?",
           "options": [
-            {"value": "A", "text": "Money earned per ticket"},
-            {"value": "B", "text": "The starting amount before tickets are sold"},
-            {"value": "C", "text": "The number of tickets sold"},
-            {"value": "D", "text": "The final amount after all tickets are sold"}
+            {"value": "A", "text": "d"},
+            {"value": "B", "text": "r"},
+            {"value": "C", "text": "t"},
+            {"value": "D", "text": "rt"}
           ],
-          "answer": "B",
+          "answer": "C",
           "grading": "deterministic",
-          "feedback": "The +40 is the starting value, also called the y-intercept."
+          "feedback": "If the question asks for time, t should be isolated."
         }
       ]
     },
     {
       "id": "video",
       "type": "video",
-      "title": "Watch: Finding slope and intercepts from tables",
+      "title": "Watch: Rearranging Formulas",
       "video": {
-        "provider": "khanacademy",
-        "url": "https://www.khanacademy.org/math/algebra-1-fl-best/x91c6a5a4a9698230%3Aanalyzing-linear-functions/x91c6a5a4a9698230%3Afinding-key-features-of-linear-functions/v/find-slope-intercepts-table",
+        "provider": "youtube",
+        "url": "https://www.youtube.com/watch?v=eTSVTTg_QZ4",
+        "embedUrl": "https://www.youtube-nocookie.com/embed/eTSVTTg_QZ4?rel=0",
+        "poster": "https://i.ytimg.com/vi/eTSVTTg_QZ4/hqdefault.jpg",
         "sourceRef": "V4",
-        "transcriptRequired": true
+        "transcriptRequired": false
       },
-      "watchFor": "Watch how the table reveals the rate of change even when the intercept is not listed.",
+      "watchFor": "Watch for the same equation-solving idea from earlier lessons: whatever is attached to the target variable has to be undone in a balanced way.",
       "contextQuestions": [
         {
           "id": "l4-vq1",
-          "type": "short_answer",
-          "prompt": "What two quantities do you compare to find slope from a table?",
-          "grading": "ai_rubric",
-          "rubricId": "math-explanation-3",
-          "feedback": "A strong answer says compare the change in y to the change in x."
-        },
-        {
-          "id": "l4-vq2",
           "type": "multiple_choice",
-          "prompt": "The y-intercept happens when which value is 0?",
+          "prompt": "When solving a formula for a specific variable, what is the main goal?",
           "options": [
-            {"value": "A", "text": "x"},
-            {"value": "B", "text": "y"},
-            {"value": "C", "text": "slope"},
-            {"value": "D", "text": "rate"}
+            {"value": "A", "text": "Get the requested variable alone"},
+            {"value": "B", "text": "Change every variable into x"},
+            {"value": "C", "text": "Put in numbers before reading the question"},
+            {"value": "D", "text": "Cancel all variables"}
           ],
           "answer": "A",
           "grading": "deterministic",
-          "feedback": "The y-intercept is the y-value when x = 0."
+          "feedback": "The goal is to isolate the variable the question asks for."
+        },
+        {
+          "id": "l4-vq2",
+          "type": "short_answer",
+          "prompt": "Why do inverse operations still matter when the equation has several variables?",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "expectedElements": ["undo operations", "isolate", "same operation both sides", "chosen variable"],
+          "commonMisconceptions": ["variables cannot be moved", "only numbers can be divided", "one side only"],
+          "feedback": "A strong answer says inverse operations undo what is attached to the chosen variable while keeping the equation balanced."
+        },
+        {
+          "id": "l4-vq3",
+          "type": "multiple_choice",
+          "prompt": "In d = rt, what operation connects r and t?",
+          "options": [
+            {"value": "A", "text": "Addition"},
+            {"value": "B", "text": "Subtraction"},
+            {"value": "C", "text": "Multiplication"},
+            {"value": "D", "text": "Division"}
+          ],
+          "answer": "C",
+          "grading": "deterministic",
+          "feedback": "rt means r times t."
+        },
+        {
+          "id": "l4-vq4",
+          "type": "multiple_choice",
+          "prompt": "To solve d = rt for t, what should you do?",
+          "options": [
+            {"value": "A", "text": "Divide both sides by r"},
+            {"value": "B", "text": "Subtract r from both sides"},
+            {"value": "C", "text": "Divide both sides by t"},
+            {"value": "D", "text": "Add r to both sides"}
+          ],
+          "answer": "A",
+          "grading": "deterministic",
+          "feedback": "Since r is multiplied by t, divide both sides by r to get t = d/r."
         }
       ]
     },
     {
       "id": "learn",
       "type": "teaching",
-      "title": "Translate the Numbers",
-      "studentText": "Slope means 'for each 1.' In M = 6t + 40, the slope 6 means the fundraiser gains $6 for each ticket. The intercept 40 means the fundraiser starts with $40 before selling any tickets.",
+      "title": "Rearrange First, Then Substitute",
+      "studentTextHtml": "<p>A formula can be solved for different variables. The strategy is simple: decide which variable you need, undo what is attached to it, then plug in the numbers.</p>",
       "workedExample": {
-        "prompt": "A phone plan costs P = 15g + 25, where g is gigabytes of data.",
+        "prompt": "Solve d = rt for t, then find t when d = 24 and r = 6.",
         "steps": [
-          "The slope is 15, so each extra gigabyte costs $15.",
-          "The y-intercept is 25, so the base plan costs $25 before extra data.",
-          "For 4 gigabytes, P = 15(4) + 25 = 85."
+          "Start with the formula: d = rt.",
+          "Undo multiplication by r: divide both sides by r.",
+          "Rewrite: t = d/r.",
+          "Substitute: t = 24/6 = 4.",
+          "Interpret: the robot traveled for 4 seconds."
         ],
-        "commonMistake": "Do not describe slope as just '15.' Say what 15 means in the situation."
+        "commonMistake": "Do not plug in numbers before knowing which variable the problem asks for. Rearranging first keeps the work cleaner."
       }
+    },
+    {
+      "id": "triangle_formula",
+      "type": "teaching",
+      "title": "Textbook Fraction Example",
+      "studentTextHtml": "<p>Some formulas use fractions. We write the triangle area formula as <strong>A = <span class=\"math-expression\"><span class=\"fraction\"><span>1</span><span>2</span></span>bh</span></strong>, not as A = 1/2bh.</p>",
+      "workedExample": {
+        "prompt": "Solve the triangle area formula for b.",
+        "steps": [
+          "Start: A = one-half bh.",
+          "Undo the one-half: multiply both sides by 2 to get 2A = bh.",
+          "Undo multiplication by h: divide both sides by h.",
+          "Result: b = 2A/h."
+        ],
+        "commonMistake": "The one-half multiplies both b and h. Clear the fraction before dividing by h."
+      }
+    },
+    {
+      "id": "balance_lab",
+      "type": "balance_lab",
+      "title": "Hands-On: Choose the Formula Move",
+      "studentText": "Use the undo board to solve d = rt for t. Choose the move that gets t alone.",
+      "balanceLab": {
+        "startEquation": "d = rt",
+        "states": [
+          {
+            "equation": "d = rt",
+            "tokens": ["d", "=", "r", "t"],
+            "actions": [
+              {"text": "Divide by r", "action": "divideR"},
+              {"text": "Subtract r", "action": "subtractR"},
+              {"text": "Divide by t", "action": "divideT"},
+              {"text": "Add r", "action": "addR"}
+            ],
+            "expectedAction": "divideR",
+            "dropText": "Choose the inverse operation that isolates t.",
+            "feedback": "t is being multiplied by r.",
+            "wrongFeedback": "Not yet. Since r and t are multiplied, use division to undo the r."
+          },
+          {
+            "equation": "d/r = t",
+            "tokens": ["d/r", "=", "t"],
+            "actions": [],
+            "dropText": "Solved",
+            "feedback": "Solved: t = d/r. You isolated the variable the question asked for."
+          }
+        ],
+        "complete": "Solved: t = d/r."
+      }
+    },
+    {
+      "id": "real_world",
+      "type": "practice",
+      "title": "Real-World Formula: Robotics Test Run",
+      "studentTextHtml": "<div class=\"scenario-summary\"><p><strong>Scenario:</strong> A robotics club tests a small robot in the hallway.</p><p><strong>Formula:</strong> d = rt</p><p><strong>Known values:</strong> The robot travels 36 feet at 4 feet per second.</p><p><strong>Question:</strong> How long did the robot travel?</p></div>",
+      "image": {
+        "src": "media/images/lesson-04-robotics-formula-real-world.png",
+        "alt": "Students testing a small robotics vehicle and using the formula distance equals rate times time.",
+        "caption": "The formula connects distance, rate, and time. Rearrange it to solve for the missing quantity."
+      },
+      "questions": [
+        {
+          "id": "l4-rw1",
+          "type": "short_answer",
+          "prompt": "In this problem, which variable are you solving for, and why?",
+          "grading": "ai_rubric",
+          "rubricId": "factual-short-2",
+          "maxPoints": 2,
+          "expectedElements": ["t", "time", "how long"],
+          "commonMisconceptions": ["distance", "rate", "speed"],
+          "feedback": "You are solving for t because the question asks how long the robot traveled."
+        },
+        {
+          "id": "l4-rw2",
+          "type": "numeric",
+          "prompt": "Use t = d/r. If d = 36 and r = 4, what is t?",
+          "answer": 9,
+          "grading": "deterministic",
+          "feedback": "t = 36/4 = 9, so the robot traveled for 9 seconds."
+        },
+        {
+          "id": "l4-rw3",
+          "type": "short_answer",
+          "prompt": "Explain what t = 9 means in the robotics situation.",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "expectedElements": ["9 seconds", "time", "robot traveled"],
+          "commonMisconceptions": ["9 feet", "9 feet per second", "9 robots"],
+          "feedback": "t = 9 means the robot traveled for 9 seconds."
+        }
+      ]
     },
     {
       "id": "practice",
@@ -88,24 +261,49 @@
         {
           "id": "l4-p1",
           "type": "multiple_choice",
-          "prompt": "In P = 15g + 25, what is the slope?",
+          "prompt": "Solve P = 2l + 2w for w. Which expression is correct?",
           "options": [
-            {"value": "A", "text": "15"},
-            {"value": "B", "text": "25"},
-            {"value": "C", "text": "40"},
-            {"value": "D", "text": "g"}
+            {"value": "A", "text": "w = (P - 2l)/2"},
+            {"value": "B", "text": "w = P - 2l"},
+            {"value": "C", "text": "w = P/2 + 2l"},
+            {"value": "D", "text": "w = 2P - l"}
           ],
           "answer": "A",
           "grading": "deterministic",
-          "feedback": "The coefficient of g is 15."
+          "feedback": "Subtract 2l from both sides, then divide by 2."
         },
         {
           "id": "l4-p2",
+          "type": "multiple_choice",
+          "promptHtml": "Solve <strong>A = <span class=\"math-expression\"><span class=\"fraction\"><span>1</span><span>2</span></span>bh</span></strong> for b. Which expression is correct?",
+          "prompt": "Solve A = one-half bh for b. Which expression is correct?",
+          "options": [
+            {"value": "A", "text": "b = A/(2h)"},
+            {"value": "B", "text": "b = 2A/h"},
+            {"value": "C", "text": "b = Ah/2"},
+            {"value": "D", "text": "b = A - h"}
+          ],
+          "answer": "B",
+          "grading": "deterministic",
+          "feedback": "Multiply both sides by 2 to get 2A = bh, then divide by h."
+        },
+        {
+          "id": "l4-p3",
+          "type": "numeric",
+          "prompt": "Use t = d/r. A runner travels 600 meters at 5 meters per second. How many seconds did the runner travel?",
+          "answer": 120,
+          "grading": "deterministic",
+          "feedback": "t = 600/5 = 120 seconds."
+        },
+        {
+          "id": "l4-p4",
           "type": "short_answer",
-          "prompt": "In P = 15g + 25, explain what the slope means in context.",
+          "prompt": "Explain the difference between rearranging a formula and substituting numbers into a formula.",
           "grading": "ai_rubric",
           "rubricId": "math-explanation-3",
-          "feedback": "A strong answer says the cost increases by $15 for each additional gigabyte."
+          "expectedElements": ["rearranging changes which variable is alone", "substituting uses known values", "formula"],
+          "commonMisconceptions": ["they are the same step", "substitute first every time", "variables cannot move"],
+          "feedback": "A strong answer says rearranging changes the formula so the needed variable is alone; substituting puts known values into the formula."
         }
       ]
     },
@@ -113,46 +311,77 @@
       "id": "check",
       "type": "check",
       "title": "Exit Check",
-      "masteryThreshold": 0.8,
+      "masteryThreshold": 0.7,
       "questions": [
         {
           "id": "w1-l4-q1",
           "type": "multiple_choice",
-          "prompt": "A school sells spirit shirts. The model R = 12s + 50 gives revenue R after selling s shirts. What does 12 mean?",
+          "prompt": "Solve d = rt for r.",
           "options": [
-            {"value": "A", "text": "The starting revenue"},
-            {"value": "B", "text": "The revenue per shirt"},
-            {"value": "C", "text": "The number of shirts"},
-            {"value": "D", "text": "The maximum revenue"}
+            {"value": "A", "text": "r = d/t"},
+            {"value": "B", "text": "r = dt"},
+            {"value": "C", "text": "r = t/d"},
+            {"value": "D", "text": "r = d - t"}
           ],
-          "answer": "B",
+          "answer": "A",
           "grading": "deterministic",
-          "feedback": "The slope is the change in revenue for each shirt."
+          "feedback": "Divide both sides by t to get r = d/t."
         },
         {
           "id": "w1-l4-q2",
-          "type": "numeric",
-          "prompt": "Using R = 12s + 50, what is R when s = 10?",
-          "answer": 170,
+          "type": "multiple_choice",
+          "prompt": "Solve C = 5n + 12 for n.",
+          "options": [
+            {"value": "A", "text": "n = C - 12/5"},
+            {"value": "B", "text": "n = (C - 12)/5"},
+            {"value": "C", "text": "n = 5(C - 12)"},
+            {"value": "D", "text": "n = C/5 + 12"}
+          ],
+          "answer": "B",
           "grading": "deterministic",
-          "feedback": "12(10) + 50 = 170."
+          "feedback": "Subtract 12 first, then divide by 5."
         },
         {
           "id": "w1-l4-q3",
+          "type": "numeric",
+          "prompt": "Use r = d/t. If d = 84 miles and t = 2 hours, what is r?",
+          "answer": 42,
+          "grading": "deterministic",
+          "feedback": "r = 84/2 = 42 miles per hour."
+        },
+        {
+          "id": "w1-l4-q4",
+          "type": "multiple_choice",
+          "promptHtml": "Solve <strong>A = <span class=\"math-expression\"><span class=\"fraction\"><span>1</span><span>2</span></span>bh</span></strong> for h.",
+          "prompt": "Solve A = one-half bh for h.",
+          "options": [
+            {"value": "A", "text": "h = 2A/b"},
+            {"value": "B", "text": "h = A/(2b)"},
+            {"value": "C", "text": "h = b/(2A)"},
+            {"value": "D", "text": "h = A - b"}
+          ],
+          "answer": "A",
+          "grading": "deterministic",
+          "feedback": "Multiply by 2, then divide by b: h = 2A/b."
+        },
+        {
+          "id": "w1-l4-q5",
           "type": "short_answer",
-          "prompt": "Explain what the y-intercept means in the spirit shirt model.",
+          "prompt": "In your own words, explain how to rearrange a formula to solve for a chosen variable.",
           "grading": "ai_rubric",
           "rubricId": "math-explanation-3",
-          "feedback": "A strong answer says the fundraiser starts with $50 before selling shirts."
+          "expectedElements": ["identify target variable", "undo operations", "same operation both sides", "isolate"],
+          "commonMisconceptions": ["only solve for x", "only change one side", "plug in without rearranging"],
+          "feedback": "A strong answer says to identify the target variable, undo the operations attached to it on both sides, and stop when that variable is isolated."
         }
       ]
     }
   ],
   "gate": {
-    "completion": "Student attempts the video questions, practice, and exit check.",
-    "mastery": "At least 80% objective accuracy and 2/3 or better on contextual explanation.",
-    "remediation": "Use a slope/intercept sentence frame: 'For each __, the __ changes by __.'",
-    "enrichment": "Graph the spirit shirt model in Desmos and identify the intercept visually."
+    "completion": "Student attempts the overview reflection, video questions, real-world task, practice, and exit check.",
+    "mastery": "70% or higher across the lesson, with the exit check flagged for teacher follow-up if it falls below 70%.",
+    "remediation": "Practice identifying the target variable and undoing operations in formula problems.",
+    "enrichment": "Choose a formula from science or geometry, rearrange it for a different variable, and explain when that rearranged version would be useful."
   },
-  "teacherReviewTriggers": ["low_ai_confidence", "units_missing_from_explanation", "rubric_score_1_or_lower"]
+  "teacherReviewTriggers": ["low_ai_confidence", "formula_rearrangement_error", "units_missing_from_explanation", "rubric_score_1_or_lower"]
 }
