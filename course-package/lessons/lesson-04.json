@@ -87,61 +87,67 @@
         "embedUrl": "https://www.youtube-nocookie.com/embed/eTSVTTg_QZ4?rel=0",
         "poster": "https://i.ytimg.com/vi/eTSVTTg_QZ4/hqdefault.jpg",
         "sourceRef": "V4",
-        "transcriptRequired": false
+        "transcriptRequired": true
       },
-      "watchFor": "Watch for the same equation-solving idea from earlier lessons: whatever is attached to the target variable has to be undone in a balanced way.",
+      "watchFor": "Watch the triangle formula A = one-half bh. Notice how the teacher solves for height h by multiplying by 2, then dividing by b.",
       "contextQuestions": [
         {
           "id": "l4-vq1",
           "type": "multiple_choice",
-          "prompt": "When solving a formula for a specific variable, what is the main goal?",
+          "promptHtml": "In the video formula <strong>A = <span class=\"math-expression\"><span class=\"fraction\"><span>1</span><span>2</span></span>bh</span></strong>, which variable is the teacher solving for?",
+          "prompt": "In the video formula A = one-half bh, which variable is the teacher solving for?",
           "options": [
-            {"value": "A", "text": "Get the requested variable alone"},
-            {"value": "B", "text": "Change every variable into x"},
-            {"value": "C", "text": "Put in numbers before reading the question"},
-            {"value": "D", "text": "Cancel all variables"}
+            {"value": "A", "text": "A, the area"},
+            {"value": "B", "text": "b, the base"},
+            {"value": "C", "text": "h, the height"},
+            {"value": "D", "text": "1/2, the fraction"}
           ],
-          "answer": "A",
+          "answer": "C",
           "grading": "deterministic",
-          "feedback": "The goal is to isolate the variable the question asks for."
+          "feedback": "The video asks us to solve for h, the height of the triangle."
         },
         {
           "id": "l4-vq2",
-          "type": "short_answer",
-          "prompt": "Why do inverse operations still matter when the equation has several variables?",
-          "grading": "ai_rubric",
-          "rubricId": "math-explanation-3",
-          "expectedElements": ["undo operations", "isolate", "same operation both sides", "chosen variable"],
-          "commonMisconceptions": ["variables cannot be moved", "only numbers can be divided", "one side only"],
-          "feedback": "A strong answer says inverse operations undo what is attached to the chosen variable while keeping the equation balanced."
+          "type": "multiple_choice",
+          "promptHtml": "Why does the teacher multiply both sides by 2 first?",
+          "prompt": "Why does the teacher multiply both sides by 2 first?",
+          "options": [
+            {"value": "A", "text": "To cancel the one-half multiplying b and h"},
+            {"value": "B", "text": "To make the area twice as large for no reason"},
+            {"value": "C", "text": "To cancel the base b"},
+            {"value": "D", "text": "To substitute numbers into the formula"}
+          ],
+          "answer": "A",
+          "grading": "deterministic",
+          "feedback": "Multiplying by 2 cancels the one-half because 2 times one-half equals 1."
         },
         {
           "id": "l4-vq3",
           "type": "multiple_choice",
-          "prompt": "In d = rt, what operation connects r and t?",
+          "prompt": "After multiplying both sides by 2, what equation does the video get?",
           "options": [
-            {"value": "A", "text": "Addition"},
-            {"value": "B", "text": "Subtraction"},
-            {"value": "C", "text": "Multiplication"},
-            {"value": "D", "text": "Division"}
+            {"value": "A", "text": "2A = bh"},
+            {"value": "B", "text": "A = 2bh"},
+            {"value": "C", "text": "A/2 = bh"},
+            {"value": "D", "text": "2A = b/h"}
           ],
-          "answer": "C",
+          "answer": "A",
           "grading": "deterministic",
-          "feedback": "rt means r times t."
+          "feedback": "The one-half is gone, so the equation becomes 2A = bh."
         },
         {
           "id": "l4-vq4",
           "type": "multiple_choice",
-          "prompt": "To solve d = rt for t, what should you do?",
+          "prompt": "What final formula does the video get for the height h?",
           "options": [
-            {"value": "A", "text": "Divide both sides by r"},
-            {"value": "B", "text": "Subtract r from both sides"},
-            {"value": "C", "text": "Divide both sides by t"},
-            {"value": "D", "text": "Add r to both sides"}
+            {"value": "A", "text": "h = 2A/b"},
+            {"value": "B", "text": "h = A/(2b)"},
+            {"value": "C", "text": "h = 2Ab"},
+            {"value": "D", "text": "h = b/(2A)"}
           ],
           "answer": "A",
           "grading": "deterministic",
-          "feedback": "Since r is multiplied by t, divide both sides by r to get t = d/r."
+          "feedback": "After 2A = bh, divide both sides by b to get h = 2A/b."
         }
       ]
     },

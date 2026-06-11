@@ -84,54 +84,68 @@
     {
       "id": "video",
       "type": "video",
-      "title": "Watch: Linear Equation Word Problem",
+      "title": "Watch: Orange Tree Word Problem",
       "video": {
         "provider": "youtube",
         "url": "https://www.youtube.com/watch?v=xKH1Evwu150",
         "embedUrl": "https://www.youtube-nocookie.com/embed/xKH1Evwu150?rel=0",
         "poster": "https://i.ytimg.com/vi/xKH1Evwu150/hqdefault.jpg",
         "sourceRef": "V5",
-        "transcriptRequired": false
+        "transcriptRequired": true
       },
-      "watchFor": "Watch how the problem gets translated into an equation before solving. The setup matters as much as the arithmetic.",
+      "watchFor": "Watch how the teacher defines t as the initial number of trees, builds 210(t - 5) = 41,790, and solves to get 204 trees.",
       "contextQuestions": [
         {
           "id": "l5-vq1",
           "type": "multiple_choice",
-          "prompt": "In a word problem, what should you identify before solving?",
+          "prompt": "In the video, what does t represent?",
           "options": [
-            {"value": "A", "text": "What the variable represents"},
-            {"value": "B", "text": "Only the biggest number"},
-            {"value": "C", "text": "The answer choices first"},
-            {"value": "D", "text": "A random value for x"}
+            {"value": "A", "text": "The number of trees MacDonald had initially"},
+            {"value": "B", "text": "The number of oranges per tree"},
+            {"value": "C", "text": "The number of trees cut down"},
+            {"value": "D", "text": "The total harvest"}
           ],
           "answer": "A",
           "grading": "deterministic",
-          "feedback": "You need to know what the variable represents before building the equation."
+          "feedback": "The video defines t as the number of trees the farm had at the start."
         },
         {
           "id": "l5-vq2",
-          "type": "short_answer",
-          "prompt": "Why is it important to explain what the solution means after solving a word problem?",
-          "grading": "ai_rubric",
-          "rubricId": "math-explanation-3",
-          "expectedElements": ["context", "units", "answer means", "real situation"],
-          "commonMisconceptions": ["number alone is enough", "units do not matter"],
-          "feedback": "A strong answer says the solution needs to connect back to the real situation with units or meaning."
+          "type": "multiple_choice",
+          "prompt": "After 5 trees are cut down, how many trees remain?",
+          "options": [
+            {"value": "A", "text": "t + 5"},
+            {"value": "B", "text": "t - 5"},
+            {"value": "C", "text": "5t"},
+            {"value": "D", "text": "210t"}
+          ],
+          "answer": "B",
+          "grading": "deterministic",
+          "feedback": "The farm starts with t trees and cuts down 5, so t - 5 trees remain."
         },
         {
           "id": "l5-vq3",
           "type": "multiple_choice",
-          "prompt": "If an answer is 22.5 tickets, what should you usually do in a real ticket-selling problem?",
+          "prompt": "Which equation matches the video word problem?",
           "options": [
-            {"value": "A", "text": "Round up if the goal must be met"},
-            {"value": "B", "text": "Round down because fewer tickets is easier"},
-            {"value": "C", "text": "Leave it as 22.5 tickets"},
-            {"value": "D", "text": "Change the equation"}
+            {"value": "A", "text": "210(t - 5) = 41,790"},
+            {"value": "B", "text": "210(t + 5) = 41,790"},
+            {"value": "C", "text": "5(t - 210) = 41,790"},
+            {"value": "D", "text": "41,790(t - 5) = 210"}
           ],
           "answer": "A",
           "grading": "deterministic",
-          "feedback": "Tickets are whole items. If the goal must be met, round up."
+          "feedback": "There are t - 5 remaining trees, and each produces 210 oranges, for a total of 41,790."
+        },
+        {
+          "id": "l5-vq4",
+          "type": "short_answer",
+          "prompt": "The video gets t = 204. Explain what 204 means in the original problem.",
+          "grading": "ai_rubric",
+          "rubricId": "math-explanation-3",
+          "expectedElements": ["204 trees", "initially", "before cutting down 5"],
+          "commonMisconceptions": ["204 oranges", "204 remaining trees", "204 trees cut down"],
+          "feedback": "A strong answer says MacDonald had 204 trees initially, before cutting down 5 trees."
         }
       ]
     },
