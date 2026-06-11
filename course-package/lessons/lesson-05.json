@@ -385,7 +385,7 @@
     }
   ],
   "gate": {
-    "completion": "Student attempts the overview reflection, video questions, performance task, mixed practice, and exit check.",
+    "completion": "Student attempts the warm-up, video questions, performance task, mixed practice, and exit check.",
     "mastery": "70% or higher across the lesson, with the exit check flagged for teacher follow-up if it falls below 70%.",
     "remediation": "Review the four Module 1 moves and retry a shorter performance task with smaller numbers.",
     "enrichment": "Create your own event-budget equation, solve it, and explain how changing one number changes the solution."
